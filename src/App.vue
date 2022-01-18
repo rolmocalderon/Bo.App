@@ -19,7 +19,7 @@ export default {
 html,body{
   margin: 0;
   padding: 0;
-  background: aliceblue;
+  background: #f9f9f9;
   height: 100%;
 }
 #app {

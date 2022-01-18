@@ -1,31 +1,39 @@
 <template>
   <div class="albaran">
-    <h2>Hello {{ loggedUser.name }}</h2>
+    <h2>Hola {{ loggedUser.name }}</h2>
     <div v-if="loggedUser.category == 'admin'">
       <div class="add-pickup">
             <div class="row almost-full-width">
-                <button v-on:click="addPickup" class="background-blue form-input input-submit">Add pickup</button>
+                <button v-on:click="addPickup" class="background-blue form-input input-submit">Añadir punto de recogida</button>
             </div>
         <div class="add-pickup-form" v-if="showPickupForm">
             <form action="#">
                 <div class="row">
-                    <label>PlaceName</label>
+                    <label>Nombre del lugar</label>
                     <input type="text" v-model="placeName" name="placeName" class="form-input">
                 </div>
                 <div class="row">
-                    <label>Date</label>
+                    <label>Fecha</label>
                     <input type="date" v-model="date" name="date" class="form-input" pattern="\d{2}/\d{2}-\d{4}">
                 </div>
                 <div class="row">
-                    <input type="submit" value="Add" class="form-input input-submit" v-on:click="submit">
+                    <input type="submit" value="Añadir" class="form-input input-submit" v-on:click="submit">
                 </div>
             </form>
         </div>
       </div>
-      <div class="pickups">
-        <select name="pickups" v-on:change="changePickup">
+    </div>
+    <div class="cities">
+        <select name="cities" v-on:change="changePickup" class="dropdown">
+            <option value="">-- Selecciona una ciudad --</option>
+            <option value="1">Barcelona</option>
+            <option value="2">Madrid</option>
+        </select>
+    </div>
+    <div class="pickups">
+        <select name="pickups" v-on:change="changePickup" class="dropdown">
           <option value="">
-            -- Select Option --
+            -- Selecciona una opción --
           </option>
           <option
             v-for="pickup in pickups"
@@ -37,8 +45,12 @@
           </option>
         </select>
       </div>
-    </div>
     <div class="product-container">
+        <div v-if="products.length > 0" class="add-product">
+            <div class="row almost-full-width">
+                <button v-on:click="addProduct" class="background-blue form-input input-submit">Añadir product</button>
+            </div>
+        </div>
         <div class="product" v-for="product in products" v-bind:key="product.name">
             <div>{{ product.amount }} paquetes de {{ product.productName }}</div>
             <div> {{ product.weight }} gramos</div>
@@ -59,7 +71,8 @@ export default {
       pickups: {},
       showPickupForm: false,
       placeName: "",
-      date: ""
+      date: "",
+      selectedPickup: null
     };
   },
   created: function () {
@@ -123,18 +136,15 @@ export default {
       });
     },
     changePickup(e) {
-      let selected = Array.from(e.target.children).find((x) => x.selected);
-      console.log("selectedvalue", selected)
-      if (selected.value) {
+      this.selectedPickup = Array.from(e.target.children).find((x) => x.selected);
+      if (this.selectedPickup.value) {
         let self = this;
         let params = {
-          pickupId: selected.value
+          pickupId: this.selectedPickup.value
         };
-        console.log("getall", params);
         this.getAll(
           "getPickupProducts",
           function (res) {
-              console.log("responseProducts", res)
             self.products = res;
           },
           params
@@ -145,16 +155,26 @@ export default {
     },
     addPickup(){
         this.showPickupForm = !this.showPickupForm;
+    },
+    addProduct(){
+        console.log('productAdded')
     }
   },
 };
 </script>
 
 <style>
+.add-pickup{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
 .add-pickup-form{
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 70%;
 }
 .add-pickup-form form{
     display: flex;
@@ -191,10 +211,10 @@ export default {
     margin: 0.5rem;
     display: flex;
     flex-direction: column;
-    width: 80%;
+    width: 100%;
 }
 .almost-full-width{
-    width: 96%;
+    width: 90%;
 }
 .product-container{
     display: flex;
@@ -219,5 +239,15 @@ export default {
 .product-types{
     display: flex;
     flex-direction: row;
+}
+.dropdown{
+    width: 90%;
+    height: 2.75rem;
+    border-radius: 5px;
+}
+.add-product{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>
