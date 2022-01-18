@@ -1,9 +1,10 @@
 <template>
-  <div class="login">
-    <div v-if="isLogged" class="hello">
+  <div class="app-content">
+    <div v-if="isLogged" class="container">
+      <img class="logo" alt="Vue logo" src="../assets/logo.png">
       <Albaran v-bind:user="user"/>
     </div>
-    <div v-if="!isLogged">
+    <div v-if="!isLogged" class="login-container">
       <Login v-on:input="updateValue"/>
     </div>
   </div>
@@ -36,8 +37,7 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 h3 {
   margin: 40px 0 0;
 }
@@ -51,5 +51,19 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.app-content{
+  height: 100%;
+}
+
+.login-container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.background-blue{
+  background: #4386c9 !important;
 }
 </style>
