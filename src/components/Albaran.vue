@@ -1,27 +1,7 @@
 <template>
   <div class="albaran">
-    <h2>Hola {{ loggedUser.name }}</h2>
     <div v-if="loggedUser.category == 'admin'">
-      <div class="add-pickup">
-            <div class="row almost-full-width">
-                <button v-on:click="addPickup" class="background-blue form-input input-submit">Añadir punto de recogida</button>
-            </div>
-        <div class="add-pickup-form" v-if="showPickupForm">
-            <form action="#">
-                <div class="row">
-                    <label>Nombre del lugar</label>
-                    <input type="text" v-model="placeName" name="placeName" class="form-input">
-                </div>
-                <div class="row">
-                    <label>Fecha</label>
-                    <input type="date" v-model="date" name="date" class="form-input" pattern="\d{2}/\d{2}-\d{4}">
-                </div>
-                <div class="row">
-                    <input type="submit" value="Añadir" class="form-input input-submit" v-on:click="submit">
-                </div>
-            </form>
-        </div>
-      </div>
+      <add-pickup></add-pickup>
     </div>
     <div class="cities">
         <select name="cities" v-on:change="changePickup" class="dropdown">
@@ -61,7 +41,10 @@
 
 <script>
 import axios from "axios";
+import AddPickup from "./AddPickup";
+
 export default {
+  components: { AddPickup },
   name: "Albaran",
   props: ["user"],
   data() {
@@ -70,8 +53,6 @@ export default {
       products: {},
       pickups: {},
       showPickupForm: false,
-      placeName: "",
-      date: "",
       selectedPickup: null
     };
   },
@@ -79,38 +60,10 @@ export default {
     this.getPickups();
   },
   methods: {
-    submit(event) {
-        event.preventDefault();
-        var self = this;
-        if(this.placeName && this.date){
-            var options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-            var formattedDate = new Date(this.date)
-                .toLocaleDateString('es', options)
-                .replace(/ /g,'/')
-                .replace('.','')
-                .replace(/-([a-z])/, function (x) {return '/' + x[1].toUpperCase()});
-
-            var existingPickup = Array.from(this.pickups).find(pickup => pickup.name.toLowerCase() == this.placeName.toLowerCase() && pickup.date == formattedDate);
-            if(!existingPickup){
-                let params = {
-                    'placeName': this.placeName,
-                    'date': formattedDate
-                }
-                this.insert('insertPickup', function(){
-                    self.showPickupForm = false;
-                    self.getPickups();
-                }, params);
-            }else{
-                console.log('Already exists');
-            }
-        }else{
-            console.log("Missing data");
-        }
-    },
     async insert(endPoint, callback, params){
         axios({
             method: "post",
-            url: "http://192.168.1.41:3000/" + endPoint,
+            url: "http://192.168.1.38:3000/" + endPoint,
              params: params,
         }).then((response) => {
             callback(response.data.data);
@@ -119,7 +72,7 @@ export default {
     async getAll(endPoint, callback, params) {
       axios({
         method: "get",
-        url: "http://192.168.1.41:3000/" + endPoint,
+        url: "http://192.168.1.38:3000/" + endPoint,
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
@@ -152,12 +105,6 @@ export default {
       }else{
           this.products = [];
       }
-    },
-    addPickup(){
-        this.showPickupForm = !this.showPickupForm;
-    },
-    addProduct(){
-        console.log('productAdded')
     }
   },
 };
@@ -169,6 +116,8 @@ export default {
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    transition: 300ms ease-out;
+    margin-bottom: 1rem;
 }
 .add-pickup-form{
     display: flex;
@@ -205,10 +154,9 @@ export default {
     border: 1px solid #009f25;
     cursor: pointer;
     height: 80%;
+    padding: 0.6rem;
 }
 .row{
-    height: 3.5rem;
-    margin: 0.5rem;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -249,5 +197,14 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.add-pickup-form-container{
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f1c4;
+    padding: 1rem 0 1rem 0;
+
 }
 </style>

@@ -1,8 +1,10 @@
 <template>
   <div class="app-content">
     <div v-if="isLogged" class="container">
-      <img class="logo" alt="Vue logo" src="../assets/logo.png">
-      <Albaran v-bind:user="user"/>
+      <div class="greeting background-blue">Bienvenido {{ user.name }}</div>
+      <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')">
+      <Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
+      <Albaran v-if="navigateOption == 'pickups'" v-bind:user="user"/>
     </div>
     <div v-if="!isLogged" class="login-container">
       <Login v-on:input="updateValue"/>
@@ -13,16 +15,19 @@
 <script>
 import Login from './Login';
 import Albaran from './Albaran';
+import Navigator from './Navigator';
 export default {
   name: 'HelloWorld',
   components: {
     Login: Login,
-    Albaran: Albaran
+    Albaran: Albaran,
+    Navigator: Navigator
   },
   data: function(){
     return {
       isLogged: false, //ToBeTakenFromCookie
-      user: {}
+      user: {},
+      navigateOption: ''
     }
   },
   methods:{
@@ -32,6 +37,9 @@ export default {
         'category': value[0].category
       }
       this.isLogged = value != undefined;
+    },
+    userNavigated(event){
+      this.navigateOption = event;
     }
   }
 }
@@ -65,5 +73,10 @@ a {
 }
 .background-blue{
   background: #4386c9 !important;
+  color: white;
+}
+.greeting{
+  width: 100%;
+  padding: 0.5rem;
 }
 </style>

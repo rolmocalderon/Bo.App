@@ -36,7 +36,7 @@ export default {
     login(name, password) {
       axios({
         method: "get",
-        url: "http://192.168.1.41:3000/login",
+        url: "http://192.168.1.38:3000/login",
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
