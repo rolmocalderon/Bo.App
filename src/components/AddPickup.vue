@@ -64,9 +64,6 @@ export default {
         },
         addPickup(){
             this.showPickupForm = !this.showPickupForm;
-        },
-        addProduct(){
-            console.log('productAdded')
         }
     }
 }

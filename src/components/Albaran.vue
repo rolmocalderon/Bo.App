@@ -4,37 +4,18 @@
       <add-pickup></add-pickup>
     </div>
     <div class="cities">
-        <select name="cities" v-on:change="changePickup" class="dropdown">
-            <option value="">-- Selecciona una ciudad --</option>
-            <option value="1">Barcelona</option>
-            <option value="2">Madrid</option>
-        </select>
+        <dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity" :values="cities"></dropdown>
     </div>
     <div class="pickups">
-        <select name="pickups" v-on:change="changePickup" class="dropdown">
-          <option value="">
-            -- Selecciona una opción --
-          </option>
-          <option
-            v-for="pickup in pickups"
-            v-bind:key="pickup.id"
-            :value="pickup.id"
-            v-bind:date="pickup.date"
-          >
-            {{ pickup.name }} {{ pickup.date }}
-          </option>
-        </select>
-      </div>
+      <dropdown dropdownName="pickups" v-on:changeDropdown="onChangePickup" :values="pickups"></dropdown>
+    </div>
     <div class="product-container">
         <div v-if="products.length > 0" class="add-product">
             <div class="row almost-full-width">
                 <button v-on:click="addProduct" class="background-blue form-input input-submit">Añadir product</button>
             </div>
         </div>
-        <div class="product" v-for="product in products" v-bind:key="product.name">
-            <div>{{ product.amount }} paquetes de {{ product.productName }}</div>
-            <div> {{ product.weight }} gramos</div>
-        </div>
+        <Product v-for="product in products" v-bind:key="product.name" :product="product"/>
     </div>
   </div>
 </template>
@@ -42,22 +23,25 @@
 <script>
 import axios from "axios";
 import AddPickup from "./AddPickup";
+import Dropdown from "./Dropdown";
+import Product from "./Product";
 
 export default {
-  components: { AddPickup },
+  components: { AddPickup, Dropdown, Product },
   name: "Albaran",
   props: ["user"],
   data() {
     return {
       loggedUser: this.user,
       products: {},
-      pickups: {},
+      pickups: [],
       showPickupForm: false,
-      selectedPickup: null
+      selectedPickup: null,
+      cities: []
     };
   },
   created: function () {
-    this.getPickups();
+    this.getCities();
   },
   methods: {
     async insert(endPoint, callback, params){
@@ -82,13 +66,22 @@ export default {
         callback(response.data.data);
       });
     },
-    async getPickups() {
+    async getCities(){
       let self = this;
-      this.getAll("getPickups", function (res) {
-        self.pickups = res;
+      this.getAll("getCities", function(res){
+        self.cities = res;
       });
     },
-    changePickup(e) {
+    async getPickups(cityId) {
+      let self = this;
+      let params = {
+        cityId : cityId
+      };
+      this.getAll("getPickups", function (res) {
+        self.pickups = res;
+      }, params);
+    },
+    onChangePickup(e) {
       this.selectedPickup = Array.from(e.target.children).find((x) => x.selected);
       if (this.selectedPickup.value) {
         let self = this;
@@ -104,6 +97,18 @@ export default {
         );
       }else{
           this.products = [];
+      }
+    },
+    addProduct(){
+      console.log('productAdded')
+    },
+    onChangeCity(e){
+      let selectedCity = Array.from(e.target.children).find(x => x.selected);
+      if (selectedCity.value) {
+        this.getPickups(selectedCity.value);
+      }else{
+        this.pickups = [];
+        this.products = [];
       }
     }
   },
@@ -155,6 +160,7 @@ export default {
     cursor: pointer;
     height: 80%;
     padding: 0.6rem;
+    box-shadow: 0px 2px 6px black;
 }
 .row{
     display: flex;
@@ -168,15 +174,6 @@ export default {
     display: flex;
     flex-direction: column;
     margin: 0.5rem;
-}
-
-.product-container .product{
-    width: 100%;
-    display: flex;
-    border-bottom: 1px solid rgba(0,0,0,0.4);
-    padding: 1.2rem;
-    flex-direction: column;
-    align-items: flex-start;
 }
 
 .product-property{
@@ -203,7 +200,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f1f1c4;
+    background: #ffce5f;
     padding: 1rem 0 1rem 0;
 
 }

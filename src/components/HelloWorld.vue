@@ -1,7 +1,7 @@
 <template>
   <div class="app-content">
     <div v-if="isLogged" class="container">
-      <div class="greeting background-blue">Bienvenido {{ user.name }}</div>
+      <div class="greeting background-blue">Te damos la bienvenida <strong>{{ user.name }}</strong></div>
       <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')">
       <Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
       <Albaran v-if="navigateOption == 'pickups'" v-bind:user="user"/>
