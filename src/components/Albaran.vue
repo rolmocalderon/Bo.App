@@ -104,11 +104,11 @@ export default {
     },
     onChangeCity(e){
       let selectedCity = Array.from(e.target.children).find(x => x.selected);
+      this.products = [];
       if (selectedCity.value) {
         this.getPickups(selectedCity.value);
       }else{
         this.pickups = [];
-        this.products = [];
       }
     }
   },
