@@ -9,6 +9,10 @@
     <div class="pickups">
       <dropdown dropdownName="pickups" v-on:changeDropdown="onChangePickup" :values="pickups"></dropdown>
     </div>
+    <div class="dates">
+      <Calendar/>
+      <dropdown dropdownName="dates" v-on:changeDropdown="onChangeDate" :values="dates"></dropdown>
+    </div>
     <div class="product-container">
         <div v-if="products.length > 0" class="add-product">
             <div class="row almost-full-width">
@@ -25,15 +29,17 @@ import axios from "axios";
 import AddPickup from "./AddPickup";
 import Dropdown from "./Dropdown";
 import Product from "./Product";
+import Calendar from "./Calendar";
 
 export default {
-  components: { AddPickup, Dropdown, Product },
+  components: { AddPickup, Dropdown, Product, Calendar },
   name: "Albaran",
   props: ["user"],
   data() {
     return {
       loggedUser: this.user,
-      products: {},
+      products: [],
+      dates: [],
       pickups: [],
       showPickupForm: false,
       selectedPickup: null,
@@ -83,19 +89,23 @@ export default {
     },
     onChangePickup(e) {
       this.selectedPickup = Array.from(e.target.children).find((x) => x.selected);
-      if (this.selectedPickup.value) {
+      console.log(this.selectedPickup.value, "selected");
+      if (this.selectedPickup.value != '') {
         let self = this;
         let params = {
-          pickupId: this.selectedPickup.value
+          pickupName: this.selectedPickup.textContent
         };
+
         this.getAll(
-          "getPickupProducts",
+          "getPickupDates",
           function (res) {
-            self.products = res;
+            console.log("date response", res);
+            self.dates = res;
           },
           params
         );
       }else{
+          this.dates = [];
           this.products = [];
       }
     },
@@ -110,6 +120,9 @@ export default {
       }else{
         this.pickups = [];
       }
+    },
+    onChangeDate(e){
+      console.log("change date", e);
     }
   },
 };
