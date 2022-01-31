@@ -1,11 +1,11 @@
 <template>
     <div class="calendar">
         <div class="calendar__opts">
-            <select name="calendar__month" id="calendar__month" v-on:change="monthSelected">
+            <select class="select" name="calendar__month" id="calendar__month" v-on:change="monthSelected">
                 <option v-for="month in months" :key="month" :value="month" :selected="month == actualMonth">{{ month }}</option>>
             </select>
 
-            <select name="calendar__year" id="calendar__year" v-on:change="yearSelected">
+            <select class="select" name="calendar__year" id="calendar__year" v-on:change="yearSelected">
                 <option v-for="year in years" :key="year" :value="year" :selected="year == actualYear">{{ year }}</option>
             </select>
         </div>
@@ -24,7 +24,7 @@
                 <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
                     <span>{{ day }}</span>
                 </div>
-                <div v-for="day in lastDayOfMonth" :key="day" class="calendar__date">
+                <div v-for="day in lastDayOfMonth" :key="day" class="calendar__date" :class="{ 'calendar__date calendar__date--grey': !isSelectableDate(day) }">
                     <span>{{ day }}</span>
                 </div>
             </div>
@@ -43,7 +43,11 @@ export default {
             actualMonth: "",
             actualYear: "",
             previousMonthDays: [],
-            lastDayOfMonth: 0
+            lastDayOfMonth: 0,
+            selectableDates:[
+                {'month': 0, 'year': 2022, 'day': 10},
+                {'month': 0, 'year': 2022, 'day': 11}
+            ]
         }
     },
     created: function(){
@@ -65,6 +69,7 @@ export default {
             this.actualMonth = this.months[moment(incomingDate).month()];
             this.actualYear = moment(incomingDate).year();
             this.previousMonthDays = previousMonthDays;
+            this.changeDate(incomingDate);
         },
         monthSelected(e){
             let selectedPickup = Array.from(e.target.children).find((x) => x.selected);
@@ -75,21 +80,40 @@ export default {
             let selectedPickup = Array.from(e.target.children).find((x) => x.selected);
             let incomingDate = new Date(selectedPickup.value, this.months.indexOf(this.actualMonth));
             this.setDate(incomingDate);
+        },
+        changeDate(e){
+          this.$emit("changeDate", e);
+        },
+        isSelectableDate(day){
+            let date = this.selectableDates.find(x => x.month == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
+            console.log("selectables", this.selectableDates);
+            console.log("date", this.actualMonth, this.actualYear, day)
+
+            return date != undefined;
         }
     }
 }
 </script>
 
 <style>
+.selectable{
+    background: red;
+}
 .calendar {
   --side-padding: 20px;
-  --border-radius: 34px;
   --accent-br: 15px;
-  width: 400px;
+  box-shadow: 0px 0px 10px black;
+  width: 100%;
 }
 .calendar select {
   background-color: #f3f4f6;
   padding: 15px 20px;
+}
+.dates{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .calendar__opts, .calendar__buttons {
   background-color: #fff;
@@ -249,7 +273,7 @@ button {
   appearance: none;
 }
 
-select {
+.select {
   background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='960px' height='560px' viewBox='0 0 960 560' enable-background='new 0 0 960 560' xml:space='preserve'%3E%3Cg id='Rounded_Rectangle_33_copy_4_1_'%3E%3Cpath d='M480,344.181L268.869,131.889c-15.756-15.859-41.3-15.859-57.054,0c-15.754,15.857-15.754,41.57,0,57.431l237.632,238.937 c8.395,8.451,19.562,12.254,30.553,11.698c10.993,0.556,22.159-3.247,30.555-11.698l237.631-238.937 c15.756-15.86,15.756-41.571,0-57.431s-41.299-15.859-57.051,0L480,344.181z'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 24px;
   background-repeat: no-repeat;

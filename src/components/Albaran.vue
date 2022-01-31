@@ -1,17 +1,17 @@
 <template>
   <div class="albaran">
-    <div v-if="loggedUser.category == 'admin'">
-      <add-pickup></add-pickup>
-    </div>
-    <div class="cities">
+    <add-pickup class="almost-full-width" v-if="loggedUser.category == 'admin'"/>
+    <div class="cities almost-full-width">
         <dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity" :values="cities"></dropdown>
     </div>
-    <div class="pickups">
+    <div class="pickups almost-full-width">
       <dropdown dropdownName="pickups" v-on:changeDropdown="onChangePickup" :values="pickups"></dropdown>
     </div>
-    <div class="dates">
-      <Calendar/>
-      <dropdown dropdownName="dates" v-on:changeDropdown="onChangeDate" :values="dates"></dropdown>
+    <div v-if="showDates" class="dates almost-full-width">
+      <div class="date-box" v-on:click="dateBoxClicked">
+        <span>{{ date }}</span>
+      </div>
+      <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate"/>
     </div>
     <div class="product-container">
         <div v-if="products.length > 0" class="add-product">
@@ -30,6 +30,7 @@ import AddPickup from "./AddPickup";
 import Dropdown from "./Dropdown";
 import Product from "./Product";
 import Calendar from "./Calendar";
+import * as moment from 'moment';
 
 export default {
   components: { AddPickup, Dropdown, Product, Calendar },
@@ -43,7 +44,10 @@ export default {
       pickups: [],
       showPickupForm: false,
       selectedPickup: null,
-      cities: []
+      cities: [],
+      date: "This is a date",
+      calendarOpen: false,
+      showDates: false
     };
   },
   created: function () {
@@ -99,7 +103,7 @@ export default {
         this.getAll(
           "getPickupDates",
           function (res) {
-            console.log("date response", res);
+            self.showDates = true;
             self.dates = res;
           },
           params
@@ -122,13 +126,22 @@ export default {
       }
     },
     onChangeDate(e){
-      console.log("change date", e);
+      this.date = moment(e).format('DD/MM/YYYY')
+    },
+    dateBoxClicked(){
+      this.calendarOpen = !this.calendarOpen;
     }
   },
 };
 </script>
 
 <style>
+.albaran{
+  display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .add-pickup{
     display: flex;
     justify-content: center;
@@ -199,9 +212,9 @@ export default {
     flex-direction: row;
 }
 .dropdown{
-    width: 90%;
-    height: 2.75rem;
-    border-radius: 5px;
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 10px;
 }
 .add-product{
     display: flex;
@@ -215,6 +228,19 @@ export default {
     justify-content: center;
     background: #ffce5f;
     padding: 1rem 0 1rem 0;
+}
+.date-box{
+  width: 100%;
+  border-radius: 5px;
+  padding: 15px 0px;
+  background: white;
+  text-align: left;
+  border: 2px solid black;
+  cursor: pointer;
+  z-index: 100;
+}
 
+.date-box span{
+  padding-left: 1rem;
 }
 </style>
