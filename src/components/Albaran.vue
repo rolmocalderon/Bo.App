@@ -1,60 +1,38 @@
 <template>
   <div class="albaran">
-    <add-pickup class="almost-full-width" v-if="loggedUser.category == 'admin'"/>
-    <div class="cities almost-full-width">
-        <dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity" :values="cities"></dropdown>
-    </div>
-    <div class="pickups almost-full-width">
-      <dropdown dropdownName="pickups" v-on:changeDropdown="onChangePickup" :values="pickups"></dropdown>
-    </div>
-    <div v-if="showDates" class="dates almost-full-width">
-      <div class="date-box" v-on:click="calendarStatusChanged">
-        <span v-if="date">{{ date }}</span>
-        <span v-if="!date">Escoge una fecha</span>
-      </div>
-      <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date" :actualDay="actualDay" :selectableDates="selectableDates"/>
-    </div>
-    <div class="product-container">
-        <div v-if="products.length > 0" class="add-product">
-            <div class="row almost-full-width">
-                <button v-on:click="addProduct" class="background-blue form-input input-submit">Añadir product</button>
-            </div>
+    <ProductSelector :user="loggedUser" v-if="!showProductList" v-on:dateChanged="onDateChanged"></ProductSelector>
+    <div class="product-container almost-full-width" v-if="showProductList">
+      <div class="buttons-container">
+        <div class="back-button" v-on:click="hideProductList">
+          <Button :value="'Atras'"/>
         </div>
-        <Product v-for="product in products" v-bind:key="product.name" :product="product"/>
+        <div v-if="products.length > 0" class="add-product">
+              <div class="row">
+                  <button v-on:click="addProduct" class="background-blue form-input input-submit">Añadir producto</button>
+              </div>
+        </div>
+      </div>
+      <Product v-for="product in products" v-bind:key="product.name" :product="product"/>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import AddPickup from "./AddPickup";
-import Dropdown from "./Dropdown";
 import Product from "./Product";
-import Calendar from "./Calendar";
-import * as moment from 'moment';
+import ProductSelector from "./ProductSelector";
+import Button from './Button';
 
 export default {
-  components: { AddPickup, Dropdown, Product, Calendar },
+  components: { Product, ProductSelector, Button },
   name: "Albaran",
   props: ["user"],
   data() {
     return {
       loggedUser: this.user,
       products: [],
-      dates: [],
-      pickups: [],
-      showPickupForm: false,
-      selectedPickup: null,
-      cities: [],
-      date: "",
-      calendarOpen: false,
-      showDates: false,
-      selectableDates: [],
-      actualDay: ""
+      showProductList: false
     };
-  },
-  created: function () {
-    this.getCities();
   },
   methods: {
     async insert(endPoint, callback, params){
@@ -79,77 +57,30 @@ export default {
         callback(response.data.data);
       });
     },
-    async getCities(){
-      let self = this;
-      this.getAll("getCities", function(res){
-        self.cities = res;
-      });
-    },
-    async getPickups(cityId) {
-      let self = this;
-      let params = {
-        cityId : cityId
-      };
-      this.getAll("getPickups", function (res) {
-        self.pickups = res;
-      }, params);
-    },
-    onChangePickup(e) {
-      this.selectedPickup = Array.from(e.target.children).find((x) => x.selected);
-      if (this.selectedPickup.value != '') {
-        let self = this;
-        let params = {
-          pickupName: this.selectedPickup.textContent
-        };
-
-        this.getAll(
-          "getPickupDates",
-          function (res) {
-            self.showDates = true;
-            let datesSelectables = [];
-            for(let pickupDate of res){
-              let splittedDate = pickupDate.date.split('/');
-              datesSelectables.push({
-                'year': splittedDate[2], 'month': splittedDate[1], 'day': splittedDate[0], 'id': pickupDate.id
-              });
-            }
-
-            self.selectableDates = datesSelectables;
-          },
-          params
-        );
-      }else{
-          this.dates = [];
-          this.products = [];
-      }
+    created(){
+      
     },
     addProduct(){
       console.log('productAdded')
     },
-    onChangeCity(e){
-      let selectedCity = Array.from(e.target.children).find(x => x.selected);
-      this.products = [];
-      if (selectedCity.value) {
-        this.getPickups(selectedCity.value);
-      }else{
-        this.pickups = [];
-      }
+    hideProductList(){
+      this.showProductList = false;
     },
-    onChangeDate(e){
-      this.date = moment(e).format('DD/MM/YYYY');
-      this.actualDay = moment(e).date();
-      /*let params = {
-        pickupId: ""
+    onProductListShown(){
+      this.showProductList = true;
+    },
+    onDateChanged(id){
+      console.log(this.getProducts(id));
+    },
+    getProducts(id){
+      let self = this;
+      let params = {
+        pickupId: id
       };
       this.getAll("getPickupProducts", function (res) {
         self.products = res;
-      }, params);*/
-    },
-    onHideCalendar(){
-      this.calendarStatusChanged();
-    },
-    calendarStatusChanged(){
-      this.calendarOpen = !this.calendarOpen;
+        self.onProductListShown();
+      }, params);
     }
   },
 };
@@ -181,6 +112,9 @@ export default {
     flex-direction: column;
     width: 100%;
     align-items: center;
+}
+.back-button{
+  margin-bottom: 1rem;
 }
 .row .form-input {
     height: 100%;
@@ -261,5 +195,8 @@ export default {
 
 .date-box span{
   padding-left: 1rem;
+}
+.buttons-container{
+
 }
 </style>

@@ -18,9 +18,6 @@ export default {
   name: "dropdown",
   props: ["dropdownName", "values"],
   methods: {
-      created(){
-          console.log(this.dropdownName, "dropdown");
-      },
       onChange(e){
           this.$emit("changeDropdown", e);
       }

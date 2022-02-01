@@ -34,7 +34,6 @@ export default {
       this.login(this.name, this.password);
     },
     login(name, password) {
-      console.log("login", process.env.VUE_APP_WEBAPI_URL);
       axios({
         method: "get",
         url: process.env.VUE_APP_WEBAPI_URL + "/login",
@@ -47,7 +46,6 @@ export default {
           password: password,
         },
       }).then((response) => {
-        console.log(response.data.data);
         if (response.data.data.length > 0) {
           this.updateValue(response.data.data);
         }

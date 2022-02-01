@@ -24,7 +24,7 @@
                 <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
                     <span>{{ day }}</span>
                 </div>
-                <div v-for="day in lastDayOfMonth" :key="day" class="calendar__date" :class="{ 'calendar__date calendar__date--grey': !isSelectableDate(day), 'selectable': isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
+                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date calendar__date--grey': !isSelectableDate(day), 'selectable': isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
                     <span v-on:click="preventDefault">{{ day }}</span>
                 </div>
             </div>
@@ -86,7 +86,6 @@ export default {
             this.setDate(incomingDate);
         },
         changeDate(e){
-            this.testing = "Probando";
             this.$emit("changeDate", e);
         },
         hideCalendar(e){
@@ -97,16 +96,23 @@ export default {
 
             return date != undefined;
         },
+        getSelectableDateId(day){
+            let date = this.selectableDates.find(x => x.month == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
+            return date ? date.id : "";
+        },
         isSelectedDay(day){
             return this.actualDay === day;
         },
         daySelected(e, target){
-            console.log(this.testing)
             let elementTarget = target || e.target;
             let element = elementTarget.querySelector('span');
             let daySelected = element.innerHTML;
             let date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected);
-            this.changeDate(date);
+            let params = {
+              'date': date,
+              'id': elementTarget.getAttribute('productid')
+            };
+            this.changeDate(params);
             this.hideCalendar();
         },
         preventDefault(e){
