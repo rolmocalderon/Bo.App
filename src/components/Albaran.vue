@@ -60,7 +60,7 @@ export default {
     async insert(endPoint, callback, params){
         axios({
             method: "post",
-            url: "http://192.168.1.38:3000/" + endPoint,
+            url: process.env.VUE_APP_WEBAPI_URL + "/" + endPoint,
              params: params,
         }).then((response) => {
             callback(response.data.data);
@@ -69,7 +69,7 @@ export default {
     async getAll(endPoint, callback, params) {
       axios({
         method: "get",
-        url: "http://192.168.1.38:3000/" + endPoint,
+        url: process.env.VUE_APP_WEBAPI_URL + "/" + endPoint,
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
