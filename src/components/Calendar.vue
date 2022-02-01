@@ -24,8 +24,8 @@
                 <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
                     <span>{{ day }}</span>
                 </div>
-                <div v-for="day in lastDayOfMonth" :key="day" class="calendar__date" :class="{ 'calendar__date calendar__date--grey': !isSelectableDate(day) }">
-                    <span>{{ day }}</span>
+                <div v-for="day in lastDayOfMonth" :key="day" class="calendar__date" :class="{ 'calendar__date calendar__date--grey': !isSelectableDate(day), 'selectable': isSelectableDate(day) }" v-on:click.stop.prevent="daySelected">
+                    <span v-on:click="preventDefault">{{ day }}</span>
                 </div>
             </div>
         </div>
@@ -36,24 +36,32 @@
 import * as moment from 'moment';
 export default {
     name: "calendar",
+    props: ["dateSelected"],
     data: function(){
         return {
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             years: ["2021", "2022", "2023"],
             actualMonth: "",
             actualYear: "",
+            actualDay: "",
             previousMonthDays: [],
             lastDayOfMonth: 0,
             selectableDates:[
                 {'month': 0, 'year': 2022, 'day': 10},
                 {'month': 0, 'year': 2022, 'day': 11}
-            ]
+            ],
+            selectedDate: this.dateSelected
         }
     },
     created: function(){
-        let currentDate = moment(new Date());
-        console.log(currentDate);
-        this.setDate(currentDate)
+        let currentDate = "";
+        if(this.selectedDate){
+            let dateValues = this.selectedDate.split('/');
+            currentDate = moment(new Date(dateValues[2], dateValues[1] -1, dateValues[0]));
+        }else{
+            currentDate = moment(new Date());
+        }
+        this.setDate(currentDate);
     },
     methods: {
         setDate(incomingDate){
@@ -69,7 +77,6 @@ export default {
             this.actualMonth = this.months[moment(incomingDate).month()];
             this.actualYear = moment(incomingDate).year();
             this.previousMonthDays = previousMonthDays;
-            this.changeDate(incomingDate);
         },
         monthSelected(e){
             let selectedPickup = Array.from(e.target.children).find((x) => x.selected);
@@ -84,12 +91,26 @@ export default {
         changeDate(e){
           this.$emit("changeDate", e);
         },
+        hideCalendar(e){
+            this.$emit("hideCalendar", e);
+        },
         isSelectableDate(day){
             let date = this.selectableDates.find(x => x.month == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
-            console.log("selectables", this.selectableDates);
-            console.log("date", this.actualMonth, this.actualYear, day)
 
             return date != undefined;
+        },
+        daySelected(e, target){
+            let elementTarget = target || e.target;
+            let element = elementTarget.querySelector('span');
+            let daySelected = element.innerHTML;
+            let date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected);
+            this.actualDay = daySelected;
+            this.changeDate(date);
+            this.hideCalendar();
+        },
+        preventDefault(e){
+            e.stopPropagation();
+            this.daySelected(e, e.target.parentElement)
         }
     }
 }

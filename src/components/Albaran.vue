@@ -8,10 +8,10 @@
       <dropdown dropdownName="pickups" v-on:changeDropdown="onChangePickup" :values="pickups"></dropdown>
     </div>
     <div v-if="showDates" class="dates almost-full-width">
-      <div class="date-box" v-on:click="dateBoxClicked">
+      <div class="date-box" v-on:click="calendarStatusChanged">
         <span>{{ date }}</span>
       </div>
-      <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate"/>
+      <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date"/>
     </div>
     <div class="product-container">
         <div v-if="products.length > 0" class="add-product">
@@ -45,7 +45,7 @@ export default {
       showPickupForm: false,
       selectedPickup: null,
       cities: [],
-      date: "This is a date",
+      date: "",
       calendarOpen: false,
       showDates: false
     };
@@ -93,7 +93,6 @@ export default {
     },
     onChangePickup(e) {
       this.selectedPickup = Array.from(e.target.children).find((x) => x.selected);
-      console.log(this.selectedPickup.value, "selected");
       if (this.selectedPickup.value != '') {
         let self = this;
         let params = {
@@ -126,9 +125,12 @@ export default {
       }
     },
     onChangeDate(e){
-      this.date = moment(e).format('DD/MM/YYYY')
+      this.date = moment(e).format('DD/MM/YYYY');
     },
-    dateBoxClicked(){
+    onHideCalendar(){
+      this.calendarStatusChanged();
+    },
+    calendarStatusChanged(){
       this.calendarOpen = !this.calendarOpen;
     }
   },
