@@ -1,7 +1,7 @@
 <template>
   <div class="navigators-container">
       <div class="navigator" v-for="navigator of navigators" v-bind:key="navigator.title">
-          <div class="navigator-element" v-on:click="navigatorSelected" :id="navigator.id">
+          <div class="navigator-element background-blue" v-on:click="navigatorSelected" :id="navigator.id">
               {{ navigator.title }}</div>
       </div>
   </div>
@@ -52,8 +52,6 @@ export default {
 .navigator-element{
     width: 80%;
     padding: 1rem;
-    border: 2px solid #055eb5;
-    background: #186bbd;
     margin: 1rem;
     color: white;
 }

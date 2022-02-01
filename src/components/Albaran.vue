@@ -9,9 +9,10 @@
     </div>
     <div v-if="showDates" class="dates almost-full-width">
       <div class="date-box" v-on:click="calendarStatusChanged">
-        <span>{{ date }}</span>
+        <span v-if="date">{{ date }}</span>
+        <span v-if="!date">Escoge una fecha</span>
       </div>
-      <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date"/>
+      <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date" :actualDay="actualDay" :selectableDates="selectableDates"/>
     </div>
     <div class="product-container">
         <div v-if="products.length > 0" class="add-product">
@@ -47,7 +48,9 @@ export default {
       cities: [],
       date: "",
       calendarOpen: false,
-      showDates: false
+      showDates: false,
+      selectableDates: [],
+      actualDay: ""
     };
   },
   created: function () {
@@ -103,7 +106,15 @@ export default {
           "getPickupDates",
           function (res) {
             self.showDates = true;
-            self.dates = res;
+            let datesSelectables = [];
+            for(let pickupDate of res){
+              let splittedDate = pickupDate.date.split('/');
+              datesSelectables.push({
+                'year': splittedDate[2], 'month': splittedDate[1], 'day': splittedDate[0], 'id': pickupDate.id
+              });
+            }
+
+            self.selectableDates = datesSelectables;
           },
           params
         );
@@ -126,6 +137,13 @@ export default {
     },
     onChangeDate(e){
       this.date = moment(e).format('DD/MM/YYYY');
+      this.actualDay = moment(e).date();
+      /*let params = {
+        pickupId: ""
+      };
+      this.getAll("getPickupProducts", function (res) {
+        self.products = res;
+      }, params);*/
     },
     onHideCalendar(){
       this.calendarStatusChanged();
@@ -188,7 +206,6 @@ export default {
     cursor: pointer;
     height: 80%;
     padding: 0.6rem;
-    box-shadow: 0px 2px 6px black;
 }
 .row{
     display: flex;

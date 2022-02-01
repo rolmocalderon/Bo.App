@@ -24,7 +24,7 @@
                 <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
                     <span>{{ day }}</span>
                 </div>
-                <div v-for="day in lastDayOfMonth" :key="day" class="calendar__date" :class="{ 'calendar__date calendar__date--grey': !isSelectableDate(day), 'selectable': isSelectableDate(day) }" v-on:click.stop.prevent="daySelected">
+                <div v-for="day in lastDayOfMonth" :key="day" class="calendar__date" :class="{ 'calendar__date calendar__date--grey': !isSelectableDate(day), 'selectable': isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
                     <span v-on:click="preventDefault">{{ day }}</span>
                 </div>
             </div>
@@ -34,23 +34,20 @@
 
 <script>
 import * as moment from 'moment';
+//import * as db from '../services/db';
 export default {
     name: "calendar",
-    props: ["dateSelected"],
+    props: ["dateSelected", "selectableDates", "actualDay"],
     data: function(){
         return {
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             years: ["2021", "2022", "2023"],
             actualMonth: "",
             actualYear: "",
-            actualDay: "",
             previousMonthDays: [],
             lastDayOfMonth: 0,
-            selectableDates:[
-                {'month': 0, 'year': 2022, 'day': 10},
-                {'month': 0, 'year': 2022, 'day': 11}
-            ],
-            selectedDate: this.dateSelected
+            selectedDate: this.dateSelected,
+            testing: ""
         }
     },
     created: function(){
@@ -89,7 +86,8 @@ export default {
             this.setDate(incomingDate);
         },
         changeDate(e){
-          this.$emit("changeDate", e);
+            this.testing = "Probando";
+            this.$emit("changeDate", e);
         },
         hideCalendar(e){
             this.$emit("hideCalendar", e);
@@ -99,12 +97,15 @@ export default {
 
             return date != undefined;
         },
+        isSelectedDay(day){
+            return this.actualDay === day;
+        },
         daySelected(e, target){
+            console.log(this.testing)
             let elementTarget = target || e.target;
             let element = elementTarget.querySelector('span');
             let daySelected = element.innerHTML;
             let date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected);
-            this.actualDay = daySelected;
             this.changeDate(date);
             this.hideCalendar();
         },
@@ -118,7 +119,11 @@ export default {
 
 <style>
 .selectable{
-    background: red;
+    color: #4386c9;
+}
+.selected{
+    border: 1px solid #4386c9;
+    color: #4386c9;
 }
 .calendar {
   --side-padding: 20px;
