@@ -4,11 +4,15 @@
     <div class="title"><span>Login Form</span></div>
     <form action="#">
       <div class="row">
-        <i class="fas fa-user"></i>
+        <div class="login-icon">
+          <font-awesome-icon icon="user" />
+        </div>
         <input type="text" v-model="name" placeholder="Name" required />
       </div>
       <div class="row">
-        <i class="fas fa-lock"></i>
+        <div class="login-icon">
+          <font-awesome-icon icon="lock" />
+        </div>
         <input type="password" v-model="password" placeholder="Password" required />
       </div>
       <div class="row button">
@@ -59,6 +63,11 @@ export default {
 </script>
 
 <style scoped>
+.login-icon{
+  position: absolute;
+  top: 0.9rem;
+  left: 1rem;
+}
 .login-form form {
   display: flex;
   flex-direction: column;
@@ -70,7 +79,6 @@ export default {
   margin: 0.3rem;
 }
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
-@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css';
 * {
   margin: 0;
   padding: 0;

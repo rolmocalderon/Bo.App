@@ -24,7 +24,7 @@
                 <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
                     <span>{{ day }}</span>
                 </div>
-                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date calendar__date--grey': !isSelectableDate(day), 'selectable': isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
+                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey': !isSelectableDate(day), 'selectable': isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
                     <span v-on:click="preventDefault">{{ day }}</span>
                 </div>
             </div>
@@ -105,15 +105,18 @@ export default {
         },
         daySelected(e, target){
             let elementTarget = target || e.target;
-            let element = elementTarget.querySelector('span');
-            let daySelected = element.innerHTML;
-            let date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected);
-            let params = {
-              'date': date,
-              'id': elementTarget.getAttribute('productid')
-            };
-            this.changeDate(params);
-            this.hideCalendar();
+            let id = elementTarget.getAttribute('productid');
+            if(id){
+                let element = elementTarget.querySelector('span');
+                let daySelected = element.innerHTML;
+                let date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected);
+                let params = {
+                'date': date,
+                'id': id
+                };
+                this.changeDate(params);
+                this.hideCalendar();
+            }
         },
         preventDefault(e){
             e.stopPropagation();

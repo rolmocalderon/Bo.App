@@ -1,24 +1,51 @@
 !<template>
     <div class="product">
-        <div>{{ product.amount }} paquetes de {{ product.productName }}</div>
-        <div> {{ product.weight }} gramos</div>
+        <div class="product-info">
+            <span class="product-name">{{ product.productName }}</span>
+            <span class="">{{  product.weight }} gramos</span>
+            <span>Inventario: <span class="product-amount">{{ product.amount }}</span></span>
+        </div>
+        <div class="product-icon">
+            <font-awesome-icon :icon="icon" />
+        </div>
     </div>
 </template>
 
 <script>
 export default {
     name: "product",
-    props: ["product"]
+    props: ["product", "icon"]
 }
 </script>
 
 <style>
 .product-container .product{
-    width: 100%;
+    width: 90%;
     display: flex;
-    border-bottom: 1px solid rgba(0,0,0,0.4);
     padding: 1.2rem;
+    background: white;
+    line-height: 1.3rem;
+    box-shadow: 0 0 5px rgb(0 0 0 / 40%);
+    margin-bottom: 0.5rem;
+}
+.product-container .product-info{
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    flex: 1;
+    text-align: left;
+}
+.product-name{
+    font-weight: 700;
+    font-size: 1rem;
+}
+.product-amount{
+    font-size: 1rem;
+}
+.product-icon{
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    opacity: 0.7;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="albaran">
     <ProductSelector :user="loggedUser" v-if="!showProductList" v-on:dateChanged="onDateChanged"></ProductSelector>
-    <div class="product-container almost-full-width" v-if="showProductList">
+    <div class="almost-full-width" v-if="showProductList">
       <div class="buttons-container">
         <div class="back-button" v-on:click="hideProductList">
           <Button :value="'Atras'"/>
@@ -12,7 +12,9 @@
               </div>
         </div>
       </div>
-      <Product v-for="product in products" v-bind:key="product.name" :product="product"/>
+      <div class="product-container">
+        <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]"/>
+      </div>
     </div>
   </div>
 </template>
@@ -31,7 +33,11 @@ export default {
     return {
       loggedUser: this.user,
       products: [],
-      showProductList: false
+      showProductList: false,
+      icons: [
+        "apple-alt",
+        "pump-soap"
+      ]
     };
   },
   methods: {
@@ -197,6 +203,6 @@ export default {
   padding-left: 1rem;
 }
 .buttons-container{
-
+  margin: 0.5rem;
 }
 </style>
