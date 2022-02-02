@@ -299,7 +299,6 @@ button {
   font-family: inherit;
   font-weight: 700;
   font-size: 1.02rem;
-  border-radius: 20px;
   outline: none;
   border: 0;
   padding: 15px 20px;

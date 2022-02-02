@@ -21,6 +21,7 @@ html,body{
   padding: 0;
   background: #f9f9f9;
   height: 100%;
+  overflow-x: hidden;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -33,7 +34,7 @@ html,body{
 }
 
 .logo{
-  width: 10rem;
-  margin: 2rem;
+  width: 7rem;
+  margin: 1rem;
 }
 </style>

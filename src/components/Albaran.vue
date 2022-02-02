@@ -13,7 +13,8 @@
         </div>
       </div>
       <div class="product-container">
-        <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]"/>
+        <Modal v-if="showModal" @close="showModal = false" :modalType="'add'"/>
+        <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
       </div>
     </div>
   </div>
@@ -24,9 +25,10 @@ import axios from "axios";
 import Product from "./Product";
 import ProductSelector from "./ProductSelector";
 import Button from './Button';
+import Modal from './Modal';
 
 export default {
-  components: { Product, ProductSelector, Button },
+  components: { Product, ProductSelector, Button, Modal },
   name: "Albaran",
   props: ["user"],
   data() {
@@ -37,7 +39,8 @@ export default {
       icons: [
         "apple-alt",
         "pump-soap"
-      ]
+      ],
+      showModal: false
     };
   },
   methods: {
@@ -68,6 +71,7 @@ export default {
     },
     addProduct(){
       console.log('productAdded')
+      this.showModal = true;
     },
     hideProductList(){
       this.showProductList = false;
@@ -87,6 +91,10 @@ export default {
         self.products = res;
         self.onProductListShown();
       }, params);
+    },
+    onProductSelected(e){
+      this.showModal = true;
+      console.log(e);
     }
   },
 };
@@ -205,4 +213,5 @@ export default {
 .buttons-container{
   margin: 0.5rem;
 }
+
 </style>

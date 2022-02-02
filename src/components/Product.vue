@@ -1,9 +1,9 @@
 !<template>
-    <div class="product">
+    <div class="product" v-on:click="productSelected">
         <div class="product-info">
             <span class="product-name">{{ product.productName }}</span>
             <span class="">{{  product.weight }} gramos</span>
-            <span>Inventario: <span class="product-amount">{{ product.amount }}</span></span>
+            <span>Cantidad: <span class="product-amount">{{ product.amount }}</span></span>
         </div>
         <div class="product-icon">
             <font-awesome-icon :icon="icon" />
@@ -14,7 +14,13 @@
 <script>
 export default {
     name: "product",
-    props: ["product", "icon"]
+    props: ["product", "icon"],
+    methods:{
+        productSelected(){            
+            //let product = e.target.classList.contains('product') ? e.target : e.target.closest('.product');
+            this.$emit('productSelected', this.product);
+        }
+    }
 }
 </script>
 
