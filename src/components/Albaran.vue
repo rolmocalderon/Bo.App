@@ -1,7 +1,7 @@
 <template>
   <div class="albaran">
     <ProductSelector :user="loggedUser" v-if="!showProductList" v-on:dateChanged="onDateChanged"></ProductSelector>
-    <div class="almost-full-width" v-if="showProductList">
+    <div class="albaran-container" v-if="showProductList">
       <div class="buttons-container">
         <div class="back-button" v-on:click="hideProductList">
           <Button :value="'Atras'"/>
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="product-container">
-        <Modal v-if="showModal" @close="showModal = false" :modalType="'add'"/>
+        <Modal v-if="showModal" @close="showModal = false" :modalType="'add'" v-on:productModified="onProductModified"/>
         <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
       </div>
     </div>
@@ -40,7 +40,8 @@ export default {
         "apple-alt",
         "pump-soap"
       ],
-      showModal: false
+      showModal: false,
+      selectedPickupId: ""
     };
   },
   methods: {
@@ -48,9 +49,9 @@ export default {
         axios({
             method: "post",
             url: process.env.VUE_APP_WEBAPI_URL + "/" + endPoint,
-             params: params,
+            data: params
         }).then((response) => {
-            callback(response.data.data);
+            callback(response);
         })
     },
     async getAll(endPoint, callback, params) {
@@ -70,7 +71,6 @@ export default {
       
     },
     addProduct(){
-      console.log('productAdded')
       this.showModal = true;
     },
     hideProductList(){
@@ -80,7 +80,8 @@ export default {
       this.showProductList = true;
     },
     onDateChanged(id){
-      console.log(this.getProducts(id));
+      this.selectedPickupId = id;
+      this.getProducts(id)
     },
     getProducts(id){
       let self = this;
@@ -92,9 +93,31 @@ export default {
         self.onProductListShown();
       }, params);
     },
-    onProductSelected(e){
+    onProductSelected(){
       this.showModal = true;
-      console.log(e);
+    },
+    onProductModified(e){
+      let params = {
+        'data': this.serializeForm(e)
+      };
+
+      params.data.pickupId = this.selectedPickupId;
+
+      console.log("submiting", params)
+      let self = this;
+      this.insert('editProduct', function(){ 
+        //TODO: Mostrar de alguna forma que se ha insertado el producto
+        self.getProducts(self.selectedPickupId);
+        self.showModal = false; 
+      }, params);
+    },
+    serializeForm (form) {
+      var obj = {};
+      var formData = new FormData(form);
+      for (var key of formData.keys()) {
+        obj[key] = formData.get(key);
+      }
+      return obj;
     }
   },
 };
@@ -103,9 +126,11 @@ export default {
 <style>
 .albaran{
   display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  flex-direction: column;
+  align-items: center;
+}
+.albaran-container{
+  width: 100%;
 }
 .add-pickup{
     display: flex;
@@ -166,7 +191,7 @@ export default {
 .product-container{
     display: flex;
     flex-direction: column;
-    margin: 0.5rem;
+    margin-top: 1rem;
 }
 
 .product-property{

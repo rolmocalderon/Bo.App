@@ -19,6 +19,7 @@ export default {
         productSelected(){            
             //let product = e.target.classList.contains('product') ? e.target : e.target.closest('.product');
             this.$emit('productSelected', this.product);
+            console.log("product selected", this.product);
         }
     }
 }
@@ -28,11 +29,12 @@ export default {
 .product-container .product{
     width: 90%;
     display: flex;
-    padding: 1.2rem;
+    padding: 0.8rem 1.4rem;
+    padding-left: 1.2rem;
     background: white;
     line-height: 1.3rem;
     box-shadow: 0 0 5px rgb(0 0 0 / 40%);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
 }
 .product-container .product-info{
     display: flex;

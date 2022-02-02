@@ -1,31 +1,43 @@
 <template>
     <transition name="modal">
         <div class="modal-mask">
-        <div class="modal-wrapper">
-            <div class="modal-container">
+            <div class="modal-wrapper">
+                <div class="modal-container">
+                    <form name="productModalForm" v-on:submit="productModified">
+                        <div class="modal-header">
+                            <div class="modal-header-message">
+                                <span>{{ headerMessage }}</span>
+                            </div>
+                        </div>
 
-                <div class="modal-header">
-                    <div class="modal-header-message">
-                        <span>Añadiendo producto</span>
-                    </div>
-                </div>
+                        <div class="modal-body">
+                            <input type="text" value="" name="productName" placeholder="Nombre del producto">
+                            <input type="number" value="" max="10000" name="productAmount" placeholder="Cantidad">
+                            <div class="measure-container">
+                                <input type="number" value="" name="productWeight" placeholder="Medida">
+                                <select name="medida">
+                                    <option value="gramo">Gramos</option>
+                                    <option value="kilo">Kilos</option>
+                                    <option value="litro">Litros</option>
+                                    <option value="pack">Paquete</option>
+                                    <option value="sixPack">Paquete de 6</option>
+                                    <option value="twelvePack">Paquete de 12</option>
+                                </select>
+                            </div>
+                            <select name="productType">
+                                <option value="food">Comida</option>
+                                <option value="sanity">Productos de higiene</option>
+                            </select>
+                        </div>
 
-                <div class="modal-body">
-                    <input type="text" value="" name="productName" placeholder="Nombre del producto">
-                    <input type="text" value="" name="productAmount" placeholder="Cantidad">
-                    <select name="productType">
-                        <option value="food">Comida</option>
-                        <option value="sanity">Productos de higiene</option>
-                    </select>
-                </div>
-
-                <div class="modal-footer">
-                    <slot name="footer">
-                    <button class="modal-default-button" @click="$emit('close')">
-                        {{ submitMessage }}
-                    </button>
-                    </slot>
-                </div>
+                        <div class="modal-footer">
+                            <slot name="footer">
+                            <button class="modal-default-button">
+                                {{ submitMessage }}
+                            </button>
+                            </slot>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -36,24 +48,46 @@
 export default {
     name: "modal",
     props: ['modalType'],
+    created(){
+        this.setTexts();
+    },
     data: function(){
         return {
-            submitMessage: this.getSubmitMessage()
+            submitMessage: '',
+            headerMessage: ''
         }
     },
     methods:{
-        getSubmitMessage(){
-            let message = 'Test';
+        setTexts(){
             switch(this.modalType){
                 case 'edit':
-                    message = 'Modificar';
+                    this.submitMessage = 'Modificar';
+                    this.headerMessage = 'Modificando producto';
                     break;
                 case 'add':
-                    message = 'Añadir';
+                    this.submitMessage = 'Añadir';
+                    this.headerMessage = 'Añadiendo producto';
                     break;
             }
+        },
+        productModified(e){
+            e.preventDefault();
+            let inputs = Array.from(e.target.querySelectorAll('input'));
+            if(this.validations(inputs)){
+                this.$emit('productModified', e.target);
+            }
+        },
+        validations(inputs){
+            inputs.forEach(x => x.classList.remove('not-validated'));
+            let canSubmit = true;
+            for(var input of inputs){
+                if(input.value == ""){
+                    canSubmit = false;
+                    input.classList.add("not-validated");
+                }
+            }
 
-            return message;
+            return canSubmit;
         }
     }
 }
@@ -143,6 +177,23 @@ export default {
     border-radius: 2px;
     border: none;
     background: transparent;
+}
+
+.not-validated{
+    outline: 1px solid #ff7c7c;
+}
+
+.not-validated::placeholder{
+    color: #ff7c7c;
+}
+
+.measure-container{
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+.measure-container input{
+    margin-bottom: 0;
 }
 
 /*
