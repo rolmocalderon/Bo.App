@@ -7,6 +7,9 @@
                         <div class="modal-header">
                             <div class="modal-header-message">
                                 <span>{{ headerMessage }}</span>
+                                <div class="close-icon" v-on:click="$emit('close')">
+                                    <font-awesome-icon icon="window-close"/>
+                                </div>
                             </div>
                         </div>
 
@@ -94,6 +97,10 @@ export default {
 </script>
 
 <style>
+.close-icon{
+    font-size: 1.3rem;
+    margin-right: 1rem;
+}
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -138,7 +145,18 @@ export default {
 }
 
 .modal-header-message{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    position: relative;
+    height: 100%;
+    align-items: center;
+}
+
+.modal-header-message span{
     flex: 1;
+    margin-left: 1rem;
+    font-size: 1rem;
 }
 
 .modal-body {

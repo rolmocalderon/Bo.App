@@ -34,7 +34,7 @@ export default {
     background: white;
     line-height: 1.3rem;
     box-shadow: 0 0 5px rgb(0 0 0 / 40%);
-    margin-bottom: 0.8rem;
+    margin-bottom: 0rem;
 }
 .product-container .product-info{
     display: flex;

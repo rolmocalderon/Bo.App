@@ -46,7 +46,8 @@ export default {
           actualDay: "",
           date: "",
           calendarOpen: false,
-          selectedCity: ""
+          selectedCity: "",
+          selectedPickup: {}
       }
   },
   methods:{
@@ -75,10 +76,10 @@ export default {
       }
     },
     onChangePickup(e) {
-      let selectedPickup = Array.from(e.target.children).find((x) => x.selected);
-      if (selectedPickup.value != '') {
+      this.selectedPickup = Array.from(e.target.children).find((x) => x.selected);
+      if (this.selectedPickup.value != '') {
         let params = {
-          pickupName: selectedPickup.textContent
+          pickupName: this.selectedPickup.textContent
         };
 
         let self = this;
@@ -107,7 +108,8 @@ export default {
     onChangeDate(e){
       this.date = moment(e.date).format('DD/MM/YYYY');
       this.actualDay = moment(e.date).date();
-      this.datechanged(e.id);
+      e.selectedPickup = this.selectedPickup.textContent?.trim();
+      this.datechanged(e);
     },
     datechanged(e){
         this.$emit('dateChanged', e);
