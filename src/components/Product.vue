@@ -17,9 +17,7 @@ export default {
     props: ["product", "icon"],
     methods:{
         productSelected(){            
-            //let product = e.target.classList.contains('product') ? e.target : e.target.closest('.product');
             this.$emit('productSelected', this.product);
-            console.log("product selected", this.product);
         }
     }
 }

@@ -105,7 +105,6 @@ export default {
         },
         daySelected(e, target){
             let elementTarget = target || e.target;
-            console.log("day selected", elementTarget)
             let id = elementTarget.getAttribute('productid');
             let element = elementTarget.querySelector('span');
             let daySelected = element.innerHTML;

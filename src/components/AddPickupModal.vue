@@ -49,9 +49,6 @@ export default {
     name: "add-pickup-modal",
     props: ['modalType'],
     components: { Calendar },
-    created(){
-        console.log("asdf")
-    },
     data: function(){
         return {
             submitMessage: 'Añadir',
@@ -62,6 +59,7 @@ export default {
     },
     methods:{
         productModified(e){
+            console.log("wtf", e.target)
             e.preventDefault();
             let inputs = Array.from(e.target.querySelectorAll('input'));
             if(this.validations(inputs)){

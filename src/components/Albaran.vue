@@ -97,7 +97,6 @@ export default {
       this.showProductList = true;
     },
     onDateChanged(e){
-      console.log("date changed", e);
       this.selectedPickupName = e.selectedPickup;
       this.selectedDate = e.date;
       this.selectedPickupId = e.id;
@@ -137,7 +136,19 @@ export default {
       }
       return obj;
     },
-    onPickupAdded(){
+    onPickupAdded(e){
+      let params = {
+        'data': this.serializeForm(e)
+      };
+
+      console.log("params", params)
+
+      let self = this;
+      this.insert('editProduct', function(){ 
+        //TODO: Mostrar de alguna forma que se ha insertado el producto
+        self.getProducts(self.selectedPickupId);
+        self.showAddProductModal = false; 
+      }, params);
       console.log("pickup added")
     },
     goBack(){

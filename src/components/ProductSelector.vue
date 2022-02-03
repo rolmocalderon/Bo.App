@@ -61,7 +61,6 @@ export default {
     async getCities(){
       let self = this;
       db.getAll("getCities", function(res){
-        console.log("cities", res)
         self.cities = res;
       });
     },
