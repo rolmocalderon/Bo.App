@@ -1,5 +1,18 @@
 <template>
   <div class="albaran">
+    <div class="albaran-info-box" v-if="!showProductList">
+      <div class="back-arrow-container" v-on:click="goBack">
+        <font-awesome-icon icon="arrow-left"/>
+      </div>
+      <div class="albaran-info">
+        
+      </div>
+      <div class="add-product-icon" v-on:click="showAddPickupModal = true">
+        <font-awesome-icon icon="calendar-plus"/>
+        <span>Añadir pickup</span>
+      </div>
+      <AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" :modalType="'add'" v-on:productModified="onPickupAdded"/>
+    </div>
     <ProductSelector :user="loggedUser" v-if="!showProductList" v-on:dateChanged="onDateChanged"></ProductSelector>
     <div class="albaran-container" v-if="showProductList">
       <div class="albaran-info-box">
@@ -12,10 +25,11 @@
         </div>
         <div class="add-product-icon" v-if="products.length > 0" v-on:click="addProduct">
           <font-awesome-icon icon="cart-plus"/>
+          <span>Añadir producto</span>
         </div>
       </div>
       <div class="product-container">
-        <Modal v-if="showModal" @close="showModal = false" :modalType="'add'" v-on:productModified="onProductModified"/>
+        <AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" :modalType="'add'" v-on:productModified="onProductModified"/>
         <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
       </div>
     </div>
@@ -26,10 +40,11 @@
 import axios from "axios";
 import Product from "./Product";
 import ProductSelector from "./ProductSelector";
-import Modal from './Modal';
+import AddProductModal from './AddProductModal';
+import AddPickupModal from './AddPickupModal';
 
 export default {
-  components: { Product, ProductSelector, Modal },
+  components: { Product, ProductSelector, AddProductModal, AddPickupModal },
   name: "Albaran",
   props: ["user"],
   data() {
@@ -42,7 +57,8 @@ export default {
         "pump-soap",
         "cheese"
       ],
-      showModal: false,
+      showAddProductModal: false,
+      showAddPickupModal: false,
       selectedPickupId: "",
       selectedPickupName: '',
       selectedDate: ''
@@ -72,7 +88,7 @@ export default {
       });
     },
     addProduct(){
-      this.showModal = true;
+      this.showAddProductModal = true;
     },
     hideProductList(){
       this.showProductList = false;
@@ -98,7 +114,7 @@ export default {
       }, params);
     },
     onProductSelected(){
-      this.showModal = true;
+      this.showAddProductModal = true;
     },
     onProductModified(e){
       let params = {
@@ -110,7 +126,7 @@ export default {
       this.insert('editProduct', function(){ 
         //TODO: Mostrar de alguna forma que se ha insertado el producto
         self.getProducts(self.selectedPickupId);
-        self.showModal = false; 
+        self.showAddProductModal = false; 
       }, params);
     },
     serializeForm (form) {
@@ -120,6 +136,12 @@ export default {
         obj[key] = formData.get(key);
       }
       return obj;
+    },
+    onPickupAdded(){
+      console.log("pickup added")
+    },
+    goBack(){
+      this.$emit('navigation', '');
     }
   },
 };
@@ -137,10 +159,10 @@ export default {
 .albaran-info-box{
   height: 3.5rem;
   background: #5d85c5;
-  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 .albaran-info{
   display: flex;
@@ -149,6 +171,8 @@ export default {
   font-size: 1rem;
   font-weight: 700;
   flex: 1;
+  margin-left: 2rem;
+  color: white;
 }
 .add-pickup{
   display: flex;
@@ -171,9 +195,16 @@ export default {
   align-items: center;
 }
 .add-product-icon{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   color: white;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   margin-right: 1.2rem;
+}
+.add-product-icon  span{
+  font-size: 0.7rem;
+  margin-top: 2px;
 }
 .back-button{
   margin-bottom: 1rem;
@@ -183,6 +214,20 @@ export default {
   font-size: 1.5rem;
   color: rgb(231 231 231);
 }
+.date-box{
+  width: 100%;
+  padding: 15px 0px;
+  background: white;
+  box-shadow: 0 0 5px rgb(0 0 0 / 50%);
+  cursor: pointer;
+  z-index: 100;
+}
+
+.date-box span{
+  padding-left: 1rem;
+  color: #757575;
+}
+
 .row .form-input {
   height: 100%;
   width: auto;
@@ -230,11 +275,6 @@ export default {
   display: flex;
   flex-direction: row;
 }
-.dropdown{
-  width: 100%;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
 .add-product{
     display: flex;
     align-items: center;
@@ -248,19 +288,4 @@ export default {
     background: #ffce5f;
     padding: 1rem 0 1rem 0;
 }
-.date-box{
-  width: 100%;
-  border-radius: 5px;
-  padding: 15px 0px;
-  background: white;
-  text-align: left;
-  border: 2px solid black;
-  cursor: pointer;
-  z-index: 100;
-}
-
-.date-box span{
-  padding-left: 1rem;
-}
-
 </style>

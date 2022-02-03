@@ -4,7 +4,7 @@
       <div class="greeting background-blue">Te damos la bienvenida <strong>{{ user.name }}</strong></div>
       <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')">
       <Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
-      <Albaran v-if="navigateOption == 'pickups'" v-bind:user="user"/>
+      <Albaran v-if="navigateOption == 'pickups'" v-bind:user="user" v-on:navigation="userNavigated"/>
     </div>
     <div v-if="!isLogged" class="login-container">
       <Login v-on:input="updateValue"/>
@@ -16,12 +16,19 @@
 import Login from './Login';
 import Albaran from './Albaran';
 import Navigator from './Navigator';
+import cookies from '../services/cookies';
 export default {
   name: 'HelloWorld',
   components: {
     Login: Login,
     Albaran: Albaran,
     Navigator: Navigator
+  },
+  created(){
+    if(this.isUserLogged()){
+      this.isLogged = true;
+      this.user = JSON.parse(cookies.getCookie("user"));
+    }
   },
   data: function(){
     return {
@@ -37,9 +44,14 @@ export default {
         'category': value[0].category
       }
       this.isLogged = value != undefined;
+      cookies.setCookie('user', JSON.stringify(this.user));
     },
     userNavigated(event){
       this.navigateOption = event;
+    },
+    isUserLogged() {
+      let cookie = cookies.getCookie("user");
+      return cookie && cookie.name != '';
     }
   }
 }

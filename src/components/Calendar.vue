@@ -24,7 +24,7 @@
                 <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
                     <span>{{ day }}</span>
                 </div>
-                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey': !isSelectableDate(day), 'selectable': isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
+                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey': !isSelectableDate(day) && selectableDates.length > 0, 'selectable':selectableDates.length > 0 && isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
                     <span v-on:click="preventDefault">{{ day }}</span>
                 </div>
             </div>
@@ -105,18 +105,17 @@ export default {
         },
         daySelected(e, target){
             let elementTarget = target || e.target;
+            console.log("day selected", elementTarget)
             let id = elementTarget.getAttribute('productid');
-            if(id){
-                let element = elementTarget.querySelector('span');
-                let daySelected = element.innerHTML;
-                let date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected);
-                let params = {
-                'date': date,
-                'id': id
-                };
-                this.changeDate(params);
-                this.hideCalendar();
-            }
+            let element = elementTarget.querySelector('span');
+            let daySelected = element.innerHTML;
+            let date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected);
+            let params = {
+            'date': date,
+            'id': id
+            };
+            this.changeDate(params);
+            this.hideCalendar();
         },
         preventDefault(e){
             e.stopPropagation();
@@ -137,7 +136,7 @@ export default {
 .calendar {
   --side-padding: 20px;
   --accent-br: 15px;
-  box-shadow: 0px 0px 10px black;
+  box-shadow: 0 0 5px rgb(0 0 0 / 50%);
   width: 100%;
 }
 .calendar select {

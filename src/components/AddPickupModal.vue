@@ -14,23 +14,18 @@
                         </div>
 
                         <div class="modal-body">
-                            <input type="text" value="" name="productName" placeholder="Nombre del producto">
-                            <input type="number" value="" max="10000" name="productAmount" placeholder="Cantidad">
-                            <div class="measure-container">
-                                <input type="number" value="" name="productWeight" placeholder="Medida">
-                                <select name="medida">
-                                    <option value="gramo">Gramos</option>
-                                    <option value="kilo">Kilos</option>
-                                    <option value="litro">Litros</option>
-                                    <option value="pack">Paquete</option>
-                                    <option value="sixPack">Paquete de 6</option>
-                                    <option value="twelvePack">Paquete de 12</option>
-                                </select>
-                            </div>
-                            <select name="productType">
-                                <option value="food">Comida</option>
-                                <option value="sanity">Productos de higiene</option>
-                            </select>
+                            <input type="text" value="" name="city" placeholder="Nombre de la ciudad">
+                            <input type="text" value="" name="productName" placeholder="Nombre del lugar">
+                                <div class="date-box" v-on:click="calendarStatusChanged">
+                                    <span v-if="date">{{ date }}</span>
+                                    <span v-if="!date">Escoge una fecha</span>
+                                </div>
+                                <Calendar
+                                    v-if="calendarOpen"
+                                    v-on:changeDate="onChangeDate"
+                                    v-on:hideCalendar="onHideCalendar"
+                                    :selectableDates="[]"
+                                />
                         </div>
 
                         <div class="modal-footer">
@@ -48,31 +43,24 @@
 </template>
 
 <script>
+import * as moment from 'moment';
+import Calendar from './Calendar';
 export default {
-    name: "modal",
+    name: "add-pickup-modal",
     props: ['modalType'],
+    components: { Calendar },
     created(){
-        this.setTexts();
+        console.log("asdf")
     },
     data: function(){
         return {
-            submitMessage: '',
-            headerMessage: ''
+            submitMessage: 'Añadir',
+            headerMessage: 'Añadiendo recogida',
+            calendarOpen: false,
+            date: undefined
         }
     },
     methods:{
-        setTexts(){
-            switch(this.modalType){
-                case 'edit':
-                    this.submitMessage = 'Modificar';
-                    this.headerMessage = 'Modificando producto';
-                    break;
-                case 'add':
-                    this.submitMessage = 'Añadir';
-                    this.headerMessage = 'Añadiendo producto';
-                    break;
-            }
-        },
         productModified(e){
             e.preventDefault();
             let inputs = Array.from(e.target.querySelectorAll('input'));
@@ -91,7 +79,21 @@ export default {
             }
 
             return canSubmit;
-        }
+        },
+            onChangeDate(e){
+                this.date = moment(e.date).format('DD/MM/YYYY');
+                console.log("date", this.date)
+                //this.actualDay = moment(e.date).date();
+                /*e.selectedPickup = this.selectedPickup;
+                e.date = this.date;
+                this.datechanged(e);*/
+            },
+            onHideCalendar(){
+                this.calendarStatusChanged();
+            },
+            calendarStatusChanged(){
+                this.calendarOpen = !this.calendarOpen;
+            }
     }
 }
 </script>
@@ -126,7 +128,7 @@ export default {
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
     transition: all 0.3s ease;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: Arial;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -136,7 +138,7 @@ export default {
     top: 0;
     left: 0;
     position: absolute;
-    background: #4CAF50;
+    background: #3E5985;
     height: 3rem;
     display: flex;
     align-items: center;
@@ -160,11 +162,11 @@ export default {
 }
 
 .modal-body {
-  margin: 3rem 0;
+    margin: 3rem 0 2rem 0;
 }
 
 .modal-default-button {
-    background: #4CAF50;
+    background: #3E5985;
     color: white;
     font-weight: 400;
     padding: 0.8rem 2rem;
@@ -184,9 +186,13 @@ export default {
     box-shadow: 0 0 5px rgb(0 0 0 / 50%);
     border-radius: 2px;
     width: 89%;
+    font-size: 14px;
+}
+.modal-body .date-box{
+    text-align: left;
 }
 .modal-body input:focus, .modal-body select:focus{
-    outline: #4CAF50 solid 2px;
+    outline: #3E5985 solid 2px;
 }
 
 .modal-body select{

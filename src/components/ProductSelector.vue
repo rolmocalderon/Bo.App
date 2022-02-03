@@ -1,11 +1,10 @@
 <template>
-  <div class="product-selector-container almost-full-width">
-    <add-pickup v-if="user && user.category == 'admin'"/>
+  <div class="product-selector-container">
     <div class="cities">
-      <Dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity" :values="cities"></Dropdown>
+      <Dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity" :values="cities" :textMessage="'Selecciona una ciudad'"></Dropdown>
     </div>
     <div class="pickups">
-      <Dropdown dropdownName="pickups" v-on:changeDropdown="onChangePickup" :values="pickups"></Dropdown>
+      <Dropdown dropdownName="pickups" v-on:changeDropdown="onChangePickup" :disabled="pickups.length == 0" :values="pickups" :textMessage="'Selecciona una recogida'"></Dropdown>
     </div>
     <div v-if="showDates" class="dates">
       <div class="date-box" v-on:click="calendarStatusChanged">
@@ -26,13 +25,12 @@
 
 <script>
 import db from '../services/db';
-import AddPickup from "./AddPickup";
 import Calendar from "./Calendar";
 import Dropdown from "./Dropdown";
 import * as moment from 'moment';
 export default {
   name: "ProductSelector",
-  components: { AddPickup, Calendar, Dropdown },
+  components: { Calendar, Dropdown },
   props: ["user"],
   created: function () {
     this.getCities();
@@ -63,27 +61,26 @@ export default {
     async getCities(){
       let self = this;
       db.getAll("getCities", function(res){
+        console.log("cities", res)
         self.cities = res;
       });
     },
     onChangeCity(e){
-      let selectedCity = Array.from(e.target.children).find(x => x.selected);
-      if (selectedCity.value) {
-          this.selectedCity = selectedCity;
-        this.getPickups(selectedCity.value);
+      if (e && e.valueId) {
+        this.selectedCity = e;
+        this.getPickups(e.valueId);
       }else{
         this.pickups = [];
       }
     },
     onChangePickup(e) {
-      this.selectedPickup = Array.from(e.target.children).find((x) => x.selected);
-      if (this.selectedPickup.value != '') {
+      if (e && e.name) {
         let params = {
-          pickupName: this.selectedPickup.textContent
+          pickupName: e.name
         };
+        this.selectedPickup = e.name;
 
         let self = this;
-
         db.getAll(
           "getPickupDates",
           function (res) {
@@ -108,22 +105,25 @@ export default {
     onChangeDate(e){
       this.date = moment(e.date).format('DD/MM/YYYY');
       this.actualDay = moment(e.date).date();
-      e.selectedPickup = this.selectedPickup.textContent?.trim();
+      e.selectedPickup = this.selectedPickup;
       e.date = this.date;
       this.datechanged(e);
-    },
-    datechanged(e){
-        this.$emit('dateChanged', e);
     },
     onHideCalendar(){
       this.calendarStatusChanged();
     },
     calendarStatusChanged(){
       this.calendarOpen = !this.calendarOpen;
-    }
+    },
+    datechanged(e){
+        this.$emit('dateChanged', e);
+    },
   }
 };
 </script>
 
 <style>
+.product-selector-container{
+  width: 100%;
+}
 </style>
