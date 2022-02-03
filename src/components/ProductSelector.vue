@@ -109,6 +109,7 @@ export default {
       this.date = moment(e.date).format('DD/MM/YYYY');
       this.actualDay = moment(e.date).date();
       e.selectedPickup = this.selectedPickup.textContent?.trim();
+      e.date = this.date;
       this.datechanged(e);
     },
     datechanged(e){

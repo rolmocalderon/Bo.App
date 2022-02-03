@@ -7,8 +7,8 @@
           <font-awesome-icon icon="arrow-left"/>
         </div>
         <div class="albaran-info">
-          <span>Mercado</span>
-          <span>16/01/2022</span>
+          <span>{{ selectedPickupName }}</span>
+          <span>{{ selectedDate }}</span>
         </div>
         <div class="add-product-icon" v-if="products.length > 0" v-on:click="addProduct">
           <font-awesome-icon icon="cart-plus"/>
@@ -43,7 +43,9 @@ export default {
         "cheese"
       ],
       showModal: false,
-      selectedPickupId: ""
+      selectedPickupId: "",
+      selectedPickupName: '',
+      selectedDate: ''
     };
   },
   methods: {
@@ -79,6 +81,9 @@ export default {
       this.showProductList = true;
     },
     onDateChanged(e){
+      console.log("date changed", e);
+      this.selectedPickupName = e.selectedPickup;
+      this.selectedDate = e.date;
       this.selectedPickupId = e.id;
       this.getProducts(e.id)
     },
