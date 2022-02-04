@@ -5,7 +5,7 @@
         <font-awesome-icon icon="arrow-left"/>
       </div>
       <div class="albaran-info">
-        
+        <span>{{ title}}</span>
       </div>
       <div class="add-product-icon" v-on:click="showAddPickupModal = true">
         <font-awesome-icon icon="calendar-plus"/>
@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="product-container">
-        <AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" :modalType="'add'" v-on:productModified="onProductModified" ref="addProductModal"/>
+        <AddProductModal v-if="showAddProductModal" @close="closeProductModal" :modalType="modalType" v-on:productModified="onProductModified" :selectedProduct="selectedProduct"/>
         <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
       </div>
     </div>
@@ -46,10 +46,9 @@ import AddPickupModal from './AddPickupModal';
 export default {
   components: { Product, ProductSelector, AddProductModal, AddPickupModal },
   name: "Albaran",
-  props: ["user"],
+  props: ["user", "title"],
   async created(){
     this.cities = await this.getCities();
-    console.log("asdf",this.cities);
   },
   data() {
     return {
@@ -66,7 +65,8 @@ export default {
       selectedPickupId: "",
       selectedPickupName: '',
       selectedDate: '',
-      cities: []
+      cities: [],
+      selectedProduct: {}
     };
   },
   methods: {
@@ -93,7 +93,12 @@ export default {
       });
     },
     addProduct(){
+      this.modalType = 'add';
       this.showAddProductModal = true;
+    },
+    closeProductModal(){
+      this.showAddProductModal = false;
+      this.selectedProduct = {};
     },
     hideProductList(){
       this.showProductList = false;
@@ -117,7 +122,9 @@ export default {
         self.onProductListShown();
       }, params);
     },
-    onProductSelected(){
+    onProductSelected(product){
+      this.modalType = 'edit';
+      this.selectedProduct = product;
       this.showAddProductModal = true;
     },
     onProductModified(e){
@@ -130,6 +137,7 @@ export default {
       this.insert('editProduct', function(){ 
         //TODO: Mostrar de alguna forma que se ha insertado el producto
         self.getProducts(self.selectedPickupId);
+        self.selectedProduct = {};
         self.showAddProductModal = false; 
       }, params);
     },
@@ -148,7 +156,6 @@ export default {
       let cityId = this.cityAlreadyExists(params.data.cityName);
 
       if(cityId == -1){
-        console.log("shouldnt")
         this.insertCity(params);
       }
       else if(cityId != -1){
@@ -168,7 +175,6 @@ export default {
       this.insert('insertCity', function(res){
         params.data.cityId = res.data.data.id;
         self.cities = self.getCities();
-        //self.$refs.addProductModal.cities = self.cities;
         self.$emit('setCities');
         self.insertPickup(params);
       }, params);
@@ -178,13 +184,11 @@ export default {
     },
     cityAlreadyExists(cityName){
       let city = this.cities.find(x => x.name === cityName);
-      console.log("exists", this.cities, cityName, city)
       return city ? city.id : -1;
     },
     getCities(){
       let self = this;
       this.getAll("getCities", function(res){
-        console.log("getting cities");
         self.cities = res;
       });
     },
@@ -213,8 +217,8 @@ export default {
   display: flex;
   flex-direction: column;
   line-height: 23px;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 400;
   flex: 1;
   margin-left: 2rem;
   color: white;
@@ -265,7 +269,6 @@ export default {
   background: white;
   box-shadow: 0 0 5px rgb(0 0 0 / 50%);
   cursor: pointer;
-  z-index: 100;
 }
 
 .date-box span{

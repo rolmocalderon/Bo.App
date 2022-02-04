@@ -14,10 +14,31 @@
 <script>
 export default {
     name: "product",
-    props: ["product", "icon"],
+    props: ["product"],
+    data(){
+        return{
+            icon: this.getIcon(this.product.alias)
+        }
+    },
     methods:{
         productSelected(){            
             this.$emit('productSelected', this.product);
+        },
+        getIcon(productType){
+            let icon = '';
+            switch(productType){
+                case 'food':
+                    icon = "apple-alt";
+                    break;
+                case 'hygieneProducts':
+                    icon = "pump-soap";
+                    break;
+                case 'cleaningProducts':
+                    icon = "cheese";
+                    break;
+            }
+
+            return icon;
         }
     }
 }

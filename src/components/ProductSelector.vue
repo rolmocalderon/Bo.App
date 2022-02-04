@@ -1,5 +1,5 @@
 <template>
-  <div class="product-selector-container">
+  <div class="product-selector-container almost-full-width">
     <div class="cities">
       <Dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity" :values="cities" :textMessage="'Selecciona una ciudad'"></Dropdown>
     </div>
@@ -45,7 +45,6 @@ export default {
           actualDay: "",
           date: "",
           calendarOpen: false,
-          selectedCity: "",
           selectedPickup: {}
       }
   },
@@ -70,14 +69,12 @@ export default {
     },
     onChangeCity(e){
       if (e && e.valueId) {
-        this.selectedCity = e;
         this.getPickups(e.valueId);
       }else{
         this.pickups = [];
       }
     },
     onChangePickup(e) {
-      console.log("pickuped", e)
       if (e && e.name) {
         let params = {
           pickupName: e.name
@@ -129,10 +126,10 @@ export default {
 <style>
 .product-selector-container{
   width: 100%;
+  padding-top: 0.8rem;
 }
 .disabled{
   background: #e9e9e9;
-  border: 1px solid grey;
   color: grey;
 }
 </style>

@@ -34,7 +34,6 @@
 
 <script>
 import * as moment from 'moment';
-//import * as db from '../services/db';
 export default {
     name: "calendar",
     props: ["dateSelected", "selectableDates", "actualDay"],

@@ -4,7 +4,7 @@
       <div class="greeting background-blue">Te damos la bienvenida <strong>{{ user.name }}</strong></div>
       <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')">
       <Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
-      <Albaran v-if="navigateOption == 'pickups'" v-bind:user="user" v-on:navigation="userNavigated"/>
+      <Albaran v-if="navigateOption == 'pickups'" v-bind:user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
     </div>
     <div v-if="!isLogged" class="login-container">
       <Login v-on:input="updateValue"/>

@@ -14,22 +14,16 @@
                         </div>
 
                         <div class="modal-body">
-                            <input type="text" value="" name="productName" placeholder="Nombre del producto">
-                            <input type="number" value="" min="0" max="10000" name="productAmount" placeholder="Cantidad">
+                            <input type="text" :value="currentProductName" name="productName" placeholder="Nombre del producto">
+                            <input type="number" :value="currentProductAmount" min="0" max="10000" name="productAmount" placeholder="Cantidad">
                             <div class="measure-container">
-                                <input type="number" value="" name="productWeight" placeholder="Medida">
+                                <input type="number" :value="currentProductWeight" name="productWeight" placeholder="Medida">
                                 <select name="medida">
-                                    <option value="gramo">Gramos</option>
-                                    <option value="kilo">Kilos</option>
-                                    <option value="litro">Litros</option>
-                                    <option value="pack">Paquete</option>
-                                    <option value="sixPack">Paquete de 6</option>
-                                    <option value="twelvePack">Paquete de 12</option>
+                                    <option v-for="measure in measures" v-bind:key="measure.id" :value="measure.id" :selected="measure.id == currentTypeOfMeasure">{{ measure.type }}</option>
                                 </select>
                             </div>
                             <select name="productType">
-                                <option value="food">Comida</option>
-                                <option value="sanity">Productos de higiene</option>
+                                <option v-for="type in productTypes" v-bind:key="type.id" :value="type.id" :selected="type.id == currentProductType">{{ type.type }}</option>
                             </select>
                         </div>
 
@@ -48,24 +42,40 @@
 </template>
 
 <script>
+import db from '../services/db';
 export default {
     name: "add-product-modal",
-    props: ['modalType'],
+    props: ['modalType', 'selectedProduct'],
     created(){
-        this.setTexts();
+        this.init();
     },
     data: function(){
         return {
             submitMessage: '',
-            headerMessage: ''
+            headerMessage: '',
+            currentProduct: this.selectedProduct,
+            currentProductName: '',
+            currentProductAmount: '',
+            currentProductWeight: '',
+            currentProductType: '',
+            currentTypeOfMeasure: '',
+            measures: [],
+            productTypes: []
         }
     },
     methods:{
-        setTexts(){
+        init(){
+            this.getMeasures();
+            this.getProductTypes();
             switch(this.modalType){
                 case 'edit':
                     this.submitMessage = 'Modificar';
                     this.headerMessage = 'Modificando producto';
+                    this.currentProductName = this.selectedProduct.productName;
+                    this.currentProductAmount = this.selectedProduct.amount;
+                    this.currentProductWeight = this.selectedProduct.weight;
+                    this.currentProductType = this.selectedProduct.productTypeId;
+                    this.currentTypeOfMeasure = this.selectedProduct.measureId;
                     break;
                 case 'add':
                     this.submitMessage = 'Añadir';
@@ -76,8 +86,11 @@ export default {
         productModified(e){
             e.preventDefault();
             let inputs = Array.from(e.target.querySelectorAll('input'));
-            if(this.validations(inputs)){
-                this.$emit('productModified', e.target);
+            let selects = Array.from(e.target.querySelectorAll('select'));
+            if(this.validations(inputs, selects)){
+                if(this.modalType == 'add'){
+                    this.$emit('productModified', e.target);
+                }
             }
         },
         validations(inputs){
@@ -89,8 +102,22 @@ export default {
                     input.classList.add("not-validated");
                 }
             }
-
-            return canSubmit;
+            
+            console.log(canSubmit)
+            return false;
+            //return canSubmit;
+        },
+        getMeasures(){
+            let self = this;
+            db.getAll("getMeasures", function (res) {
+                self.measures = res;
+            }, {});
+        },
+        getProductTypes(){
+            let self = this;
+            db.getAll('getProductTypes', function(res){
+                self.productTypes = res;
+            });
         }
     }
 }

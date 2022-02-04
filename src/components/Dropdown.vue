@@ -1,6 +1,6 @@
 !
 <template>
-  <div class="dropdown" v-on:click="onClickedDropdown" :class="{'disabled': disabled}">
+  <div class="dropdown date-box" v-on:click="onClickedDropdown" :class="{'disabled': disabled}">
     <span>{{ shownMessage }}</span>
     <div class="dropdown-content" v-if="showDropdownContent">
       <p v-for="value in values" v-bind:key="value.id" :valueId="value.id" v-on:click="onChange">{{ value.name }}</p>
@@ -12,9 +12,6 @@
 export default {
   name: "dropdown",
   props: ["dropdownName", "values", "textMessage", "disabled"],
-  created() {
-    console.log("dropdown", this.dropdownName, this.values);
-  },
   data(){
     return {
       showDropdownContent: false,
@@ -28,6 +25,7 @@ export default {
       window.addEventListener('click', this.onWindowClicked);
     },
     onChange(e){
+      
       e.stopPropagation();
       
       this.shownMessage = e.target.textContent;
@@ -54,12 +52,13 @@ export default {
 <style>
 .open{
   background: red;
+  z-index: 100;
 }
 .dropdown {
   position: relative;
-  border: 1px solid black;
   padding: 0.8rem 0;
   margin-bottom: 10px;
+  font-size: 1rem;
 }
 
 .dropdown-content {
@@ -67,7 +66,7 @@ export default {
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 20%);
-  z-index: 1;
+  z-index: 100;
   top: 2.7rem;
   width: 100%;
 }
