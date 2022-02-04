@@ -14,8 +14,8 @@
                         </div>
 
                         <div class="modal-body">
-                            <input type="text" value="" name="city" placeholder="Nombre de la ciudad">
-                            <input type="text" value="" name="productName" placeholder="Nombre del lugar">
+                            <input type="text" value="" name="cityName" placeholder="Nombre de la ciudad">
+                            <input type="text" value="" name="placeName" placeholder="Nombre del lugar">
                                 <div class="date-box" v-on:click="calendarStatusChanged">
                                     <span v-if="date">{{ date }}</span>
                                     <span v-if="!date">Escoge una fecha</span>
@@ -59,10 +59,15 @@ export default {
     },
     methods:{
         productModified(e){
-            console.log("wtf", e.target)
             e.preventDefault();
             let inputs = Array.from(e.target.querySelectorAll('input'));
             if(this.validations(inputs)){
+                var input = document.createElement("input");
+                input.setAttribute("type", "hidden");
+                input.setAttribute("name", "date");
+                input.setAttribute("value", this.date);
+                e.target.appendChild(input)
+
                 this.$emit('productModified', e.target);
             }
         },
@@ -78,20 +83,15 @@ export default {
 
             return canSubmit;
         },
-            onChangeDate(e){
-                this.date = moment(e.date).format('DD/MM/YYYY');
-                console.log("date", this.date)
-                //this.actualDay = moment(e.date).date();
-                /*e.selectedPickup = this.selectedPickup;
-                e.date = this.date;
-                this.datechanged(e);*/
-            },
-            onHideCalendar(){
-                this.calendarStatusChanged();
-            },
-            calendarStatusChanged(){
-                this.calendarOpen = !this.calendarOpen;
-            }
+        onChangeDate(e){
+            this.date = moment(e.date).format('DD/MM/YYYY');
+        },
+        onHideCalendar(){
+            this.calendarStatusChanged();
+        },
+        calendarStatusChanged(){
+            this.calendarOpen = !this.calendarOpen;
+        }
     }
 }
 </script>

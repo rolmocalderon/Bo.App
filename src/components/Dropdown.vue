@@ -12,6 +12,9 @@
 export default {
   name: "dropdown",
   props: ["dropdownName", "values", "textMessage", "disabled"],
+  created() {
+    console.log("dropdown", this.dropdownName, this.values);
+  },
   data(){
     return {
       showDropdownContent: false,

@@ -33,6 +33,7 @@ export default {
   components: { Calendar, Dropdown },
   props: ["user"],
   created: function () {
+    this.$parent.$on('setCities', this.setCities);
     this.getCities();
   },
   data: function(){
@@ -49,6 +50,9 @@ export default {
       }
   },
   methods:{
+    setCities(){
+      this.cities = this.getCities();
+    },
     async getPickups(cityId) {
       let self = this;
       let params = {
@@ -73,6 +77,7 @@ export default {
       }
     },
     onChangePickup(e) {
+      console.log("pickuped", e)
       if (e && e.name) {
         let params = {
           pickupName: e.name
@@ -124,5 +129,10 @@ export default {
 <style>
 .product-selector-container{
   width: 100%;
+}
+.disabled{
+  background: #e9e9e9;
+  border: 1px solid grey;
+  color: grey;
 }
 </style>

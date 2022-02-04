@@ -9,7 +9,7 @@
       </div>
       <div class="add-product-icon" v-on:click="showAddPickupModal = true">
         <font-awesome-icon icon="calendar-plus"/>
-        <span>Añadir pickup</span>
+        <span>Añadir recogida</span>
       </div>
       <AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" :modalType="'add'" v-on:productModified="onPickupAdded"/>
     </div>
@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="product-container">
-        <AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" :modalType="'add'" v-on:productModified="onProductModified"/>
+        <AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" :modalType="'add'" v-on:productModified="onProductModified" ref="addProductModal"/>
         <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
       </div>
     </div>
@@ -47,6 +47,10 @@ export default {
   components: { Product, ProductSelector, AddProductModal, AddPickupModal },
   name: "Albaran",
   props: ["user"],
+  async created(){
+    this.cities = await this.getCities();
+    console.log("asdf",this.cities);
+  },
   data() {
     return {
       loggedUser: this.user,
@@ -61,7 +65,8 @@ export default {
       showAddPickupModal: false,
       selectedPickupId: "",
       selectedPickupName: '',
-      selectedDate: ''
+      selectedDate: '',
+      cities: []
     };
   },
   methods: {
@@ -138,22 +143,51 @@ export default {
     },
     onPickupAdded(e){
       let params = {
-        'data': this.serializeForm(e)
+        'data': this.serializeForm(e),
       };
+      let cityId = this.cityAlreadyExists(params.data.cityName);
 
-      console.log("params", params)
+      if(cityId == -1){
+        console.log("shouldnt")
+        this.insertCity(params);
+      }
+      else if(cityId != -1){
+        params.data.cityId = cityId;
+        this.insertPickup(params);
+      }
 
-      let self = this;
-      this.insert('editProduct', function(){ 
+      this.showAddPickupModal = false;
+    },
+    insertPickup(params){
+      this.insert('insertPickup', function(){ 
         //TODO: Mostrar de alguna forma que se ha insertado el producto
-        self.getProducts(self.selectedPickupId);
-        self.showAddProductModal = false; 
       }, params);
-      console.log("pickup added")
+    },
+    insertCity(params){
+      let self = this;
+      this.insert('insertCity', function(res){
+        params.data.cityId = res.data.data.id;
+        self.cities = self.getCities();
+        //self.$refs.addProductModal.cities = self.cities;
+        self.$emit('setCities');
+        self.insertPickup(params);
+      }, params);
     },
     goBack(){
       this.$emit('navigation', '');
-    }
+    },
+    cityAlreadyExists(cityName){
+      let city = this.cities.find(x => x.name === cityName);
+      console.log("exists", this.cities, cityName, city)
+      return city ? city.id : -1;
+    },
+    getCities(){
+      let self = this;
+      this.getAll("getCities", function(res){
+        console.log("getting cities");
+        self.cities = res;
+      });
+    },
   },
 };
 </script>
