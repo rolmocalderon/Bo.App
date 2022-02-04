@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="product-container">
-        <AddProductModal v-if="showAddProductModal" @close="closeProductModal" :modalType="modalType" v-on:productModified="onProductModified" :selectedProduct="selectedProduct"/>
+        <AddProductModal v-if="showAddProductModal" @close="closeProductModal" :modalType="modalType" v-on:productModified="onProductModified($event,'editProduct')" :selectedProduct="selectedProduct" v-on:productAdded="onProductModified($event,'insertProduct')"/>
         <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
       </div>
     </div>
@@ -127,14 +127,14 @@ export default {
       this.selectedProduct = product;
       this.showAddProductModal = true;
     },
-    onProductModified(e){
+    onProductModified(e, endPoint){
       let params = {
         'data': this.serializeForm(e)
       };
 
       params.data.pickupId = this.selectedPickupId;
       let self = this;
-      this.insert('editProduct', function(){ 
+      this.insert(endPoint, function(){ 
         //TODO: Mostrar de alguna forma que se ha insertado el producto
         self.getProducts(self.selectedPickupId);
         self.selectedProduct = {};

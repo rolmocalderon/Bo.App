@@ -2,7 +2,11 @@
     <div class="product" v-on:click="productSelected">
         <div class="product-info">
             <span class="product-name">{{ product.productName }}</span>
-            <span class="">{{  product.weight }} gramos</span>
+            <span class="">
+                <span v-if="product.measureAlias != 'pack' && product.measureAlias != 'sixPack' && product.measureAlias != 'twelvePack'">
+                    {{ product.weight }}
+                </span> 
+                {{ product.measureType}}</span>
             <span>Cantidad: <span class="product-amount">{{ product.amount }}</span></span>
         </div>
         <div class="product-icon">

@@ -4,7 +4,7 @@
             <div class="modal-wrapper">
                 <div class="modal-container">
                     <form name="productModalForm" v-on:submit="productModified">
-                        <div class="modal-header">
+                        <div :class="'modal-header ' + modalColor" ref="modalHeader">
                             <div class="modal-header-message">
                                 <span>{{ headerMessage }}</span>
                                 <div class="close-icon" v-on:click="$emit('close')">
@@ -18,18 +18,19 @@
                             <input type="number" :value="currentProductAmount" min="0" max="10000" name="productAmount" placeholder="Cantidad">
                             <div class="measure-container">
                                 <input type="number" :value="currentProductWeight" name="productWeight" placeholder="Medida">
-                                <select name="medida">
+                                <select name="measure">
                                     <option v-for="measure in measures" v-bind:key="measure.id" :value="measure.id" :selected="measure.id == currentTypeOfMeasure">{{ measure.type }}</option>
                                 </select>
                             </div>
                             <select name="productType">
                                 <option v-for="type in productTypes" v-bind:key="type.id" :value="type.id" :selected="type.id == currentProductType">{{ type.type }}</option>
                             </select>
+                            <input type="hidden" name="id" :value="currentProduct.id"/>
                         </div>
 
                         <div class="modal-footer">
                             <slot name="footer">
-                            <button class="modal-default-button">
+                            <button :class="'modal-default-button ' + modalColor">
                                 {{ submitMessage }}
                             </button>
                             </slot>
@@ -60,7 +61,8 @@ export default {
             currentProductType: '',
             currentTypeOfMeasure: '',
             measures: [],
-            productTypes: []
+            productTypes: [],
+            modalColor: 'dark-blue'
         }
     },
     methods:{
@@ -76,6 +78,7 @@ export default {
                     this.currentProductWeight = this.selectedProduct.weight;
                     this.currentProductType = this.selectedProduct.productTypeId;
                     this.currentTypeOfMeasure = this.selectedProduct.measureId;
+                    this.modalColor = 'golden'
                     break;
                 case 'add':
                     this.submitMessage = 'Añadir';
@@ -86,9 +89,12 @@ export default {
         productModified(e){
             e.preventDefault();
             let inputs = Array.from(e.target.querySelectorAll('input'));
-            let selects = Array.from(e.target.querySelectorAll('select'));
-            if(this.validations(inputs, selects)){
+            console.log("adding", this.modalType)
+            if(this.validations(inputs)){
+                console.log("validated")
                 if(this.modalType == 'add'){
+                    this.$emit('productAdded', e.target);
+                }else if(this.modalType == 'edit'){
                     this.$emit('productModified', e.target);
                 }
             }
@@ -97,15 +103,13 @@ export default {
             inputs.forEach(x => x.classList.remove('not-validated'));
             let canSubmit = true;
             for(var input of inputs){
-                if(input.value == ""){
+                if(input.value == "" && input.type != "hidden"){
                     canSubmit = false;
                     input.classList.add("not-validated");
                 }
             }
             
-            console.log(canSubmit)
-            return false;
-            //return canSubmit;
+            return canSubmit;
         },
         getMeasures(){
             let self = this;
@@ -239,6 +243,15 @@ export default {
 
 .measure-container input{
     margin-bottom: 0;
+}
+.dark-blue{
+    background: #3E5985 !important;
+}
+.garnet{
+    background: #853e45 !important;
+}
+.golden{
+    background: #ab9d00 !important;
 }
 
 /*
