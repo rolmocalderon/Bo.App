@@ -7,7 +7,7 @@
                     {{ product.weight }}
                 </span> 
                 {{ product.measureType}}</span>
-            <span>Cantidad: <span class="product-amount">{{ product.amount }}</span></span>
+            <span>Unidades: <span class="product-amount">{{ product.amount }}</span></span>
         </div>
         <div class="product-icon">
             <font-awesome-icon :icon="icon" />

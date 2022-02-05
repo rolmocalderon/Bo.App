@@ -16,15 +16,17 @@ export default {
 </script>
 
 <style>
+@import '../node_modules/typeface-roboto/index.css';
 html,body{
   margin: 0;
   padding: 0;
-  background: #f9f9f9;
+  background: #06346f;
+  color: #06346f;
   height: 100%;
   overflow-x: hidden;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Roboto, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
