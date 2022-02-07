@@ -89,9 +89,7 @@ export default {
         productModified(e){
             e.preventDefault();
             let inputs = Array.from(e.target.querySelectorAll('input'));
-            console.log("adding", this.modalType)
             if(this.validations(inputs)){
-                console.log("validated")
                 if(this.modalType == 'add'){
                     this.$emit('productAdded', e.target);
                 }else if(this.modalType == 'edit'){

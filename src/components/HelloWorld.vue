@@ -44,7 +44,7 @@ export default {
         'category': value[0].category
       }
       this.isLogged = value != undefined;
-      cookies.setCookie('user', JSON.stringify(this.user));
+      cookies.setCookie('user', JSON.stringify(this.user),1);
     },
     userNavigated(event){
       this.navigateOption = event;

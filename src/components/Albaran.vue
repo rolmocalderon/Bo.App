@@ -1,35 +1,14 @@
 <template>
   <div class="albaran">
-    <div class="albaran-info-box" v-if="!showProductList">
-      <div class="back-arrow-container" v-on:click="goBack">
-        <font-awesome-icon icon="arrow-left"/>
-      </div>
-      <div class="albaran-info">
-        <span>{{ title}}</span>
-      </div>
-      <div class="add-product-icon" v-on:click="showAddPickupModal = true">
-        <font-awesome-icon icon="calendar-plus"/>
-        <span>Añadir recogida</span>
-      </div>
+    <div class="albaran-selector" v-if="!showProductList">
+      <AlbaranHeader v-on:backSelected="goBack" :title="title" :subtitle="''" :icon="'calendar-plus'" v-on:added="showAddPickupModal = true" :iconSubtitle="'Añadir recogida'"/>
       <AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" :modalType="'add'" v-on:productModified="onPickupAdded"/>
+      <ProductSelector :user="loggedUser" v-on:dateChanged="onDateChanged"></ProductSelector>
     </div>
-    <ProductSelector :user="loggedUser" v-if="!showProductList" v-on:dateChanged="onDateChanged"></ProductSelector>
     <div class="albaran-container" v-if="showProductList">
-      <div class="albaran-info-box">
-        <div class="back-arrow-container" v-on:click="hideProductList">
-          <font-awesome-icon icon="arrow-left"/>
-        </div>
-        <div class="albaran-info">
-          <span>{{ selectedPickupName }}</span>
-          <span>{{ selectedDate }}</span>
-        </div>
-        <div class="add-product-icon" v-if="products.length > 0" v-on:click="addProduct">
-          <font-awesome-icon icon="cart-plus"/>
-          <span>Añadir producto</span>
-        </div>
-      </div>
+      <AlbaranHeader v-on:backSelected="hideProductList" :title="selectedPickupName" :subtitle="selectedDate" :icon="'cart-plus'" v-on:added="addProduct" :iconSubtitle="'Añadir Producto'"/>
+      <AddProductModal v-if="showAddProductModal" @close="closeProductModal" :modalType="modalType" v-on:productModified="onProductModified($event,'editProduct')" :selectedProduct="selectedProduct" v-on:productAdded="onProductModified($event,'insertProduct')"/>
       <div class="product-container">
-        <AddProductModal v-if="showAddProductModal" @close="closeProductModal" :modalType="modalType" v-on:productModified="onProductModified($event,'editProduct')" :selectedProduct="selectedProduct" v-on:productAdded="onProductModified($event,'insertProduct')"/>
         <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
       </div>
     </div>
@@ -42,9 +21,10 @@ import Product from "./Product";
 import ProductSelector from "./ProductSelector";
 import AddProductModal from './AddProductModal';
 import AddPickupModal from './AddPickupModal';
+import AlbaranHeader from './AlbaranHeader';
 
 export default {
-  components: { Product, ProductSelector, AddProductModal, AddPickupModal },
+  components: { Product, ProductSelector, AddProductModal, AddPickupModal, AlbaranHeader },
   name: "Albaran",
   props: ["user", "title"],
   async created(){
@@ -66,7 +46,8 @@ export default {
       selectedPickupName: '',
       selectedDate: '',
       cities: [],
-      selectedProduct: {}
+      selectedProduct: {},
+      modalType: ''
     };
   },
   methods: {
@@ -205,23 +186,11 @@ export default {
 .albaran-container{
   width: 100%;
 }
-.albaran-info-box{
-  height: 3.5rem;
-  background: #5d85c5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.albaran-selector{
   width: 100%;
-}
-.albaran-info{
   display: flex;
   flex-direction: column;
-  line-height: 23px;
-  font-size: 1.2rem;
-  font-weight: 400;
-  flex: 1;
-  margin-left: 2rem;
-  color: white;
+  align-items: center;
 }
 .add-pickup{
   display: flex;
@@ -242,18 +211,6 @@ export default {
   flex-direction: column;
   width: 100%;
   align-items: center;
-}
-.add-product-icon{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: white;
-  font-size: 1.6rem;
-  margin-right: 1.2rem;
-}
-.add-product-icon  span{
-  font-size: 0.7rem;
-  margin-top: 2px;
 }
 .back-button{
   margin-bottom: 1rem;
