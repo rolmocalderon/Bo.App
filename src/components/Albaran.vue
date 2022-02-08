@@ -27,8 +27,8 @@ export default {
   components: { Product, ProductSelector, AddProductModal, AddPickupModal, AlbaranHeader },
   name: "Albaran",
   props: ["user", "title"],
-  async created(){
-    this.cities = await this.getCities();
+  created(){
+    this.cities = this.getCities();
   },
   data() {
     return {
@@ -118,8 +118,9 @@ export default {
       this.insert(endPoint, function(){ 
         //TODO: Mostrar de alguna forma que se ha insertado el producto
         self.getProducts(self.selectedPickupId);
-        self.selectedProduct = {};
-        self.showAddProductModal = false; 
+        console.log("productModified", self.selectedPickupId)
+        self.closeProductModal();
+        console.log(self.showAddProductModal)
       }, params);
     },
     serializeForm (form) {

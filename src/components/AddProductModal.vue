@@ -73,7 +73,7 @@ export default {
                 case 'edit':
                     this.submitMessage = 'Modificar';
                     this.headerMessage = 'Modificando producto';
-                    this.currentProductName = this.selectedProduct.productName;
+                    this.currentProductName = this.selectedProduct.productname;
                     this.currentProductAmount = this.selectedProduct.amount;
                     this.currentProductWeight = this.selectedProduct.weight;
                     this.currentProductType = this.selectedProduct.productTypeId;
@@ -90,6 +90,7 @@ export default {
             e.preventDefault();
             let inputs = Array.from(e.target.querySelectorAll('input'));
             if(this.validations(inputs)){
+                console.log("modified", e.target)
                 if(this.modalType == 'add'){
                     this.$emit('productAdded', e.target);
                 }else if(this.modalType == 'edit'){
