@@ -5,6 +5,7 @@
       <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')">
       <Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
       <Albaran v-if="navigateOption == 'pickups'" v-bind:user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
+      <Albaran v-if="navigateOption == 'deliveries'" v-bind:user="user" v-on:navigation="userNavigated" :title="'Repartos'"/>
     </div>
     <div v-if="!isLogged" class="login-container">
       <Login v-on:input="updateValue"/>
