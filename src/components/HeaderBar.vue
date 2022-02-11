@@ -1,13 +1,13 @@
 <template>
-  <div class="albaran-info-box">
+  <div class="info-box">
     <div class="back-arrow-container" v-on:click="backSelected">
       <font-awesome-icon icon="arrow-left" />
     </div>
-    <div class="albaran-info">
+    <div class="info">
       <span v-if="title != ''">{{ title }}</span>
       <span v-if="subtitle != ''">{{ subtitle }}</span>
     </div>
-    <div class="add-product-icon" v-on:click="added">
+    <div class="add-product-icon" v-on:click="added" v-show="user.category === 'admin'">
       <font-awesome-icon :icon="icon" />
       <span>{{ iconSubtitle }}</span>
     </div>
@@ -16,21 +16,24 @@
 
 <script>
 export default {
-    name: 'albaran-header',
-    props: ['title', 'subtitle', 'icon', 'iconSubtitle'],
+    name: 'header-bar',
+    props: ['title', 'subtitle', 'icon', 'iconSubtitle', 'user'],
     methods: {
         backSelected(){
             this.$emit('backSelected');
         },
         added(){
             this.$emit('added');
+        },
+        created(){
+          console.log(this.title, this.subtitle, this.icon, this.iconSubtitle, this.user)
         }
     }
 };
 </script>
 
-<style>
-.albaran-info-box{
+<style scoped>
+.info-box{
   height: 3.5rem;
   background: #5d85c5;
   display: flex;
@@ -38,7 +41,7 @@ export default {
   align-items: center;
   width: 100%;
 }
-.albaran-info{
+.info{
   display: flex;
   flex-direction: column;
   line-height: 23px;

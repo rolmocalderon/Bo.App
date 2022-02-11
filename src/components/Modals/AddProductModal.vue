@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import db from '../services/db';
+import db from '../../services/db';
 export default {
     name: "add-product-modal",
     props: ['modalType', 'selectedProduct'],
@@ -90,7 +90,6 @@ export default {
             e.preventDefault();
             let inputs = Array.from(e.target.querySelectorAll('input'));
             if(this.validations(inputs)){
-                console.log("modified", e.target)
                 if(this.modalType == 'add'){
                     this.$emit('productAdded', e.target);
                 }else if(this.modalType == 'edit'){

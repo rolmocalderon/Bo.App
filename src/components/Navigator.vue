@@ -25,7 +25,7 @@ export default {
                     description: '',
                     icon: '',
                     color: '',
-                    id: 'deliveries'
+                    id: 'delivery'
                 }
             ]
         }

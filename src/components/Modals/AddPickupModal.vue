@@ -44,9 +44,9 @@
 
 <script>
 import * as moment from 'moment';
-import Calendar from './Calendar';
+import Calendar from '../Calendar';
 export default {
-    name: "add-pickup-modal",
+    name: "add-pickup-modal", 
     props: ['modalType'],
     components: { Calendar },
     data: function(){

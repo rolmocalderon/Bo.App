@@ -4,8 +4,8 @@
       <div class="greeting background-blue">Te damos la bienvenida <strong>{{ user.name }}</strong></div>
       <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')">
       <Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
-      <Albaran v-if="navigateOption == 'pickups'" v-bind:user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
-      <Albaran v-if="navigateOption == 'deliveries'" v-bind:user="user" v-on:navigation="userNavigated" :title="'Repartos'"/>
+      <Albaran v-if="navigateOption == 'pickups'" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
+      <Delivery v-if="navigateOption == 'delivery'" :user="user" v-on:navigation="userNavigated" :title="'Repartos'"/>
     </div>
     <div v-if="!isLogged" class="login-container">
       <Login v-on:input="updateValue"/>
@@ -17,14 +17,11 @@
 import Login from './Login';
 import Albaran from './Albaran';
 import Navigator from './Navigator';
+import Delivery from './Delivery';
 import cookies from '../services/cookies';
 export default {
   name: 'HelloWorld',
-  components: {
-    Login: Login,
-    Albaran: Albaran,
-    Navigator: Navigator
-  },
+  components: { Login,Albaran,Navigator,Delivery  },
   created(){
     if(this.isUserLogged()){
       this.isLogged = true;

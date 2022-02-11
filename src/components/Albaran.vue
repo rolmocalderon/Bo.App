@@ -1,15 +1,15 @@
 <template>
   <div class="albaran">
     <div class="albaran-selector" v-if="!showProductList">
-      <AlbaranHeader v-on:backSelected="goBack" :title="title" :subtitle="''" :icon="'calendar-plus'" v-on:added="showAddPickupModal = true" :iconSubtitle="'Añadir recogida'"/>
+      <HeaderBar v-on:backSelected="goBack" :user="user" :title="title" :subtitle="''" :icon="'calendar-plus'" v-on:added="showAddPickupModal = true" :iconSubtitle="'Añadir recogida'"/>
       <AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" :modalType="'add'" v-on:productModified="onPickupAdded"/>
       <ProductSelector :user="loggedUser" v-on:dateChanged="onDateChanged"></ProductSelector>
     </div>
     <div class="albaran-container" v-if="showProductList">
-      <AlbaranHeader v-on:backSelected="hideProductList" :title="selectedPickupName" :subtitle="selectedDate" :icon="'cart-plus'" v-on:added="addProduct" :iconSubtitle="'Añadir Producto'"/>
+      <HeaderBar v-on:backSelected="hideProductList" :user="user" :title="selectedPickupName" :subtitle="selectedDate" :icon="'cart-plus'" v-on:added="addProduct" :iconSubtitle="'Añadir Producto'"/>
       <AddProductModal v-if="showAddProductModal" @close="closeProductModal" :modalType="modalType" v-on:productModified="onProductModified($event,'editProduct')" :selectedProduct="selectedProduct" v-on:productAdded="onProductModified($event,'insertProduct')"/>
       <div class="product-container">
-        <Product v-for="(product,index) in products" v-bind:key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
+        <Product v-for="(product,index) in products" :key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
       </div>
     </div>
   </div>
@@ -19,12 +19,12 @@
 import axios from "axios";
 import Product from "./Product";
 import ProductSelector from "./ProductSelector";
-import AddProductModal from './AddProductModal';
-import AddPickupModal from './AddPickupModal';
-import AlbaranHeader from './AlbaranHeader';
+import AddProductModal from './Modals/AddProductModal';
+import AddPickupModal from './Modals/AddPickupModal';
+import HeaderBar from './HeaderBar';
 
 export default {
-  components: { Product, ProductSelector, AddProductModal, AddPickupModal, AlbaranHeader },
+  components: { Product, ProductSelector, AddProductModal, AddPickupModal, HeaderBar },
   name: "Albaran",
   props: ["user", "title"],
   created(){
@@ -161,8 +161,8 @@ export default {
         self.insertPickup(params);
       }, params);
     },
-    goBack(){
-      this.$emit('navigation', '');
+    goBack(target = ''){
+      this.$emit('navigation', target);
     },
     cityAlreadyExists(cityName){
       let city = this.cities.find(x => x.name === cityName);
