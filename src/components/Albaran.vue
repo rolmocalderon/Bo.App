@@ -3,7 +3,7 @@
     <div class="albaran-selector" v-if="!showProductList">
       <HeaderBar v-on:backSelected="goBack" :user="user" :title="title" :subtitle="''" :icon="'calendar-plus'" v-on:added="showAddPickupModal = true" :iconSubtitle="'Añadir recogida'"/>
       <AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" :modalType="'add'" v-on:productModified="onPickupAdded"/>
-      <ProductSelector :user="loggedUser" v-on:dateChanged="onDateChanged"></ProductSelector>
+      <ProductSelector :user="loggedUser" v-on:dateChanged="onDateChanged" :selectorName="'pickups'"></ProductSelector>
     </div>
     <div class="albaran-container" v-if="showProductList">
       <HeaderBar v-on:backSelected="hideProductList" :user="user" :title="selectedPickupName" :subtitle="selectedDate" :icon="'cart-plus'" v-on:added="addProduct" :iconSubtitle="'Añadir Producto'"/>

@@ -4,7 +4,7 @@
       <Dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity" :values="cities" :textMessage="'Selecciona una ciudad'"></Dropdown>
     </div>
     <div class="pickups">
-      <Dropdown dropdownName="pickups" v-on:changeDropdown="onChangePickup" :disabled="pickups.length == 0" :values="pickups" :textMessage="'Selecciona una recogida'"></Dropdown>
+      <Dropdown :dropdownName="selectorName" v-on:changeDropdown="onChangePickup" :disabled="pickups.length == 0" :values="pickups" :textMessage="dropdownMessage"></Dropdown>
     </div>
     <div v-if="showDates" class="dates">
       <div class="date-box" v-on:click="calendarStatusChanged">
@@ -31,7 +31,7 @@ import * as moment from 'moment';
 export default {
   name: "ProductSelector",
   components: { Calendar, Dropdown },
-  props: ["user"],
+  props: ["user", "selectorName"],
   created: function () {
     this.$parent.$on('setCities', this.setCities);
     this.getCities();
@@ -45,7 +45,10 @@ export default {
           actualDay: "",
           date: "",
           calendarOpen: false,
-          selectedPickup: {}
+          selectedPickup: {},
+          categoryUri: this.getCategoryUri(),
+          datesUri: this.getDatesUri(),
+          dropdownMessage: this.selectorName === 'pickups' ? 'Selecciona una recogida' : 'Selecciona un reparto'
       }
   },
   methods:{
@@ -57,7 +60,7 @@ export default {
       let params = {
         cityId : cityId
       };
-      db.getAll("getPickups", function (res) {
+      db.getAll(this.categoryUri, function (res) {
         self.pickups = res;
       }, params);
     },
@@ -83,8 +86,9 @@ export default {
 
         let self = this;
         db.getAll(
-          "getPickupDates",
+          this.datesUri,
           function (res) {
+            console.log("get values", e)
             self.setSelectableDates(res)
           },
           params
@@ -119,6 +123,22 @@ export default {
     datechanged(e){
         this.$emit('dateChanged', e);
     },
+    getCategoryUri(){
+      switch(this.selectorName){
+        case 'pickups':
+          return 'getPickups';
+        case 'delivery':
+          return 'getDeliveries';
+      }
+    },
+    getDatesUri(){
+      switch(this.selectorName){
+        case 'pickups':
+          return 'getPickupDates';
+        case 'delivery':
+          return 'getDeliveryDates';
+      }
+    }
   }
 };
 </script>

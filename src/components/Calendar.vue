@@ -91,12 +91,12 @@ export default {
             this.$emit("hideCalendar", e);
         },
         isSelectableDate(day){
-            let date = this.selectableDates.find(x => x.month == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
+            let date = this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
 
             return date != undefined;
         },
         getSelectableDateId(day){
-            let date = this.selectableDates.find(x => x.month == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
+            let date = this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
             return date ? date.id : "";
         },
         isSelectedDay(day){
