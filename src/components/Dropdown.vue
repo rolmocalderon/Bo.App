@@ -11,11 +11,11 @@
 <script>
 export default {
   name: "dropdown",
-  props: ["dropdownName", "values", "textMessage", "disabled"],
+  props: ["values", "textMessage", "disabled", "isDropdownContentShown"],
   data(){
     return {
-      showDropdownContent: false,
-      shownMessage: this.textMessage
+      shownMessage: this.textMessage,
+      showDropdownContent: this.isDropdownContentShown
     }
   },
   methods: {
@@ -23,12 +23,14 @@ export default {
       this.showDropdownContent = true;
       window.removeEventListener('click', this.onWindowClicked);
       window.addEventListener('click', this.onWindowClicked);
+      this.$emit("dropDownShown", true);
     },
     onChange(e){
       
       e.stopPropagation();
       
       this.shownMessage = e.target.textContent;
+      this.$emit("dropDownShown", false);
       this.showDropdownContent = false;
       window.removeEventListener('click', this.onWindowClicked);
       let request = {

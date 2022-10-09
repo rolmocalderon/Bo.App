@@ -22,10 +22,10 @@
 
             <div class="calendar__dates">
                 <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
-                    <span>{{ day }}</span>
+                    <span></span>
                 </div>
-                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey': !isSelectableDate(day) && selectableDates.length > 0, 'selectable':selectableDates.length > 0 && isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
-                    <span v-on:click="preventDefault">{{ day }}</span>
+                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey selectable': !isSelectableDate(day) && selectableDates.length > 0, 'selected': isSelectedDay(day) }" v-on:click="daySelected">
+                    <span>{{ day }}</span>
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@ export default {
     data: function(){
         return {
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-            years: ["2021", "2022", "2023"],
+            years: Array.from({length: 3}, (v, i) => new Date().getFullYear() + i),
             actualMonth: "",
             actualYear: "",
             previousMonthDays: [],
@@ -102,22 +102,20 @@ export default {
         isSelectedDay(day){
             return this.actualDay === day;
         },
-        daySelected(e, target){
-            let elementTarget = target || e.target;
-            let id = elementTarget.getAttribute('productid');
-            let element = elementTarget.querySelector('span');
-            let daySelected = element.innerHTML;
-            let date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected);
-            let params = {
-            'date': date,
-            'id': id
-            };
-            this.changeDate(params);
-            this.hideCalendar();
-        },
-        preventDefault(e){
-            e.stopPropagation();
-            this.daySelected(e, e.target.parentElement)
+        daySelected(e){
+			e.stopPropagation();
+			let elementTarget = e.target.parentElement || e.target;
+			let element = elementTarget.querySelector('span');
+			let daySelected = element.innerHTML;
+
+			if(this.isSelectableDate(daySelected)){
+				let params = {
+				'date': new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected),
+				'id': elementTarget.getAttribute('productid')
+				};
+				this.changeDate(params);
+				this.hideCalendar();
+			}
         }
     }
 }
@@ -163,7 +161,7 @@ export default {
 }
 .calendar__days {
   background-color: #fff;
-  padding: 0 var(--side-padding) 10px;
+  padding: 0.5rem;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 }
@@ -174,7 +172,7 @@ export default {
   color: #c5c8ca;
 }
 .calendar__dates {
-  padding: 10px var(--side-padding);
+  padding: 0.5rem;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 }

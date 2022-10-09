@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <HelloWorld/>
+    <Main/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Main from './components/Main.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Main
   }
 }
 </script>
@@ -38,5 +38,11 @@ html,body{
 .logo{
   width: 7rem;
   margin: 1rem;
+}
+
+.disabled{
+  background-color: #dfdfdf !important;
+  color: #9f9f9f !important;
+  pointer-events: none;
 }
 </style>

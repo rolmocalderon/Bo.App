@@ -20,7 +20,7 @@ import Navigator from './Navigator';
 import Delivery from './Delivery';
 import cookies from '../services/cookies';
 export default {
-  name: 'HelloWorld',
+  name: 'Main',
   components: { Login,Albaran,Navigator,Delivery  },
   created(){
     if(this.isUserLogged()){

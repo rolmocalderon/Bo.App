@@ -1,10 +1,10 @@
 <template>
   <div class="product-selector-container almost-full-width">
     <div class="cities">
-      <Dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity" :values="cities" :textMessage="'Selecciona una ciudad'"></Dropdown>
+      <Dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity"  v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
     </div>
     <div class="pickups">
-      <Dropdown :dropdownName="selectorName" v-on:changeDropdown="onChangePickup" :disabled="pickups.length == 0" :values="pickups" :textMessage="dropdownMessage"></Dropdown>
+      <Dropdown v-on:changeDropdown="onChangePickup" v-on:dropDownShown="changeDropdownStatus" :disabled="pickups.length == 0" :values="pickups" :textMessage="dropdownMessage" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
     </div>
     <div v-if="showDates" class="dates">
       <div class="date-box" v-on:click="calendarStatusChanged">
@@ -48,7 +48,8 @@ export default {
           selectedPickup: {},
           categoryUri: this.getCategoryUri(),
           datesUri: this.getDatesUri(),
-          dropdownMessage: this.selectorName === 'pickups' ? 'Selecciona una recogida' : 'Selecciona un reparto'
+          dropdownMessage: this.selectorName === 'pickups' ? 'Selecciona una recogida' : 'Selecciona un reparto',
+          isDropdownContentShown: false
       }
   },
   methods:{
@@ -88,7 +89,6 @@ export default {
         db.getAll(
           this.datesUri,
           function (res) {
-            console.log("get values", e)
             self.setSelectableDates(res)
           },
           params
@@ -138,6 +138,10 @@ export default {
         case 'delivery':
           return 'getDeliveryDates';
       }
+    },
+    changeDropdownStatus(value){
+      this.isDropdownContentShown = value;
+      this.calendarOpen = this.calendarOpen ? !value : this.calendarOpen;
     }
   }
 };

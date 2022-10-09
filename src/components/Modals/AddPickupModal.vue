@@ -14,23 +14,23 @@
                         </div>
 
                         <div class="modal-body">
-                            <input type="text" value="" name="cityName" placeholder="Nombre de la ciudad">
-                            <input type="text" value="" name="placeName" placeholder="Nombre del lugar">
-                                <div class="date-box" v-on:click="calendarStatusChanged">
-                                    <span v-if="date">{{ date }}</span>
-                                    <span v-if="!date">Escoge una fecha</span>
-                                </div>
-                                <Calendar
-                                    v-if="calendarOpen"
-                                    v-on:changeDate="onChangeDate"
-                                    v-on:hideCalendar="onHideCalendar"
-                                    :selectableDates="[]"
-                                />
+                            <input type="text" value="" name="cityName" placeholder="Nombre de la ciudad" @keyup="handleButtonState($event)">
+                            <input type="text" value="" name="placeName" placeholder="Nombre del lugar" @keyup="handleButtonState($event)">
+                            <div class="date-box" v-on:click="calendarStatusChanged">
+                                <span v-if="date">{{ date }}</span>
+                                <span v-if="!date">Escoge una fecha</span>
+                            </div>
+                            <Calendar
+                                v-if="calendarOpen"
+                                v-on:changeDate="onChangeDate"
+                                v-on:hideCalendar="onHideCalendar"
+                                :selectableDates="[]"
+                            />
                         </div>
 
                         <div class="modal-footer">
                             <slot name="footer">
-                            <button class="modal-default-button">
+                            <button class="modal-default-button" :class="{'disabled': !isSubmitActive}">
                                 {{ submitMessage }}
                             </button>
                             </slot>
@@ -54,7 +54,9 @@ export default {
             submitMessage: 'Añadir',
             headerMessage: 'Añadiendo recogida',
             calendarOpen: false,
-            date: undefined
+            date: undefined,
+            isPlaceAndCitySelected: false,
+            isSubmitActive: false
         }
     },
     methods:{
@@ -66,7 +68,7 @@ export default {
                 input.setAttribute("type", "hidden");
                 input.setAttribute("name", "date");
                 input.setAttribute("value", this.date);
-                e.target.appendChild(input)
+                e.target.appendChild(input);
 
                 this.$emit('productModified', e.target);
             }
@@ -85,12 +87,25 @@ export default {
         },
         onChangeDate(e){
             this.date = moment(e.date).format('DD/MM/YYYY');
+            this.isSubmitActive = this.date && this.isPlaceAndCitySelected;
         },
         onHideCalendar(){
             this.calendarStatusChanged();
         },
         calendarStatusChanged(){
             this.calendarOpen = !this.calendarOpen;
+        },
+        handleButtonState(event){
+            var inputs = event.srcElement.parentNode.querySelectorAll('input');
+            for(let input of inputs){
+                if(input.value == ""){
+                    this.isPlaceAndCitySelected = false;
+                    return;
+                }
+            }
+
+            this.isPlaceAndCitySelected = true;
+            this.isSubmitActive = this.date && this.isPlaceAndCitySelected;
         }
     }
 }
