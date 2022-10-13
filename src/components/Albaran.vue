@@ -131,7 +131,7 @@ export default {
 			var self = this;
 			self.canShowSnackbar = true;
 			setTimeout(function(){
-				//self.canShowSnackbar = false;
+				self.canShowSnackbar = false;
 			}, 5000);
 			
 		}
