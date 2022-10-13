@@ -11,23 +11,55 @@
       <font-awesome-icon :icon="icon" />
       <span>{{ iconSubtitle }}</span>
     </div>
+
+    <AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" v-on:pickupAdded="onPickupAdded"/>
+    <AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" :modalType="'add'" v-on:productAdded="onProductModified($event,'insertProduct')"/>
   </div>
 </template>
 
 <script>
+import AddProductModal from './Modals/AddProductModal';
+import AddPickupModal from './Modals/AddPickupModal';
+
 export default {
-    name: 'header-bar',
-    props: ['title', 'subtitle', 'icon', 'iconSubtitle', 'user'],
+	name: 'header-bar',
+	components: {AddPickupModal, AddProductModal},
+	props: ['title', 'subtitle', 'icon', 'iconSubtitle', 'user', 'modalType', 'selectedPickupId'],
+	data(){
+		return {
+			showAddProductModal: false,
+			showAddPickupModal: false
+		}
+    },
     methods: {
         backSelected(){
             this.$emit('backSelected');
         },
         added(){
-            this.$emit('added');
+            this.showAddPickupModal = this.modalType === 'pickup';
+			this.showAddProductModal = this.modalType === 'product';
         },
-        created(){
-          console.log(this.title, this.subtitle, this.icon, this.iconSubtitle, this.user)
-        }
+		onProductModified(e, endPoint){
+			let params = {
+				'data': this.serializeForm(e)
+			};
+
+			params.data.pickupId = this.selectedPickupId;
+			let self = this;
+			this.insert(endPoint, function(){ 
+				self.showAddProductModal = false;
+				self.$emit('showSnackbar');
+				self.$emit('productAdded')
+			}, params);
+		},
+		onPickupAdded(e){
+			let params = {
+				'data': this.serializeForm(e),
+			};
+
+			this.$emit('insertPickup', params);
+			this.showAddPickupModal = false;
+		}
     }
 };
 </script>

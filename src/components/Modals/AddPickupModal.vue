@@ -3,7 +3,7 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
-                    <form name="productModalForm" v-on:submit="productModified">
+                    <form name="productModalForm" v-on:submit="pickupAdded">
                         <div class="modal-header">
                             <div class="modal-header-message">
                                 <span>{{ headerMessage }}</span>
@@ -46,8 +46,7 @@
 import * as moment from 'moment';
 import Calendar from '../Calendar';
 export default {
-    name: "add-pickup-modal", 
-    props: ['modalType'],
+    name: "add-pickup-modal",
     components: { Calendar },
     data: function(){
         return {
@@ -60,7 +59,7 @@ export default {
         }
     },
     methods:{
-        productModified(e){
+        pickupAdded(e){
             e.preventDefault();
             let inputs = Array.from(e.target.querySelectorAll('input'));
             if(this.validations(inputs)){
@@ -70,7 +69,7 @@ export default {
                 input.setAttribute("value", this.date);
                 e.target.appendChild(input);
 
-                this.$emit('productModified', e.target);
+                this.$emit('pickupAdded', e.target);
             }
         },
         validations(inputs){

@@ -24,7 +24,7 @@
                 <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
                     <span></span>
                 </div>
-                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey selectable': !isSelectableDate(day) && selectableDates.length > 0, 'selected': isSelectedDay(day) }" v-on:click="daySelected">
+                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey': !isSelectableDate(day) && selectableDates.length > 0 || isPreviousDay(day), 'selectable':selectableDates.length > 0 && isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
                     <span>{{ day }}</span>
                 </div>
             </div>
@@ -93,8 +93,14 @@ export default {
         isSelectableDate(day){
             let date = this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
 
-            return date != undefined;
+            return date != undefined ;
         },
+		isPreviousDay(day){
+			var currentDate = new Date();
+			var date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), day);
+
+			return date.getTime() < currentDate.getTime();
+		},
         getSelectableDateId(day){
             let date = this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
             return date ? date.id : "";
@@ -104,18 +110,15 @@ export default {
         },
         daySelected(e){
 			e.stopPropagation();
-			let elementTarget = e.target.parentElement || e.target;
-			let element = elementTarget.querySelector('span');
+			let element = e.target.querySelector('span');
 			let daySelected = element.innerHTML;
 
-			if(this.isSelectableDate(daySelected)){
-				let params = {
+			let params = {
 				'date': new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected),
-				'id': elementTarget.getAttribute('productid')
-				};
-				this.changeDate(params);
-				this.hideCalendar();
-			}
+				'id': e.target.getAttribute('productid')
+			};
+			this.changeDate(params);
+			this.hideCalendar();
         }
     }
 }
@@ -185,6 +188,9 @@ export default {
   font-size: 1.02rem;
   cursor: pointer;
   position: relative;
+}
+.calendar__date *{
+	pointer-events: none;
 }
 .calendar__date::before {
   content: "";

@@ -25,7 +25,7 @@
                             <select name="productType">
                                 <option v-for="type in productTypes" v-bind:key="type.id" :value="type.id" :selected="type.id == currentProductType">{{ type.type }}</option>
                             </select>
-                            <input type="hidden" name="id" :value="currentProduct.id"/>
+                            <input type="hidden" v-if="currentProduct" name="id" :value="currentProduct.id"/>
                         </div>
 
                         <div class="modal-footer">
