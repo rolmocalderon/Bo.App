@@ -1,14 +1,15 @@
 <template>
 	<div class="albaran">
 		<div class="albaran-selector" v-if="!showProductList">
-			<HeaderBar v-on:backSelected="goBack" :user="user" :title="title" :icon="'calendar-plus'" :iconSubtitle="'Añadir recogida'" :modalType="'pickup'" v-on:insertPickup="insertPickup"/>
-			<ProductSelector :user="loggedUser" v-on:dateChanged="onDateChanged" :selectorName="'pickups'"></ProductSelector>
+			<HeaderBar v-on:backSelected="goBack" :user="user" :title="title" :modalType="'pickup'" v-on:showSnackbar="showSnackbar" :cities="cities"/>
+			<ProductSelector v-on:dateChanged="onDateChanged" :selectorName="'pickups'"></ProductSelector>
 		</div>
 		<div class="albaran-container" v-if="showProductList">
-			<HeaderBar v-on:backSelected="hideProductList" :user="user" :title="selectedPickupName" :subtitle="selectedDate" :icon="'cart-plus'" :iconSubtitle="'Añadir Producto'" :modalType="'product'" :selectedPickupId="selectedPickupId" v-on:productAdded="getProducts" v-on:showSnackbar="showSnackbar"/>
+			<HeaderBar :user="user" :title="selectedPickupName" :subtitle="selectedDate" :modalType="'product'" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductModified" v-on:backSelected="hideProductList"/>
 			<div class="product-container">
 				<Product v-for="(product,index) in products" :key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
 			</div>
+			<AddProductModal v-if="showEditProductModal" @close="showEditProductModal = false" :modalType="'edit'" :selectedProduct="selectedProduct" v-on:productModified="onProductModified($event,'editProduct')"/>
 		</div>
 
 		<Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
@@ -21,20 +22,17 @@ import Product from "./Product";
 import ProductSelector from "./ProductSelector";
 import Snackbar from './Snackbar';
 import HeaderBar from './HeaderBar';
+import AddProductModal from './Modals/AddProductModal';
 
 export default {
-	components: { Product, ProductSelector, HeaderBar, Snackbar },
+	components: { Product, ProductSelector, HeaderBar, Snackbar, AddProductModal },
 	name: "Albaran",
 	props: ["user", "title"],
 	created(){
 		this.cities = this.getCities();
-		document.addEventListener('asdf', function(event, data){
-			console.log("data",data);
-		});
 	},
 	data() {
 		return {
-			loggedUser: this.user,
 			products: [],
 			showProductList: false,
 			icons: [
@@ -48,7 +46,8 @@ export default {
 			cities: [],
 			selectedProduct: {},
 			modalType: '',
-			canShowSnackbar: false
+			canShowSnackbar: false,
+			showEditProductModal: false
 		};
 	},
 	methods: {
@@ -88,38 +87,20 @@ export default {
 		onProductSelected(product){
 			this.modalType = 'edit';
 			this.selectedProduct = product;
-			this.showAddProductModal = true;
+			this.showEditProductModal = true;
 		},
-		insertPickup(params){
-			let self = this;
-			let cityId = this.cityAlreadyExists(params.data.cityName);
 
-			if(cityId == -1){
-				this.insertCity(params);
-			}
-			else if(cityId != -1){
-				params.data.cityId = cityId;
-			}
-			
-			this.insert('insertPickup', function() { 
-				self.showSnackbar();
-			}, params);
-		},
 		insertCity(params){
 			let self = this;
 			this.insert('insertCity', function(res){
 				params.data.cityId = res.data.data.id;
 				self.cities = self.getCities();
 				self.$emit('setCities');
-				self.insertPickup(params);
+				//self.insertPickup(params);
 			}, params);
 		},
 		goBack(target = ''){
 			this.$emit('navigation', target);
-		},
-		cityAlreadyExists(cityName){
-			let city = this.cities.find(x => x.name === cityName);
-			return city ? city.id : -1;
 		},
 		getCities(){
 			let self = this;
@@ -133,7 +114,20 @@ export default {
 			setTimeout(function(){
 				self.canShowSnackbar = false;
 			}, 5000);
-			
+		},
+		onProductModified(e, endPoint){
+			let params = {
+				'data': this.serializeForm(e)
+			};
+
+			params.data.pickupId = this.selectedPickupId;
+			let self = this;
+			this.insert(endPoint, function(){ 
+				self.showAddProductModal = false;
+				self.showEditProductModal = false;
+				self.showSnackbar();
+				self.getProducts();
+			}, params);
 		}
 	},
 };

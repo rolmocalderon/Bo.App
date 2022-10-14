@@ -12,8 +12,8 @@
       <span>{{ iconSubtitle }}</span>
     </div>
 
-    <AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" v-on:pickupAdded="onPickupAdded"/>
-    <AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" :modalType="'add'" v-on:productAdded="onProductModified($event,'insertProduct')"/>
+    <AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" v-on:pickupAdded="onPickupAdded" :cities="cities"/>
+    <AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" :modalType="'add'" v-on:productAdded="onProductAdded($event,'insertProduct')"/>
   </div>
 </template>
 
@@ -23,12 +23,26 @@ import AddPickupModal from './Modals/AddPickupModal';
 
 export default {
 	name: 'header-bar',
-	components: {AddPickupModal, AddProductModal},
-	props: ['title', 'subtitle', 'icon', 'iconSubtitle', 'user', 'modalType', 'selectedPickupId'],
+	components: { AddPickupModal, AddProductModal },
+	props: ['title', 'subtitle', 'user', 'modalType', 'selectedPickupId', 'cities'],
+	created(){
+		switch(this.modalType){
+			case 'pickup':
+				this.icon = "calendar-plus";
+				this.iconSubtitle = "Añadir recogida";
+				break;
+			case 'product':
+				this.icon = "cart-plus";
+				this.iconSubtitle = "Añadir Producto";
+				break;
+		}
+	},
 	data(){
 		return {
 			showAddProductModal: false,
-			showAddPickupModal: false
+			showAddPickupModal: false,
+			icon: "",
+			iconSubtitle: ""
 		}
     },
     methods: {
@@ -39,25 +53,12 @@ export default {
             this.showAddPickupModal = this.modalType === 'pickup';
 			this.showAddProductModal = this.modalType === 'product';
         },
-		onProductModified(e, endPoint){
-			let params = {
-				'data': this.serializeForm(e)
-			};
-
-			params.data.pickupId = this.selectedPickupId;
-			let self = this;
-			this.insert(endPoint, function(){ 
-				self.showAddProductModal = false;
-				self.$emit('showSnackbar');
-				self.$emit('productAdded')
-			}, params);
+		onProductAdded(e, endPoint){
+			this.showAddProductModal = false;
+			this.$emit('productAdded', e, endPoint);
 		},
-		onPickupAdded(e){
-			let params = {
-				'data': this.serializeForm(e),
-			};
-
-			this.$emit('insertPickup', params);
+		onPickupAdded(){
+			this.$emit('showSnackbar');
 			this.showAddPickupModal = false;
 		}
     }

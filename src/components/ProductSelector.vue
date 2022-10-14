@@ -31,7 +31,7 @@ import * as moment from 'moment';
 export default {
   name: "ProductSelector",
   components: { Calendar, Dropdown },
-  props: ["user", "selectorName"],
+  props: ["selectorName"],
   created: function () {
     this.$parent.$on('setCities', this.setCities);
     this.getCities();
