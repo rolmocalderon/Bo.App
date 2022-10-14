@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style>
-.product-container .product{
+.product{
     width: 90%;
     display: flex;
     padding: 0.8rem 1.4rem;
@@ -54,7 +54,7 @@ export default {
     box-shadow: 0 0 5px rgb(0 0 0 / 40%);
     margin-bottom: 0rem;
 }
-.product-container .product-info{
+.product-info{
     display: flex;
     flex-direction: column;
     flex: 1;

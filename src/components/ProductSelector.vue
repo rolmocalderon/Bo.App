@@ -6,7 +6,7 @@
     <div class="pickups">
       <Dropdown v-on:changeDropdown="onChangePickup" v-on:dropDownShown="changeDropdownStatus" :disabled="pickups.length == 0" :values="pickups" :textMessage="dropdownMessage" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
     </div>
-    <div v-if="showDates" class="dates">
+    <div v-if="showDates && pickups.length > 0" class="dates">
       <div class="date-box" v-on:click="calendarStatusChanged">
         <span v-if="date">{{ date }}</span>
         <span v-if="!date">Escoge una fecha</span>

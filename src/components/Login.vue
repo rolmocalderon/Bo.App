@@ -39,22 +39,20 @@ export default {
       this.login(this.name, this.password);
     },
     login(name, password) {
-      axios({
-        method: "get",
-        url: process.env.VUE_APP_WEBAPI_URL + "/login",
-        headers: {
+		const headers = {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
-        },
-        params: {
+		};
+		const params = {
           name: name,
           password: password,
-        },
-      }).then((response) => {
-        if (response.data.data.length > 0) {
-          this.updateValue(response.data.data);
-        }
-      });
+        };
+		axios.post(process.env.VUE_APP_WEBAPI_URL + "/login", params, {headers})
+		.then((response) => {
+			if (response.data.data.length > 0) {
+				this.updateValue(response.data.data);
+			}
+		});
     },
     updateValue: function (value) {
       this.$emit("input", value);

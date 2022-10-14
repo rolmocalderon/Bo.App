@@ -21,7 +21,7 @@ import Delivery from './Delivery';
 import cookies from '../services/cookies';
 export default {
   name: 'Main',
-  components: { Login,Albaran,Navigator,Delivery  },
+  components: { Login, Albaran, Navigator, Delivery  },
   created(){
     if(this.isUserLogged()){
       this.isLogged = true;
