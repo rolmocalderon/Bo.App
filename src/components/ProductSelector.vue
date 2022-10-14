@@ -156,4 +156,7 @@ export default {
   background: #e9e9e9;
   color: grey;
 }
+.almost-full-width{
+	width: 90%;
+}
 </style>

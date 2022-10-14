@@ -10,7 +10,7 @@
             <span>Unidades: <span class="product-amount">{{ product.amount }}</span></span>
         </div>
         <div class="product-icon">
-            <font-awesome-icon :icon="icon" />
+            <font-awesome-icon :icon="this.getIcon()" />
         </div>
     </div>
 </template>
@@ -19,18 +19,13 @@
 export default {
     name: "product",
     props: ["product"],
-    data(){
-        return{
-            icon: this.getIcon(this.product.alias)
-        }
-    },
     methods:{
         productSelected(){            
             this.$emit('productSelected', this.product);
         },
-        getIcon(productType){
+        getIcon(){
             let icon = '';
-            switch(productType){
+            switch(this.product.alias){
                 case 'food':
                     icon = "apple-alt";
                     break;

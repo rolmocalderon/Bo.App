@@ -90,15 +90,15 @@ export default {
 			this.showEditProductModal = true;
 		},
 
-		insertCity(params){
+		/*insertCity(params){
 			let self = this;
 			this.insert('insertCity', function(res){
 				params.data.cityId = res.data.data.id;
 				self.cities = self.getCities();
 				self.$emit('setCities');
-				//self.insertPickup(params);
+				self.insertPickup(params);
 			}, params);
-		},
+		},*/
 		goBack(target = ''){
 			this.$emit('navigation', target);
 		},
@@ -148,29 +148,7 @@ export default {
 	flex-direction: column;
 	align-items: center;
 }
-.add-pickup{
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	align-items: center;
-	transition: 300ms ease-out;
-	margin-bottom: 1rem;
-}
-.add-pickup-form{
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	width: 70%;
-}
-.add-pickup-form form{
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	align-items: center;
-}
-.back-button{
-	margin-bottom: 1rem;
-}
+
 .back-arrow-container{
 	margin-left: 1rem;
 	font-size: 1.5rem;
@@ -189,64 +167,8 @@ export default {
 	color: #757575;
 }
 
-.row .form-input {
-	height: 100%;
-	width: auto;
-	outline: none;
-	border-radius: 5px;
-	border: 1px solid lightgrey;
-	font-size: 16px;
-	transition: all 0.3s ease;
-	padding-left: 0.5rem;
-}
-.row .form-input:focus{
-	border-color: #4386c9;
-	box-shadow: inset 0px 0px 2px 2px rgba(26, 188, 156, 0.25);
-}
-.row .input-submit{
-	color: #fff;
-	font-size: 20px;
-	font-weight: 500;
-	padding-left: 0px;
-	background: #009f25;
-	border: 1px solid #009f25;
-	cursor: pointer;
-	height: 80%;
-	padding: 0.6rem;
-}
-.row{
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-}
-.almost-full-width{
-		width: 90%;
-}
 .product-container{
 	display: flex;
 	flex-direction: column;
-}
-
-.product-property{
-	flex: 1;
-	padding: 1.2rem;
-}
-
-.product-types{
-	display: flex;
-	flex-direction: row;
-}
-.add-product{
-		display: flex;
-		align-items: center;
-		justify-content: center;
-}
-.add-pickup-form-container{
-		width: 90%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: #ffce5f;
-		padding: 1rem 0 1rem 0;
 }
 </style>
