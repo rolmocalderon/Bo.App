@@ -6,6 +6,9 @@
       <Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
       <Albaran v-if="navigateOption == 'pickups'" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
       <Delivery v-if="navigateOption == 'delivery'" :user="user" v-on:navigation="userNavigated" :title="'Repartos'"/>
+      <div v-if="navigateOption == 'admin'">
+        <h1>Administrando la siuda</h1>
+      </div>
     </div>
     <div v-if="!isLogged" class="login-container">
       <Login v-on:input="updateValue"/>

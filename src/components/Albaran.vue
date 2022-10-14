@@ -160,6 +160,8 @@ export default {
 	background: white;
 	box-shadow: 0 0 5px rgb(0 0 0 / 50%);
 	cursor: pointer;
+	text-align: center !important;
+	font-size: 0.9rem;
 }
 
 .date-box span{

@@ -45,4 +45,9 @@ html,body{
   color: #9f9f9f !important;
   pointer-events: none;
 }
+
+input::-webkit-input-placeholder {
+     color: black;
+     opacity: 0.2;
+}
 </style>

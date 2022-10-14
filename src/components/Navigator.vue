@@ -26,6 +26,13 @@ export default {
                     icon: '',
                     color: '',
                     id: 'delivery'
+                },
+                {
+                    title: 'Administrar',
+                    description: '',
+                    icon: '',
+                    color: '',
+                    id: 'admin'
                 }
             ]
         }

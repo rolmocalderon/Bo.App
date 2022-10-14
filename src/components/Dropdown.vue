@@ -26,7 +26,6 @@ export default {
       this.$emit("dropDownShown", true);
     },
     onChange(e){
-      
       e.stopPropagation();
       
       this.shownMessage = e.target.textContent;
@@ -44,7 +43,7 @@ export default {
       this.showDropdownContent = element.classList.contains('dropdown') && !element.classList.contains('open');
       if(!this.showDropdownContent){
         window.removeEventListener('click', this.onWindowClicked);
-        e.target.classList.remove('open')
+        e.target.classList.remove('open');
       }
     }
   }

@@ -1,7 +1,7 @@
 <template>
     <Modal :headerMessage="'Añadiendo recogida'" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="$emit('close')" v-on:submit="onSubmit">
-        <input type="text" value="" name="cityName" placeholder="Nombre de la ciudad" @keyup="handleButtonState($event)">
-        <input type="text" value="" name="placeName" placeholder="Nombre del lugar" @keyup="handleButtonState($event)">
+        <Dropdown dropdownName="cities" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="changeDropdown"></Dropdown>
+        <input type="text" value="" class="date-box" name="placeName" placeholder="Nombre del lugar" @keyup="handleButtonState($event)">
         <div class="date-box" v-on:click="calendarStatusChanged">
             <span v-if="date">{{ date }}</span>
             <span v-if="!date">Escoge una fecha</span>
@@ -14,38 +14,43 @@
 import * as moment from 'moment';
 import Calendar from '../Calendar';
 import Modal from '../Modal';
+import Dropdown from '../Dropdown';
 
 export default {
     name: "add-pickup-modal",
-    components: { Calendar, Modal },
+    components: { Calendar, Modal, Dropdown },
     props: ['cities'],
     data: function(){
         return {
             calendarOpen: false,
             date: undefined,
             isPlaceAndCitySelected: false,
-            isSubmitActive: false
+            isSubmitActive: false,
+            selectedCity: {}
         }
     },
     methods:{
         onSubmit(e){
             let inputs = Array.from(e.target.querySelectorAll('input'));
-            if(this.validations(inputs)){
-                var input = document.createElement("input");
-                input.setAttribute("type", "hidden");
-                input.setAttribute("name", "date");
-                input.setAttribute("value", this.date);
-                e.target.appendChild(input);
+            if(this.validations(inputs)){              
+                e.target.appendChild(this.createInput("hidden", "cityId", this.selectedCity.valueId));
+                e.target.appendChild(this.createInput("hidden", "date", this.date));
 
                 this.insertPickup({
                     'data': this.serializeForm(e.target)
                 });
             }
         },
+        createInput(type, name, value){
+            var input = document.createElement("input");
+            input.setAttribute("type", type);
+            input.setAttribute("name", name);
+            input.setAttribute("value", value);
+
+            return input;
+        },
         insertPickup(params){
-			let self = this;
-			params.data.cityId = this.cityAlreadyExists(params.data.cityName);
-			
+			let self = this;		
 			this.insert('insertPickup', function() { 
 				self.$emit('pickupAdded');
 			}, params);
@@ -81,18 +86,14 @@ export default {
             this.isPlaceAndCitySelected = true;
             this.isSubmitActive = this.date && this.isPlaceAndCitySelected;
         },
-        cityAlreadyExists(cityName){
-			let city = this.cities.find(x => x.name === cityName);
-			return city ? city.id : -1;
-		}
+        changeDropdown(data){
+            this.selectedCity = data;
+        }
     }
 }
 </script>
 
 <style scoped>
-.modal-body .date-box{
-    text-align: left;
-}
 .modal-body input:focus, .modal-body select:focus{
     outline: #3E5985 solid 2px !important;
 }
