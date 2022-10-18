@@ -137,6 +137,7 @@ export default {
   --accent-br: 15px;
   box-shadow: 0 0 5px rgb(0 0 0 / 50%);
   width: 100%;
+  margin-top: 0.5rem;
 }
 .calendar select {
   background-color: #f3f4f6;

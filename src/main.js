@@ -1,14 +1,16 @@
 import Vue from 'vue'
 import App from './App.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faAppleAlt,faPumpSoap,faUser,faLock, faArrowLeft,faCartPlus, faCheese,faCube, faWindowClose,faCalendarPlus, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { faUser,faLock,faArrowLeft,faCube,faWindowClose,faCalendarPlus, faCheckCircle, faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import "@/mixins/Connections";
 
-library.add(faAppleAlt,faPumpSoap,faUser,faLock,faArrowLeft,faCartPlus,faCheese,faCube,faWindowClose,faCalendarPlus,faCheckCircle);
+library.add(faUser,faLock,faArrowLeft,faCube,faWindowClose,faCalendarPlus,faCheckCircle,faPlusCircle,faMinusCircle);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;
 
-new Vue({
+const eventBus = new Vue({
   render: h => h(App),
 }).$mount('#app');
+
+export default eventBus;

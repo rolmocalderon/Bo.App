@@ -7,7 +7,7 @@
       <Albaran v-if="navigateOption == 'pickups'" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
       <Delivery v-if="navigateOption == 'delivery'" :user="user" v-on:navigation="userNavigated" :title="'Repartos'"/>
       <div v-if="navigateOption == 'admin'">
-        <h1>Administrando la siuda</h1>
+        <HeaderBar :user="user" :title="'Administración'" v-on:backSelected="userNavigated('')"/>
       </div>
     </div>
     <div v-if="!isLogged" class="login-container">
@@ -22,9 +22,11 @@ import Albaran from './Albaran';
 import Navigator from './Navigator';
 import Delivery from './Delivery';
 import cookies from '../services/cookies';
+import HeaderBar from './HeaderBar';
+
 export default {
   name: 'Main',
-  components: { Login, Albaran, Navigator, Delivery  },
+  components: { Login, Albaran, Navigator, Delivery, HeaderBar  },
   created(){
     if(this.isUserLogged()){
       this.isLogged = true;
@@ -46,6 +48,7 @@ export default {
       }
       this.isLogged = value != undefined;
       cookies.setCookie('user', JSON.stringify(this.user),1);
+      localStorage.user = JSON.stringify(this.user);
     },
     userNavigated(event){
       this.navigateOption = event;

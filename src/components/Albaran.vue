@@ -1,15 +1,14 @@
 <template>
 	<div class="albaran">
 		<div class="albaran-selector" v-if="!showProductList">
-			<HeaderBar v-on:backSelected="goBack" :user="user" :title="title" :modalType="'pickup'" v-on:showSnackbar="showSnackbar" :cities="cities"/>
+			<HeaderBar v-on:backSelected="goBack" :title="title" :modalType="'pickup'" v-on:showSnackbar="showSnackbar" :cities="cities"/>
 			<ProductSelector v-on:dateChanged="onDateChanged" :selectorName="'pickups'"></ProductSelector>
 		</div>
 		<div class="albaran-container" v-if="showProductList">
-			<HeaderBar :user="user" :title="selectedPickupName" :subtitle="selectedDate" :modalType="'product'" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductModified" v-on:backSelected="hideProductList"/>
+			<HeaderBar :title="selectedPickupName" :subtitle="selectedDate" :modalType="'product'" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductModified" v-on:backSelected="hideProductList"/>
 			<div class="product-container">
-				<Product v-for="(product,index) in products" :key="product.name" :product="product" :icon="icons[index]" v-on:productSelected="onProductSelected"/>
+				<Product v-for="(product) in products" :key="product.name" :product="product"/>
 			</div>
-			<AddProductModal v-if="showEditProductModal" @close="showEditProductModal = false" :modalType="'edit'" :selectedProduct="selectedProduct" v-on:productModified="onProductModified($event,'editProduct')"/>
 		</div>
 
 		<Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
@@ -22,12 +21,11 @@ import Product from "./Product";
 import ProductSelector from "./ProductSelector";
 import Snackbar from './Snackbar';
 import HeaderBar from './HeaderBar';
-import AddProductModal from './Modals/AddProductModal';
 
 export default {
-	components: { Product, ProductSelector, HeaderBar, Snackbar, AddProductModal },
+	components: { Product, ProductSelector, HeaderBar, Snackbar },
 	name: "Albaran",
-	props: ["user", "title"],
+	props: ["title"],
 	created(){
 		this.cities = this.getCities();
 	},
@@ -35,16 +33,10 @@ export default {
 		return {
 			products: [],
 			showProductList: false,
-			icons: [
-				"apple-alt",
-				"pump-soap",
-				"cheese"
-			],
 			selectedPickupId: "",
 			selectedPickupName: '',
 			selectedDate: '',
 			cities: [],
-			selectedProduct: {},
 			modalType: '',
 			canShowSnackbar: false,
 			showEditProductModal: false
@@ -67,9 +59,6 @@ export default {
 		hideProductList(){
 			this.showProductList = false;
 		},
-		onProductListShown(){
-			this.showProductList = true;
-		},
 		onDateChanged(e){
 			this.selectedPickupName = e.selectedPickup;
 			this.selectedDate = e.date;
@@ -77,28 +66,20 @@ export default {
 			this.getProducts()
 		},
 		getProducts(){
-			let self = this;
-			let params = { pickupId: this.selectedPickupId };
-			this.getAll("getPickupProducts", function (res) {
-				self.products = res;
-				self.onProductListShown();
-			}, params);
+			var data = this.getFromLocalStorage('data');
+			if(data === ''){
+				let self = this;
+				let params = { pickupId: this.selectedPickupId };
+				this.getAll("getPickupProducts", function (res) {
+					self.products = res;
+					localStorage.data = JSON.stringify({'products': res});
+					self.showProductList = true;
+				}, params);
+			}else{
+				this.products = data.products;
+				this.showProductList = true;
+			}
 		},
-		onProductSelected(product){
-			this.modalType = 'edit';
-			this.selectedProduct = product;
-			this.showEditProductModal = true;
-		},
-
-		/*insertCity(params){
-			let self = this;
-			this.insert('insertCity', function(res){
-				params.data.cityId = res.data.data.id;
-				self.cities = self.getCities();
-				self.$emit('setCities');
-				self.insertPickup(params);
-			}, params);
-		},*/
 		goBack(target = ''){
 			this.$emit('navigation', target);
 		},

@@ -46,8 +46,7 @@ html,body{
   pointer-events: none;
 }
 
-input::-webkit-input-placeholder {
-     color: black;
-     opacity: 0.2;
+input:focus::placeholder {
+  color: transparent;
 }
 </style>

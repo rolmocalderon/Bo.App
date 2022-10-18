@@ -24,7 +24,7 @@ export default {
         return {
             calendarOpen: false,
             date: undefined,
-            isPlaceAndCitySelected: false,
+            isPlaceSelected: false,
             isSubmitActive: false,
             selectedCity: {}
         }
@@ -35,10 +35,10 @@ export default {
             if(this.validations(inputs)){              
                 e.target.appendChild(this.createInput("hidden", "cityId", this.selectedCity.valueId));
                 e.target.appendChild(this.createInput("hidden", "date", this.date));
-
-                this.insertPickup({
-                    'data': this.serializeForm(e.target)
-                });
+                let self = this;		
+                this.insert('insertPickup', function() { 
+                    self.$emit('pickupAdded');
+                }, { 'data': this.serializeForm(e.target) });
             }
         },
         createInput(type, name, value){
@@ -49,12 +49,6 @@ export default {
 
             return input;
         },
-        insertPickup(params){
-			let self = this;		
-			this.insert('insertPickup', function() { 
-				self.$emit('pickupAdded');
-			}, params);
-		},
         validations(inputs){
             inputs.forEach(x => x.classList.remove('not-validated'));
             let canSubmit = true;
@@ -69,7 +63,7 @@ export default {
         },
         onChangeDate(e){
             this.date = moment(e.date).format('DD/MM/YYYY');
-            this.isSubmitActive = this.date && this.isPlaceAndCitySelected;
+            this.isSubmitActive = this.date && this.isPlaceSelected;
         },
         calendarStatusChanged(){
             this.calendarOpen = !this.calendarOpen;
@@ -78,13 +72,13 @@ export default {
             var inputs = event.srcElement.parentNode.querySelectorAll('input');
             for(let input of inputs){
                 if(input.value == ""){
-                    this.isPlaceAndCitySelected = false;
+                    this.isPlaceSelected = false;
                     return;
                 }
             }
 
-            this.isPlaceAndCitySelected = true;
-            this.isSubmitActive = this.date && this.isPlaceAndCitySelected;
+            this.isPlaceSelected = true;
+            this.isSubmitActive = this.date && this.isPlaceSelected;
         },
         changeDropdown(data){
             this.selectedCity = data;

@@ -25,5 +25,14 @@ Vue.mixin({
                 callback(response);
             })
         },
+        initLocalStorage(){
+            localStorage.data = '';
+        },
+        updateLocalStorage(key, value){
+            localStorage[key] = JSON.stringify(value);
+        },
+        getFromLocalStorage(key){
+            return JSON.parse(localStorage[key]);
+        }
     }
 });

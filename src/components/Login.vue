@@ -51,6 +51,7 @@ export default {
 		.then((response) => {
 			if (response.data.data.length > 0) {
 				this.updateValue(response.data.data);
+				this.initLocalStorage();
 			}
 		});
     },
