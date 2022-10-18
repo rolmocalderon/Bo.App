@@ -32,7 +32,8 @@ Vue.mixin({
             localStorage[key] = JSON.stringify(value);
         },
         getFromLocalStorage(key){
-            return JSON.parse(localStorage[key]);
+            var data = localStorage[key];
+            return data === 'object' ? JSON.parse(data) : '';
         }
     }
 });
