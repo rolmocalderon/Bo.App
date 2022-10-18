@@ -8,9 +8,6 @@
                 <option v-for="measure in measures" v-bind:key="measure.id" :value="measure.id" :selected="measure.id == currentTypeOfMeasure">{{ measure.type }}</option>
             </select>
         </div>
-        <select name="productType">
-            <option v-for="type in productTypes" v-bind:key="type.id" :value="type.id" :selected="type.id == currentProductType">{{ type.type }}</option>
-        </select>
         <input type="hidden" v-if="selectedProduct" name="id" :value="selectedProduct.id"/>
     </Modal>
 </template>
@@ -35,14 +32,12 @@ export default {
             currentProductType: '',
             currentTypeOfMeasure: '',
             measures: [],
-            productTypes: [],
             modalColor: 'dark-blue'
         }
     },
     methods:{
         init(){
             this.getMeasures();
-            this.getProductTypes();
             switch(this.modalType){
                 case 'edit':
                     this.submitMessage = 'Modificar';
@@ -87,12 +82,6 @@ export default {
             db.getAll("getMeasures", function (res) {
                 self.measures = res;
             }, {});
-        },
-        getProductTypes(){
-            let self = this;
-            db.getAll('getProductTypes', function(res){
-                self.productTypes = res;
-            });
         }
     }
 }
