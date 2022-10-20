@@ -4,31 +4,17 @@
             <span class="product-name">{{ product.name }}</span>
         </div>
         <div class="product-counter">
-            <div class="product-counter-divisor">
+            <div v-for="(measure) in measures" :key="measure.id" class="product-counter-divisor">
                 <div class="product-counter-item product-type">
-                    <span>1 Kg</span>
+                    <span>{{ measure.type }}</span>
                 </div>
-                <div class="product-icon product-counter-item" v-on:click="productUpdated(false)">
+                <div class="product-icon product-counter-item" v-on:click="productUpdated(false, measure.id)">
                     <font-awesome-icon :icon="'minus-circle'" />
                 </div>
                 <div class="product-count product-counter-item">
                     <span>{{ count }}</span>
                 </div>
-                <div class="product-icon product-counter-item" v-on:click="productUpdated(true)">
-                    <font-awesome-icon :icon="'plus-circle'" />
-                </div>
-            </div>
-            <div class="product-counter-divisor">
-                <div class="product-counter-item product-type">
-                    <span>1/2 Kg</span>
-                </div>
-                <div class="product-icon product-counter-item" v-on:click="productUpdated(false)">
-                    <font-awesome-icon :icon="'minus-circle'" />
-                </div>
-                <div class="product-count product-counter-item">
-                    <span>{{ count }}</span>
-                </div>
-                <div class="product-icon product-counter-item" v-on:click="productUpdated(true)">
+                <div class="product-icon product-counter-item" v-on:click="productUpdated(true, measure.id)">
                     <font-awesome-icon :icon="'plus-circle'" />
                 </div>
             </div>
@@ -40,7 +26,7 @@
 
 export default {
     name: "product",
-    props: ["product"],
+    props: ["product", "measures"],
     data(){
         return {
             count: 0
@@ -48,12 +34,13 @@ export default {
     },
     created(){
         this.count = this.product.amount;
+        console.log("measures", this.measures);
     },
     methods:{
         productSelected(){
             this.$emit('productSelected', this.product);
         },
-        productUpdated(isAdding){
+        productUpdated(isAdding, measureId){
             if(isAdding){
                 this.count = ++this.count;
             }else if(this.count > 0){
@@ -61,7 +48,7 @@ export default {
             }
             
             var data = this.getFromLocalStorage('data');
-            var product = data.products.find(p => p.id === this.product.id);
+            var product = data.products.find(p => p.id === this.product.id && p.measureid === measureId);
             product.amount = this.count;
             this.updateLocalStorage('data', data);
         }

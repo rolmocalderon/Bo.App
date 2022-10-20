@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import db from '../../services/db';
 import Modal from '../Modal';
 export default {
     name: "add-product-modal",
@@ -37,7 +36,6 @@ export default {
     },
     methods:{
         init(){
-            this.getMeasures();
             switch(this.modalType){
                 case 'edit':
                     this.submitMessage = 'Modificar';
@@ -76,12 +74,6 @@ export default {
             }
             
             return canSubmit;
-        },
-        getMeasures(){
-            let self = this;
-            db.getAll("getMeasures", function (res) {
-                self.measures = res;
-            }, {});
         }
     }
 }

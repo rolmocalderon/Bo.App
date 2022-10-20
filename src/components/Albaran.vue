@@ -7,7 +7,7 @@
 		<div class="albaran-container" v-if="showProductList">
 			<HeaderBar :title="selectedPickupName" :subtitle="selectedDate" :modalType="'product'" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductModified" v-on:backSelected="hideProductList"/>
 			<div class="product-container">
-				<Product v-for="(product) in products" :key="product.name" :product="product"/>
+				<Product v-for="(product) in products" :key="product.name" :product="product" :measures="measures.filter(m => m.productid == product.id)"/>
 			</div>
 		</div>
 
@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Product from "./Product";
 import ProductSelector from "./ProductSelector";
 import Snackbar from './Snackbar';
@@ -28,6 +27,7 @@ export default {
 	props: ["title"],
 	created(){
 		this.cities = this.getCities();
+		this.measures = this.getMeasures();
 	},
 	data() {
 		return {
@@ -39,23 +39,11 @@ export default {
 			cities: [],
 			modalType: '',
 			canShowSnackbar: false,
-			showEditProductModal: false
+			showEditProductModal: false,
+			measures: []
 		};
 	},
 	methods: {
-		async getAll(endPoint, callback, params) {
-			axios({
-				method: "get",
-				url: process.env.VUE_APP_WEBAPI_URL + "/" + endPoint,
-				headers: {
-					"Access-Control-Allow-Origin": "*",
-					"Content-Type": "application/json",
-				},
-				params: params,
-			}).then((response) => {
-				callback(response.data.data);
-			});
-		},
 		hideProductList(){
 			this.showProductList = false;
 		},
@@ -80,6 +68,12 @@ export default {
 				this.showProductList = true;
 			}
 		},
+		getMeasures(){
+            let self = this;
+            this.getAll("getMeasures", function (res) {
+                self.measures = res;
+            }, {});
+        },
 		goBack(target = ''){
 			this.$emit('navigation', target);
 		},

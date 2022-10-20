@@ -8,6 +8,19 @@ Vue.mixin({
         }
     },
 	methods: {
+        async getAll(endPoint, callback, params) {
+			axios({
+				method: "get",
+				url: process.env.VUE_APP_WEBAPI_URL + "/" + endPoint,
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					"Content-Type": "application/json",
+				},
+				params: params,
+			}).then((response) => {
+				callback(response.data.data);
+			});
+		},
         serializeForm (form) {
 			var obj = {};
 			var formData = new FormData(form);
@@ -33,7 +46,13 @@ Vue.mixin({
         },
         getFromLocalStorage(key){
             var data = localStorage[key];
-            return data === 'object' ? JSON.parse(data) : '';
+            try{
+                data = JSON.parse(data);
+            }catch(e){
+                return "";
+            }
+
+            return data;
         }
     }
 });
