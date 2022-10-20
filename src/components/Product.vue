@@ -1,7 +1,7 @@
 !<template>
     <div class="product">
         <div class="product-info">
-            <span class="product-name">{{ product.productname }}</span>
+            <span class="product-name">{{ product.name }}</span>
         </div>
         <div class="product-counter">
             <div class="product-counter-divisor">
