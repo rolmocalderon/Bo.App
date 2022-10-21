@@ -1,6 +1,6 @@
 <template>
   <div class="product-selector-container almost-full-width">
-    <Dropdown dropdownName="cities" v-on:changeDropdown="onChangeCity"  v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
+    <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="getCities" :disabled="getCities.length === 0" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown" :selectedValue="selectedValue"></Dropdown>
     <Dropdown v-on:changeDropdown="onChangePickup" v-on:dropDownShown="changeDropdownStatus" :disabled="pickups.length == 0" :values="pickups" :textMessage="dropdownMessage" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
     <div v-if="showDates && pickups.length > 0" class="dates">
       <div class="date-box" v-on:click="calendarStatusChanged">
@@ -27,17 +27,18 @@ import * as moment from 'moment';
 export default {
   name: "ProductSelector",
   components: { Calendar, Dropdown },
-  props: ["selectorName"],
-  created: function () {
-    this.$parent.$on('setCities', this.setCities);
-    this.getCities();
+  props: ["selectorName", 'cities'],
+  created(){
+    let user = this.getFromLocalStorage('user');
+    if(user.cityid){
+      this.selectedValue = user.cityid;
+    }
   },
   data: function(){
       return{
           pickups: [],
           showDates: false,
           selectableDates: [],
-          cities: [],
           actualDay: "",
           date: "",
           calendarOpen: false,
@@ -45,13 +46,16 @@ export default {
           categoryUri: this.getCategoryUri(),
           datesUri: this.getDatesUri(),
           dropdownMessage: this.selectorName === 'pickups' ? 'Selecciona una recogida' : 'Selecciona un reparto',
-          isDropdownContentShown: false
+          isDropdownContentShown: false,
+          selectedValue: ''
       }
   },
+  computed: {
+    getCities(){
+      return this.cities ? this.cities : [];
+    }
+  },
   methods:{
-    setCities(){
-      this.cities = this.getCities();
-    },
     async getPickups(cityId) {
       let self = this;
       let params = {
@@ -60,12 +64,6 @@ export default {
       db.getAll(this.categoryUri, function (res) {
         self.pickups = res;
       }, params);
-    },
-    async getCities(){
-      let self = this;
-      db.getAll("getCities", function(res){
-        self.cities = res;
-      });
     },
     onChangeCity(e){
       if (e && e.valueId) {

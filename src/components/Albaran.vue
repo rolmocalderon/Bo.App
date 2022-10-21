@@ -1,11 +1,11 @@
 <template>
 	<div class="albaran">
 		<div class="albaran-selector" v-if="!showProductList">
-			<HeaderBar v-on:backSelected="goBack" :title="title" :modalType="'pickup'" v-on:showSnackbar="showSnackbar" :cities="cities"/>
-			<ProductSelector v-on:dateChanged="onDateChanged" :selectorName="'pickups'"></ProductSelector>
+			<HeaderBar v-if="!showProductList" v-on:backSelected="goBack" :title="title" :modalType="modalType" v-on:showSnackbar="showSnackbar" :cities="cities"/>
+			<ProductSelector v-on:dateChanged="onDateChanged" :selectorName="'pickups'" :cities="cities"></ProductSelector>
 		</div>
 		<div class="albaran-container" v-if="showProductList">
-			<HeaderBar :title="selectedPickupName" :subtitle="selectedDate" :modalType="'product'" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductModified" v-on:backSelected="hideProductList"/>
+			<HeaderBar :title="selectedPickupName" :subtitle="selectedDate" :modalType="modalType" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductAdded" v-on:backSelected="hideProductList"/>
 			<div class="product-container">
 				<Product v-for="(product) in products" :key="product.name" :product="product" :pickupId="selectedPickupId"/>
 			</div>
@@ -31,6 +31,7 @@ export default {
 			this.selectedPickupId = sessionStorage.getItem('selectedPickup');
 			this.getProducts();
 			this.showProductList = true;
+			this.modalType = 'product';
 		}
 	},
 	data() {
@@ -41,7 +42,7 @@ export default {
 			selectedPickupName: '',
 			selectedDate: '',
 			cities: [],
-			modalType: '',
+			modalType: 'pickup',
 			canShowSnackbar: false,
 			showEditProductModal: false
 		};
@@ -49,6 +50,8 @@ export default {
 	methods: {
 		hideProductList(){
 			this.showProductList = false;
+			this.initLocalStorage();
+			this.modalType = 'pickup';
 		},
 		onDateChanged(e){
 			this.selectedPickupName = e.selectedPickup;
@@ -66,10 +69,12 @@ export default {
 					self.products = self.parseProducts(res);
 					localStorage.data = JSON.stringify({ [self.selectedPickupId]:  {'products': self.products} });
 					self.showProductList = true;
+					self.modalType = 'product';
 				}, params);
 			}else{
 				this.products = data[this.selectedPickupId].products;
 				this.showProductList = true;
+				this.modalType = 'product';
 			}
 		},
 		goBack(target = ''){
@@ -88,19 +93,25 @@ export default {
 				self.canShowSnackbar = false;
 			}, 5000);
 		},
-		onProductModified(e, endPoint){
-			let params = {
-				'data': this.serializeForm(e)
-			};
-
-			params.data.pickupId = this.selectedPickupId;
-			let self = this;
-			this.insert(endPoint, function(){ 
-				self.showAddProductModal = false;
-				self.showEditProductModal = false;
-				self.showSnackbar();
-				self.getProducts();
-			}, params);
+		onProductAdded(e){
+			let form = this.serializeForm(e);
+			let data = this.getFromLocalStorage("data");
+			let products = data[this.selectedPickupId].products;
+			let newProduct = {
+				id: Math.max(...products.map(p => p.id)) + 1,
+				name: form.productName,
+				measures: [
+					{
+						id: form.measure,
+						type: form.measuretype,
+						amount: form.productAmount
+					}
+				]
+			}
+			products.push(newProduct);
+			this.updateLocalStorage("data", data);
+			this.showSnackbar();
+			this.getProducts();
 		},
 		parseProducts(products){
 			var parsedProducts = [];

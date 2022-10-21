@@ -1,14 +1,13 @@
 <template>
-    <Modal :headerMessage="headerMessage" :submitMessage="submitMessage" v-on:close="$emit('close')" v-on:submit="onSubmit" :modalColor="modalColor" :isSubmitActive="true">
-        <input type="text" :value="currentProductName" name="productName" placeholder="Nombre del producto">
-        <input type="number" :value="currentProductAmount" min="0" max="10000" name="productAmount" placeholder="Cantidad">
+    <Modal :headerMessage="headerMessage" :submitMessage="submitMessage" v-on:close="$emit('close')" v-on:submit="onSubmit" :modalColor="'dark-blue'" :isSubmitActive="true">
+        <input type="text" name="productName" placeholder="Nombre del producto">
+        <input type="number" min="0" max="10000" name="productAmount" placeholder="Cantidad">
         <div class="measure-container">
-            <input type="number" :value="currentProductWeight" name="productWeight" placeholder="Medida">
             <select name="measure">
-                <option v-for="measure in measures" v-bind:key="measure.id" :value="measure.id" :selected="measure.id == currentTypeOfMeasure">{{ measure.type }}</option>
+                <option v-for="measure in measures" v-bind:key="measure.id" :value="measure.id" :selected="measure.id == currentTypeOfMeasure" v-on:change="currentTypeOfMeasure = measure.type">{{ measure.type }}</option>
             </select>
         </div>
-        <input type="hidden" v-if="selectedProduct" name="id" :value="selectedProduct.id"/>
+        <input type="hidden" name="measuretype" :value="currentTypeOfMeasure"/>
     </Modal>
 </template>
 
@@ -16,7 +15,7 @@
 import Modal from '../Modal';
 export default {
     name: "add-product-modal",
-    props: ['modalType', 'selectedProduct'],
+    props: ['selectedProduct'],
     components: { Modal },
     created(){
         this.init();
@@ -25,42 +24,20 @@ export default {
         return {
             submitMessage: '',
             headerMessage: '',
-            currentProductName: '',
-            currentProductAmount: '',
-            currentProductWeight: '',
-            currentProductType: '',
             currentTypeOfMeasure: '',
-            measures: [],
-            modalColor: 'dark-blue'
+            measures: []
         }
     },
     methods:{
         init(){
-            switch(this.modalType){
-                case 'edit':
-                    this.submitMessage = 'Modificar';
-                    this.headerMessage = 'Modificando producto';
-                    this.currentProductName = this.selectedProduct.productname;
-                    this.currentProductAmount = this.selectedProduct.amount;
-                    this.currentProductWeight = this.selectedProduct.weight;
-                    this.currentProductType = this.selectedProduct.producttypeid;
-                    this.currentTypeOfMeasure = this.selectedProduct.measureid;
-                    this.modalColor = 'golden'
-                    break;
-                case 'add':
-                    this.submitMessage = 'Añadir';
-                    this.headerMessage = 'Añadiendo producto';
-                    break;
-            }
+            this.submitMessage = 'Añadir';
+            this.headerMessage = 'Añadiendo producto';
+            this.getMeasures();
         },
         onSubmit(e){
             let inputs = Array.from(e.target.querySelectorAll('input'));
             if(this.validations(inputs)){
-                if(this.modalType == 'add'){
-                    this.$emit('productAdded', e.target);
-                }else if(this.modalType == 'edit'){
-                    this.$emit('productModified', e.target);
-                }
+                this.$emit('productAdded', e.target);
             }
         },
         validations(inputs){
@@ -74,6 +51,13 @@ export default {
             }
             
             return canSubmit;
+        },
+        getMeasures(){
+            var self = this;
+            this.getAll("getMeasures", function(res){
+                self.currentTypeOfMeasure = res[0].type;
+				self.measures = res;
+			});
         }
     }
 }

@@ -7,13 +7,13 @@
 			<span v-if="title != ''">{{ title }}</span>
 			<span v-if="subtitle != ''">{{ subtitle }}</span>
 		</div>
-		<div class="add-product-icon" v-on:click="added" v-show="user.category === 'admin'">
+		<div class="add-product-icon" v-on:click="added">
 			<font-awesome-icon icon="calendar-plus" />
-			<span>{{ iconSubtitle }}</span>
+			<span>{{ getSubtitle }}</span>
 		</div>
 
 		<AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" v-on:pickupAdded="onPickupAdded" :cities="cities"/>
-		<AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" :modalType="'add'" v-on:productAdded="onProductAdded($event,'insertProduct')"/>
+		<AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" v-on:productAdded="onProductAdded($event)"/>
 	</div>
 </template>
 
@@ -25,16 +25,6 @@ export default {
 	name: 'header-bar',
 	components: { AddPickupModal, AddProductModal },
 	props: ['title', 'subtitle', 'modalType', 'selectedPickupId', 'cities'],
-	created(){
-		switch(this.modalType){
-			case 'pickup':
-				this.iconSubtitle = "Añadir recogida";
-				break;
-			case 'product':
-				this.iconSubtitle = "Añadir Producto";
-				break;
-		}
-	},
 	data(){
 		return {
 			showAddProductModal: false,
@@ -51,15 +41,20 @@ export default {
             this.showAddPickupModal = this.modalType === 'pickup';
 			this.showAddProductModal = this.modalType === 'product';
         },
-		onProductAdded(e, endPoint){
+		onProductAdded(e){
 			this.showAddProductModal = false;
-			this.$emit('productAdded', e, endPoint);
+			this.$emit('productAdded', e);
 		},
 		onPickupAdded(){
 			this.$emit('showSnackbar');
 			this.showAddPickupModal = false;
 		}
-    }
+    },
+	computed:{
+		getSubtitle(){
+			return this.modalType === 'pickup' ? "Añadir recogida" : "Añadir Producto";
+		}	
+	}
 };
 </script>
 

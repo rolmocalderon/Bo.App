@@ -48,7 +48,8 @@ export default {
     updateValue(value){
       this.user = {
         'name': value[0].name,
-        'category': value[0].category
+        'category': value[0].category,
+        'cityid': value[0].cityid
       }
       this.isLogged = value != undefined;
       cookies.setCookie('user', JSON.stringify(this.user),1);
