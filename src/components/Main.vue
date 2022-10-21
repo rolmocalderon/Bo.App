@@ -32,10 +32,14 @@ export default {
       this.isLogged = true;
       this.user = JSON.parse(cookies.getCookie("user"));
     }
+
+    if(sessionStorage.getItem('currentPage') === "pickups"){
+      this.navigateOption = "pickups";
+    }
   },
   data: function(){
     return {
-      isLogged: false, //ToBeTakenFromCookie
+      isLogged: false,
       user: {},
       navigateOption: ''
     }
@@ -51,6 +55,9 @@ export default {
       localStorage.user = JSON.stringify(this.user);
     },
     userNavigated(event){
+      if(event === "pickups"){
+        sessionStorage.setItem('currentPage', "pickups");
+      }
       this.navigateOption = event;
     },
     isUserLogged() {

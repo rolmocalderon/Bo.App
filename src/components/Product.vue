@@ -26,7 +26,7 @@
 
 export default {
     name: "product",
-    props: ["product"],
+    props: ["product", "pickupId"],
     data(){
         return {
             count: 0
@@ -43,12 +43,12 @@ export default {
             var measure = this.product.measures.find(m => m.id === measureId);
             if(isAdding){
                 measure.amount = ++measure.amount;
-            }else if(this.count > 0){
+            }else if(measure.amount > 0){
                 measure.amount = --measure.amount;
             }
             
             var data = this.getFromLocalStorage('data');
-            var product = data.products.find(p => p.id === this.product.id);
+            var product = data[this.pickupId].products.find(p => p.id === this.product.id);
             product.measures = this.product.measures;
             this.updateLocalStorage('data', data);
         }

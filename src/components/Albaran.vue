@@ -7,7 +7,7 @@
 		<div class="albaran-container" v-if="showProductList">
 			<HeaderBar :title="selectedPickupName" :subtitle="selectedDate" :modalType="'product'" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductModified" v-on:backSelected="hideProductList"/>
 			<div class="product-container">
-				<Product v-for="(product) in products" :key="product.name" :product="product"/>
+				<Product v-for="(product) in products" :key="product.name" :product="product" :pickupId="selectedPickupId"/>
 			</div>
 		</div>
 
@@ -27,6 +27,11 @@ export default {
 	props: ["title"],
 	created(){
 		this.cities = this.getCities();
+		if(this.getFromLocalStorage('data') !== ''){
+			this.selectedPickupId = sessionStorage.getItem('selectedPickup');
+			this.getProducts();
+			this.showProductList = true;
+		}
 	},
 	data() {
 		return {
@@ -49,20 +54,21 @@ export default {
 			this.selectedPickupName = e.selectedPickup;
 			this.selectedDate = e.date;
 			this.selectedPickupId = e.id;
-			this.getProducts()
+			sessionStorage.setItem('selectedPickup', e.id);
+			this.getProducts();
 		},
 		getProducts(){
 			var data = this.getFromLocalStorage('data');
-			if(data === ''){
+			if(data === '' || !data[this.selectedPickupId]){
 				let self = this;
 				let params = { pickupId: this.selectedPickupId };
 				this.getAll("getPickupProducts", function (res) {
 					self.products = self.parseProducts(res);
-					localStorage.data = JSON.stringify({'products': self.products});
+					localStorage.data = JSON.stringify({ [self.selectedPickupId]:  {'products': self.products} });
 					self.showProductList = true;
 				}, params);
 			}else{
-				this.products = data.products;
+				this.products = data[this.selectedPickupId].products;
 				this.showProductList = true;
 			}
 		},
