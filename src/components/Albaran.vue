@@ -7,7 +7,7 @@
 		<div class="albaran-container" v-if="showProductList">
 			<HeaderBar :title="selectedPickupName" :subtitle="selectedDate" :modalType="'product'" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductModified" v-on:backSelected="hideProductList"/>
 			<div class="product-container">
-				<Product v-for="(product) in products" :key="product.name" :product="product" :measures="measures.filter(m => m.productid == product.id)"/>
+				<Product v-for="(product) in products" :key="product.name" :product="product"/>
 			</div>
 		</div>
 
@@ -27,7 +27,6 @@ export default {
 	props: ["title"],
 	created(){
 		this.cities = this.getCities();
-		this.measures = this.getMeasures();
 	},
 	data() {
 		return {
@@ -39,8 +38,7 @@ export default {
 			cities: [],
 			modalType: '',
 			canShowSnackbar: false,
-			showEditProductModal: false,
-			measures: []
+			showEditProductModal: false
 		};
 	},
 	methods: {
@@ -59,8 +57,8 @@ export default {
 				let self = this;
 				let params = { pickupId: this.selectedPickupId };
 				this.getAll("getPickupProducts", function (res) {
-					self.products = res;
-					localStorage.data = JSON.stringify({'products': res});
+					self.products = self.parseProducts(res);
+					localStorage.data = JSON.stringify({'products': self.products});
 					self.showProductList = true;
 				}, params);
 			}else{
@@ -68,12 +66,6 @@ export default {
 				this.showProductList = true;
 			}
 		},
-		getMeasures(){
-            let self = this;
-            this.getAll("getMeasures", function (res) {
-                self.measures = res;
-            }, {});
-        },
 		goBack(target = ''){
 			this.$emit('navigation', target);
 		},
@@ -103,6 +95,29 @@ export default {
 				self.showSnackbar();
 				self.getProducts();
 			}, params);
+		},
+		parseProducts(products){
+			var parsedProducts = [];
+			products = this.groupBy(products,'name');
+			for(let key in products){
+				let product = products[key];
+				let measures = [];
+				product.forEach(p => measures.push({'id': p.measureid, 'type': p.type, 'amount': p.amount}))
+				let obj = {
+					'id': product[0].id,
+					'name': key,
+					'measures': measures
+				};
+				parsedProducts.push(obj);
+			}
+
+			return parsedProducts;
+		},
+		groupBy(xs, key) {
+			return xs.reduce(function(rv, x) {
+				(rv[x[key]] = rv[x[key]] || []).push(x);
+				return rv;
+			}, {});
 		}
 	},
 };

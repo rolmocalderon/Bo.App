@@ -4,7 +4,7 @@
             <span class="product-name">{{ product.name }}</span>
         </div>
         <div class="product-counter">
-            <div v-for="(measure) in measures" :key="measure.id" class="product-counter-divisor">
+            <div v-for="(measure) in product.measures" :key="measure.id" class="product-counter-divisor">
                 <div class="product-counter-item product-type">
                     <span>{{ measure.type }}</span>
                 </div>
@@ -12,7 +12,7 @@
                     <font-awesome-icon :icon="'minus-circle'" />
                 </div>
                 <div class="product-count product-counter-item">
-                    <span>{{ count }}</span>
+                    <span>{{ measure.amount }}</span>
                 </div>
                 <div class="product-icon product-counter-item" v-on:click="productUpdated(true, measure.id)">
                     <font-awesome-icon :icon="'plus-circle'" />
@@ -26,7 +26,7 @@
 
 export default {
     name: "product",
-    props: ["product", "measures"],
+    props: ["product"],
     data(){
         return {
             count: 0
@@ -34,22 +34,22 @@ export default {
     },
     created(){
         this.count = this.product.amount;
-        console.log("measures", this.measures);
     },
     methods:{
         productSelected(){
             this.$emit('productSelected', this.product);
         },
         productUpdated(isAdding, measureId){
+            var measure = this.product.measures.find(m => m.id === measureId);
             if(isAdding){
-                this.count = ++this.count;
+                measure.amount = ++measure.amount;
             }else if(this.count > 0){
-                this.count = --this.count;
+                measure.amount = --measure.amount;
             }
             
             var data = this.getFromLocalStorage('data');
-            var product = data.products.find(p => p.id === this.product.id && p.measureid === measureId);
-            product.amount = this.count;
+            var product = data.products.find(p => p.id === this.product.id);
+            product.measures = this.product.measures;
             this.updateLocalStorage('data', data);
         }
     }
