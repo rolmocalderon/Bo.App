@@ -49,4 +49,8 @@ html,body{
 input:focus::placeholder {
   color: transparent;
 }
+
+.hidden{
+  display: none !important;
+}
 </style>

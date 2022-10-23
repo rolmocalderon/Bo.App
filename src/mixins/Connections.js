@@ -29,13 +29,15 @@ Vue.mixin({
 			}
 			return obj;
 		},
-        async insert(endPoint, callback, params){
+        async insert(endPoint, callback, params, errorCallback = function(){}){
             axios({
                 method: "post",
                 url: process.env.VUE_APP_WEBAPI_URL + "/" + endPoint,
                 data: params
             }).then((response) => {
                 callback(response);
+            }).catch((response) =>{
+                errorCallback(response);
             })
         },
         initLocalStorage(){

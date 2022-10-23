@@ -7,7 +7,7 @@
 			<span v-if="title != ''">{{ title }}</span>
 			<span v-if="subtitle != ''">{{ subtitle }}</span>
 		</div>
-		<div class="add-product-icon" v-on:click="added">
+		<div v-if="modalType" class="add-product-icon" v-on:click="added">
 			<font-awesome-icon icon="calendar-plus" />
 			<span>{{ getSubtitle }}</span>
 		</div>
