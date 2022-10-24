@@ -1,12 +1,11 @@
-function setCookie(name,value) {
+function createCookie(name,value) {
     var expires = "";
     var date = new Date();
-    date.setTime(date.getTime() + (2*61*60*1000));
-    expires = "; expires=" + date.toGMTString();
-    let cookie = name + "=" + (value || "")  + expires + "; path=/";
-    console.log(cookie)
-    document.cookie = cookie;
+    date.setTime(date.getTime()+(8*60*60*1000));
+    expires = "; expires="+date.toGMTString();
+    document.cookie = name+"="+value+expires+"; path=/";
 }
+
 function getCookie(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
@@ -23,5 +22,5 @@ function removeCookie(){
 }
 
   module.exports = {
-    getCookie, setCookie, removeCookie
+    getCookie, removeCookie, createCookie
   }

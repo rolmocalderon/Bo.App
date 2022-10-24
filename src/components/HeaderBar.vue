@@ -30,7 +30,7 @@ export default {
 			showAddProductModal: false,
 			showAddPickupModal: false,
 			iconSubtitle: "",
-			user: JSON.parse(localStorage.user)
+			user: this.getFromLocalStorage('user')
 		}
     },
     methods: {

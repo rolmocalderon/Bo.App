@@ -11,7 +11,7 @@
       </div>
     </div>
     <div v-if="!isLogged" class="login-container">
-      <Login v-on:input="updateValue"/>
+      <Login v-on:input="logIn"/>
     </div>
   </div>
 </template>
@@ -31,7 +31,9 @@ export default {
     if(this.isUserLogged()){
       this.isLogged = true;
       this.user = JSON.parse(cookies.getCookie("user"));
+      this.user = this.getFromLocalStorage('user');
       this.initCities();
+      this.loginCheckin();
     }else{
       localStorage.cities = '';
     }
@@ -44,19 +46,21 @@ export default {
     return {
       isLogged: false,
       user: {},
-      navigateOption: ''
+      navigateOption: '',
+      isCheckin: false
     }
   },
   methods:{
-    updateValue(value){
+    logIn(value){
       this.user = {
         'name': value[0].name,
         'category': value[0].category,
         'cityid': value[0].cityid
       }
       this.isLogged = value != undefined;
-      cookies.setCookie('user', JSON.stringify(this.user));
-      localStorage.user = JSON.stringify(this.user);
+      cookies.createCookie('user', JSON.stringify(this.user));
+      this.initCities();
+      this.loginCheckin();
     },
     userNavigated(event){
       if(event === "pickups"){
@@ -77,6 +81,20 @@ export default {
         this.getAll("getCities", function(res){
           self.updateLocalStorage('cities', res);
         });
+      }
+    },
+    loginCheckin(){
+      if(!this.isCheckin){
+        var self = this;
+        this.isCheckin = true;
+        var interval = null;
+        interval = setInterval(function(){
+          if(cookies.getCookie("user") === "" || !cookies.getCookie("user")){
+            self.isLogged = false;
+            sessionStorage.clear();
+            clearInterval(interval);
+          }
+        }, 1000);
       }
     }
   }
