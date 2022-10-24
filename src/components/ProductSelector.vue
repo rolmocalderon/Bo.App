@@ -24,12 +24,14 @@ import db from '../services/db';
 import Calendar from "./Calendar";
 import Dropdown from "./Dropdown";
 import * as moment from 'moment';
+import cookies from '../services/cookies';
+
 export default {
   name: "ProductSelector",
   components: { Calendar, Dropdown },
   props: ["selectorName", 'cities'],
   created(){
-    let user = this.getFromLocalStorage('user');
+    let user = cookies.getCookie('user');
     if(user.cityid){
       this.selectedValue = user.cityid;
     }

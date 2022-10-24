@@ -30,7 +30,7 @@ export default {
   created(){
     if(this.isUserLogged()){
       this.isLogged = true;
-      this.user = JSON.parse(cookies.getCookie("user"));
+      this.user = cookies.getCookie("user");
       this.user = this.getFromLocalStorage('user');
       this.initCities();
       this.loginCheckin();
