@@ -31,7 +31,6 @@ export default {
     if(this.isUserLogged()){
       this.isLogged = true;
       this.user = cookies.getCookie("user");
-      this.user = this.getFromLocalStorage('user');
       this.initCities();
       this.loginCheckin();
     }else{
@@ -79,7 +78,8 @@ export default {
       if(cities === ''){
         let self = this;
         this.getAll("getCities", function(res){
-          self.updateLocalStorage('cities', res);
+          let cities = self.user.cityid ? res.filter(c => c.id === self.user.cityid) : res;
+          self.updateLocalStorage('cities', cities);
         });
       }
     },

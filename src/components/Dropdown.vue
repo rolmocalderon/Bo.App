@@ -2,7 +2,7 @@
   <div class="dropdown date-box" v-on:click="onClickedDropdown" :class="{'disabled': disabled}">
     <span>{{ shownMessage }}</span>
     <div class="dropdown-content" v-if="showDropdownContent">
-      <p v-for="value in getValues" v-bind:key="value.id" :valueId="value.id" v-on:click="onChange">{{ value.name }}</p>
+      <p v-for="value in values" v-bind:key="value.id" :valueId="value.id" v-on:click="onChange">{{ value.name }}</p>
     </div>
   </div>
 </template>
@@ -10,7 +10,7 @@
 <script>
 export default {
   name: "dropdown",
-  props: ["values", "textMessage", "disabled", "isDropdownContentShown","selectedValue"],
+  props: ["values", "textMessage", "disabled", "isDropdownContentShown"],
   data(){
     return {
       shownMessage: this.textMessage,
@@ -44,12 +44,6 @@ export default {
         window.removeEventListener('click', this.onWindowClicked);
         e.target.classList.remove('open');
       }
-    }
-  },
-  computed:{
-    getValues(){
-      return this.values && this.values.length > 0 && this.selectedValue ? this.values.filter(v => v.id == this.selectedValue) : this.values;
-
     }
   }
 };

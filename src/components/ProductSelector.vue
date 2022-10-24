@@ -1,6 +1,6 @@
 <template>
   <div class="product-selector-container almost-full-width">
-    <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown" :selectedValue="selectedValue"></Dropdown>
+    <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
     <Dropdown v-on:changeDropdown="onChangePickup" v-on:dropDownShown="changeDropdownStatus" :disabled="pickups.length == 0" :values="pickups" :textMessage="dropdownMessage" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
     <div v-if="showDates && pickups.length > 0" class="dates">
       <div class="date-box" v-on:click="calendarStatusChanged">
@@ -24,18 +24,11 @@ import db from '../services/db';
 import Calendar from "./Calendar";
 import Dropdown from "./Dropdown";
 import * as moment from 'moment';
-import cookies from '../services/cookies';
 
 export default {
   name: "ProductSelector",
   components: { Calendar, Dropdown },
   props: ["selectorName", 'cities'],
-  created(){
-    let user = cookies.getCookie('user');
-    if(user.cityid){
-      this.selectedValue = user.cityid;
-    }
-  },
   data: function(){
       return{
           pickups: [],
