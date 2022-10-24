@@ -26,7 +26,7 @@ export default {
 	name: "Albaran",
 	props: ["title"],
 	created(){
-		this.cities = this.getCities();
+		this.cities = this.getFromLocalStorage('cities');
 		if(this.getFromLocalStorage('data') !== ''){
 			this.selectedPickupId = sessionStorage.getItem('selectedPickup');
 			this.getProducts();
@@ -79,12 +79,6 @@ export default {
 		},
 		goBack(target = ''){
 			this.$emit('navigation', target);
-		},
-		getCities(){
-			let self = this;
-			this.getAll("getCities", function(res){
-				self.cities = res;
-			});
 		},
 		showSnackbar(){
 			var self = this;

@@ -1,6 +1,6 @@
 <template>
   <div class="product-selector-container almost-full-width">
-    <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="getCities" :disabled="getCities.length === 0" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown" :selectedValue="selectedValue"></Dropdown>
+    <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown" :selectedValue="selectedValue"></Dropdown>
     <Dropdown v-on:changeDropdown="onChangePickup" v-on:dropDownShown="changeDropdownStatus" :disabled="pickups.length == 0" :values="pickups" :textMessage="dropdownMessage" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
     <div v-if="showDates && pickups.length > 0" class="dates">
       <div class="date-box" v-on:click="calendarStatusChanged">
@@ -49,11 +49,6 @@ export default {
           isDropdownContentShown: false,
           selectedValue: ''
       }
-  },
-  computed: {
-    getCities(){
-      return this.cities ? this.cities : [];
-    }
   },
   methods:{
     async getPickups(cityId) {

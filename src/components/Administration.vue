@@ -1,9 +1,10 @@
 <template>
   <div>
     <HeaderBar :user="user" :title="'Administración'" v-on:backSelected="goBack('')"/>
-    <div class="admin-content">'
+    <div class="admin-content">
         <div class="sync-button" :class="{'disabled' : !hasDataToSync}" v-on:click="syncData">
-            <span>Sincronizar</span>
+            <font-awesome-icon class="admin-icon" :icon="icon" />
+            <span>{{ syncText }}</span>
         </div>
         <span class="sync-error-result" :class="{'hidden': !isErrorOnSync}">Error al intentar sincronizar</span>
     </div>
@@ -17,10 +18,14 @@ export default {
     name: 'administration',
     props: ['user'],
     components: {HeaderBar},
+    created() {
+        this.isSyncDone = false;
+    },
     data(){
         return {
             data: this.getFromLocalStorage('data'),
-            isErrorOnSync: false
+            isErrorOnSync: false,
+            isSyncDone: false
         }
     },
     methods: {
@@ -60,6 +65,7 @@ export default {
         syncSuccess(){
             this.initLocalStorage();
             this.data = '';
+            this.isSyncDone = true;
         },
         syncError(){
             this.isErrorOnSync = true;
@@ -68,6 +74,12 @@ export default {
     computed:{
         hasDataToSync(){
             return this.data !== '';
+        },
+        icon(){
+            return this.isSyncDone ? 'check-circle' : 'sync';
+        },
+        syncText(){
+            return this.isSyncDone ? 'Sincronizado correctamente' : 'Sincronizar';
         }
     }
 }
@@ -91,6 +103,10 @@ export default {
         border-radius: 5px;
         font-size: 1rem;
         font-weight: bold;
+        color: #06346f;
+    }
+    .sync-button span{
+        margin-left: 0.725rem;
     }
     .sync-error-result{
         margin-top: 0.5rem;
@@ -100,5 +116,8 @@ export default {
         align-items: center;
         display: flex;
         justify-content: center;
+    }
+    .admin-icon{
+        font-size: 1.5rem;
     }
 </style>

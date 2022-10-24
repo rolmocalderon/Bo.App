@@ -31,6 +31,9 @@ export default {
     if(this.isUserLogged()){
       this.isLogged = true;
       this.user = JSON.parse(cookies.getCookie("user"));
+      this.initCities();
+    }else{
+      localStorage.cities = '';
     }
 
     if(sessionStorage.getItem('currentPage') === "pickups"){
@@ -52,18 +55,29 @@ export default {
         'cityid': value[0].cityid
       }
       this.isLogged = value != undefined;
-      cookies.setCookie('user', JSON.stringify(this.user),1);
+      cookies.setCookie('user', JSON.stringify(this.user));
       localStorage.user = JSON.stringify(this.user);
     },
     userNavigated(event){
       if(event === "pickups"){
         sessionStorage.setItem('currentPage', "pickups");
+      }else{
+        sessionStorage.setItem('currentPage', "");
       }
       this.navigateOption = event;
     },
     isUserLogged() {
       let cookie = cookies.getCookie("user");
       return cookie && cookie.name != '';
+    },
+    initCities(){
+      let cities = this.getFromLocalStorage('cities');
+      if(cities === ''){
+        let self = this;
+        this.getAll("getCities", function(res){
+          self.updateLocalStorage('cities', res);
+        });
+      }
     }
   }
 }

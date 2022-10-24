@@ -1,11 +1,11 @@
-function setCookie(name,value,days) {
+function setCookie(name,value) {
     var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    var date = new Date();
+    date.setTime(date.getTime() + (2*61*60*1000));
+    expires = "; expires=" + date.toGMTString();
+    let cookie = name + "=" + (value || "")  + expires + "; path=/";
+    console.log(cookie)
+    document.cookie = cookie;
 }
 function getCookie(name) {
     var nameEQ = name + "=";
