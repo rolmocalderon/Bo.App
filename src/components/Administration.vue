@@ -6,7 +6,7 @@
             <font-awesome-icon class="admin-icon" :icon="icon" />
             <span>{{ syncText }}</span>
         </div>
-        <span class="sync-error-result" :class="{'hidden': !isErrorOnSync}">Error al intentar sincronizar</span>
+        <span v-if="isErrorOnSync" class="sync-error-result">Error al intentar sincronizar</span>
     </div>
   </div>
 </template>
@@ -66,6 +66,7 @@ export default {
             this.initLocalStorage();
             this.data = '';
             this.isSyncDone = true;
+            this.isErrorOnSync = false;
         },
         syncError(){
             this.isErrorOnSync = true;

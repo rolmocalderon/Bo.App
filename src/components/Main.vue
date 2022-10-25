@@ -1,7 +1,10 @@
 <template>
   <div class="app-content">
     <div v-if="isLogged" class="container">
-      <div class="greeting background-blue">Te damos la bienvenida <strong>{{ user.name }}</strong></div>
+      <div class="greeting background-blue">
+        <span>Te damos la bienvenida <strong>{{ user.name }}</strong></span>
+        <span class="log-off" v-on:click="logOff">LogOff</span>
+      </div>
       <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')">
       <Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
       <Albaran v-if="navigateOption == 'pickups'" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
@@ -90,12 +93,17 @@ export default {
         var interval = null;
         interval = setInterval(function(){
           if(cookies.getCookie("user") === "" || !cookies.getCookie("user")){
-            self.isLogged = false;
-            sessionStorage.clear();
+            self.logOff();
             clearInterval(interval);
           }
         }, 1000);
       }
+    },
+    logOff(){
+      this.isLogged = false;
+      sessionStorage.clear();
+      cookies.removeCookie('user');
+      this.navigateOption = '';
     }
   }
 }
@@ -134,5 +142,13 @@ a {
 .greeting{
   width: 100%;
   padding: 0.5rem;
+}
+.log-off{
+  right: 1rem;
+  position: absolute;
+}
+.log-off:hover{
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>
