@@ -37,30 +37,44 @@ export default {
             var productMeasuresData = [];
             var productsPicked = [];
             for (const [pickup, value] of Object.entries(this.data)) {
-                for(let key in value.products){
+                let products = value.products;
+                for(const key in products){
                     let product = value.products[key];
-                    productsData.push({
-                        'id': product.id,
-                        'name': product.name
-                    });
-
-                    for(let measure of product.measures){
-                        productMeasuresData.push({
-                            'productid': product.id,
-                            'measureid': measure.id
-                        });
-                        
-                        productsPicked.push({
-                            'amount': measure.amount,
-                            'pickupid': Number(pickup),
-                            'productid': product.id,
-                            'measureid': measure.id
-                        });
+                    productsData.push(this.getProductObj(product));
+                    for(const measure of product.measures){
+                        productMeasuresData.push(this.getProductMeasureObj(product,measure));
+                        productsPicked.push(this.getMeasureObj(product,measure,pickup));
                     }
                 }
             }
 
             this.insert('syncProducts', this.syncSuccess, { productsData,productMeasuresData,productsPicked }, this.syncError);
+        },
+        getMeasureObj(product, measure, pickup){
+            return {
+                'amount': measure.amount,
+                'pickupid': Number(pickup),
+                'productid':  product.subproductid === 0 ? product.id : null,
+                'measureid': measure.id,
+                'subproductid': product.subproductid,
+                'isSubproduct': product.subproductid !== 0
+            }
+        },
+        getProductMeasureObj(product, measure){
+            return {
+                'productid': product.id,
+                'measureid': measure.id,
+                'subproductid': product.subproductid,
+                'isSubproduct': product.subproductid !== 0
+            };
+        },
+        getProductObj(product){
+            return {
+                'id': product.id,
+                'name': product.name,
+                'subproductid': product.subproductid,
+                'isSubproduct': product.subproductid !== 0
+            };
         },
         syncSuccess(){
             this.initLocalStorage();

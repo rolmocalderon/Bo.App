@@ -291,7 +291,6 @@ body {
   place-items: center;
   background-color: #eaedf2;
   height: 100vh;
-  font-family: "Nunito", sans-serif;
   font-size: 14px;
   margin: 3vmin;
 }

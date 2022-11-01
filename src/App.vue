@@ -17,6 +17,18 @@ export default {
 
 <style>
 @import '../node_modules/typeface-roboto/index.css';
+@font-face {
+  font-family: "Montserrat-Regular";
+  src: local("Montserrat-Regular"),   url(./assets/fonts/Montserrat-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Montserrat-Medium";
+  src: local("Montserrat-Medium"),   url(./assets/fonts/Montserrat-Medium.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Montserrat-Bold";
+  src: local("Montserrat-Bold"),   url(./assets/fonts/Montserrat-Bold.ttf) format("truetype");
+}
 html,body{
   margin: 0;
   padding: 0;
@@ -26,7 +38,7 @@ html,body{
   overflow-x: hidden;
 }
 #app {
-  font-family: Roboto, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat-Regular', Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

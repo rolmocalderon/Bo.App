@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUser,faLock,faArrowLeft,faCube,faWindowClose,faCalendarPlus, faCheckCircle, faPlusCircle, faMinusCircle, faSync } from '@fortawesome/free-solid-svg-icons'
+import { faUser,faLock,faArrowLeft,faCube,faWindowClose,faCalendarPlus, faCheckCircle, faPlusCircle, faMinusCircle, faSync, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import "@/mixins/Connections";
 
-library.add(faUser,faLock,faArrowLeft,faCube,faWindowClose,faCalendarPlus,faCheckCircle,faPlusCircle,faMinusCircle,faSync);
+library.add(faUser,faLock,faArrowLeft,faCube,faWindowClose,faCalendarPlus,faCheckCircle,faPlusCircle,faMinusCircle,faSync,faChevronDown,faChevronUp);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;
 

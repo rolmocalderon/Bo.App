@@ -7,7 +7,7 @@
 		<div class="albaran-container" v-if="showProductList">
 			<HeaderBar :title="selectedPickupName" :subtitle="selectedDate" :modalType="modalType" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductAdded" v-on:backSelected="hideProductList"/>
 			<div class="product-container">
-				<Product v-for="(product) in products" :key="product.name" :product="product" :pickupId="selectedPickupId"/>
+				<Product v-for="(product) in products.filter(p => p.issubproduct === 'false')" :key="product.name" :product="product" :pickupId="selectedPickupId" :subproducts="getSubproducts(product)"/>
 			</div>
 		</div>
 
@@ -91,21 +91,24 @@ export default {
 			let form = this.serializeForm(e);
 			let data = this.getFromLocalStorage("data");
 			let products = data[this.selectedPickupId].products;
-			let newProduct = {
-				id: Math.max(...products.map(p => p.id)) + 1,
-				name: form.productName,
-				measures: [
-					{
-						id: form.measure,
-						type: form.measuretype,
-						amount: form.productAmount
-					}
-				]
+
+			if(!products.find(p => p.name.toLowerCase() === form.productName.toLowerCase())){
+				let newProduct = {
+					id: Math.max(...products.map(p => p.id)) + 1,
+					name: form.productName,
+					measures: [
+						{
+							id: form.measure,
+							type: form.measuretype,
+							amount: form.productAmount
+						}
+					]
+				}
+				products.push(newProduct);
+				this.updateLocalStorage("data", data);
+				this.showSnackbar();
+				this.getProducts();
 			}
-			products.push(newProduct);
-			this.updateLocalStorage("data", data);
-			this.showSnackbar();
-			this.getProducts();
 		},
 		parseProducts(products){
 			var parsedProducts = [];
@@ -117,18 +120,17 @@ export default {
 				let obj = {
 					'id': product[0].id,
 					'name': key,
-					'measures': measures
+					'subproductid': product[0].subproductid,
+					'measures': measures,
+					'issubproduct': product[0].issubproduct
 				};
 				parsedProducts.push(obj);
 			}
 
 			return parsedProducts;
 		},
-		groupBy(xs, key) {
-			return xs.reduce(function(rv, x) {
-				(rv[x[key]] = rv[x[key]] || []).push(x);
-				return rv;
-			}, {});
+		getSubproducts(product){
+			return this.products.filter(p => p.issubproduct === "true" && p.id === product.id);
 		}
 	},
 };

@@ -53,11 +53,9 @@ export default {
             return canSubmit;
         },
         getMeasures(){
-            var self = this;
-            this.getAll("getMeasures", function(res){
-                self.currentTypeOfMeasure = res[0].type;
-				self.measures = res;
-			});
+            let measures = this.getFromLocalStorage('measures');
+            this.currentTypeOfMeasure = measures[0].type;
+            this.measures = measures;
         }
     }
 }

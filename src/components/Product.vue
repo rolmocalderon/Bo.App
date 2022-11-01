@@ -1,24 +1,42 @@
 !<template>
-    <div class="product">
-        <div class="product-info">
-            <span class="product-name">{{ product.name }}</span>
-        </div>
-        <div class="product-counter">
-            <div v-for="(measure) in product.measures" :key="measure.id" class="product-counter-divisor">
-                <div class="product-counter-item product-type">
-                    <span>{{ measure.type }}</span>
-                </div>
-                <div class="product-icon product-counter-item" v-on:click="productUpdated(false, measure.id)">
-                    <font-awesome-icon :icon="'minus-circle'" />
-                </div>
-                <div class="product-count product-counter-item">
-                    <span>{{ measure.amount }}</span>
-                </div>
-                <div class="product-icon product-counter-item" v-on:click="productUpdated(true, measure.id)">
-                    <font-awesome-icon :icon="'plus-circle'" />
+    <div class="product-content" :class="{'selected-product': showSubproducts}">
+        <div class="product" v-on:click="productSelected">
+            <div class="product-info">
+                <span class="product-name">{{ product.name }}</span>
+            </div>
+            <div v-if="!subproducts || subproducts.length === 0" class="product-counter">
+                <div v-for="(measure) in product.measures" :key="measure.id" class="product-counter-divisor">
+                    <div class="product-counter-item product-type">
+                        <span>{{ measure.type }}</span>
+                    </div>
+                    <div class="product-icon product-counter-item" v-on:click="productUpdated(false, measure.id)">
+                        <font-awesome-icon :icon="'minus-circle'" />
+                    </div>
+                    <div class="product-count product-counter-item">
+                        <span>{{ measure.amount }}</span>
+                    </div>
+                    <div class="product-icon product-counter-item" v-on:click="productUpdated(true, measure.id)">
+                        <font-awesome-icon :icon="'plus-circle'" />
+                    </div>
                 </div>
             </div>
+            <div v-if="subproducts && subproducts.length > 0" class="product-counter">
+                <div class="product-counter-divisor">
+                    <div class="product-counter-item">
+                        <span>{{ sumSubproducts}}</span>
+                    </div>
+                    <div class="product-icon product-counter-item">
+                        <font-awesome-icon :icon="showSubproducts ? 'chevron-up' : 'chevron-down'" />
+                    </div>
+                </div>
+                
+            </div>
         </div>
+        <transition name="slide">
+            <div v-if="subproducts && subproducts.length > 0 && showSubproducts" class="subproduct slide-up" :class="{'slide-down': showSubproducts}">
+                <product v-for="(subproduct) in subproducts" :key="subproduct.subproductid" :pickupId="pickupId" :product="subproduct" :isSubproduct="true"/>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -26,18 +44,23 @@
 
 export default {
     name: "product",
-    props: ["product", "pickupId"],
-    data(){
-        return {
-            count: 0
+    props: ["product", "pickupId", "subproducts", "isSubproduct"],
+    created(){
+        let measures = this.product.measures;
+        if(measures.length > 2){
+            this.product.measures = this.sortMeasures(measures);
         }
     },
-    created(){
-        this.count = this.product.amount;
+    data(){
+        return {
+            showSubproducts: false
+        }
     },
     methods:{
         productSelected(){
-            this.$emit('productSelected', this.product);
+            if(!this.isSubproduct && this.subproducts.length > 0){
+                this.showSubproducts = !this.showSubproducts;
+            }
         },
         productUpdated(isAdding, measureId){
             var measure = this.product.measures.find(m => m.id === measureId);
@@ -51,6 +74,27 @@ export default {
             var product = data[this.pickupId].products.find(p => p.id === this.product.id);
             product.measures = this.product.measures;
             this.updateLocalStorage('data', data);
+        },
+        sortMeasures(measures){
+            let sortable = [];
+            for(var measure of measures){
+                sortable.push(measure.type)
+            }
+            sortable.sort();
+
+            return sortable.map(s => measures.find(m => m.type === s));
+        }
+    },
+    computed: {
+        sumSubproducts(){
+            let productsSum = 0;
+            this.subproducts.forEach(item => {
+                item.measures.forEach(measure => {
+                    productsSum += measure.amount;
+                });
+            });
+
+            return productsSum;
         }
     }
 }
@@ -76,7 +120,7 @@ export default {
 }
 .product-name{
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 .product-amount{
     font-size: 1rem;
@@ -95,13 +139,13 @@ export default {
     justify-content: right;
     margin: 0.6rem 0 0.6rem 0;
 }
-.product-count{
-
+.selected-product > .product{
+    box-shadow: inset 0px 0px 3px 0px black;
 }
 .product-type{
     color: lightgray;
     margin-right: 1rem;
-    font-size: 1.2rem !important;
+    font-size: 1rem !important;
 }
 .product-counter-item{
     min-width: 3rem;
@@ -109,5 +153,40 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.subproduct > .product-content > .product{
+    background-color: #f3f1f1;
+    box-shadow: inset 0px 0px 3px 0px black;
+}
+.slide-enter-active {
+   -moz-transition-duration: 0.3s;
+   -webkit-transition-duration: 0.3s;
+   -o-transition-duration: 0.3s;
+   transition-duration: 0.3s;
+   -moz-transition-timing-function: ease-in;
+   -webkit-transition-timing-function: ease-in;
+   -o-transition-timing-function: ease-in;
+   transition-timing-function: ease-in;
+}
+
+.slide-leave-active {
+   -moz-transition-duration: 0.3s;
+   -webkit-transition-duration: 0.3s;
+   -o-transition-duration: 0.3s;
+   transition-duration: 0.3s;
+   -moz-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+   -webkit-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+   -o-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+   transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.slide-enter-to, .slide-leave {
+   max-height: 230px;
+   overflow: hidden;
+}
+
+.slide-enter, .slide-leave-to {
+   overflow: hidden;
+   max-height: 0;
 }
 </style>

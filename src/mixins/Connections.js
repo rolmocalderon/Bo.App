@@ -42,6 +42,8 @@ Vue.mixin({
         },
         initLocalStorage(){
             localStorage.data = '';
+            localStorage.cities = '';
+            localStorage.measures = '';
         },
         updateLocalStorage(key, value){
             localStorage[key] = JSON.stringify(value);
@@ -55,6 +57,12 @@ Vue.mixin({
             }
 
             return data;
-        }
+        },
+        groupBy(xs, key) {
+			return xs.reduce(function(rv, x) {
+				(rv[x[key]] = rv[x[key]] || []).push(x);
+				return rv;
+			}, {});
+		}
     }
 });

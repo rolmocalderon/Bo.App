@@ -21,13 +21,6 @@ export default {
                     id: 'pickups'
                 },
                 {
-                    title: 'Repartos',
-                    description: '',
-                    icon: '',
-                    color: '',
-                    id: 'delivery'
-                },
-                {
                     title: 'Administrar',
                     description: '',
                     icon: '',
@@ -63,6 +56,6 @@ export default {
     color: #2c3e50;
     background: white;
     font-size: 1.2rem;
-    font-weight: 400;
+    font-weight: 700;
 }
 </style>
