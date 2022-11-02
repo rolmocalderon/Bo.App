@@ -1,23 +1,45 @@
 <template>
-  <div>
+  <div class="admin-container">
     <HeaderBar :user="user" :title="'Administración'" v-on:backSelected="goBack('')"/>
-    <div class="admin-content">
-        <div class="sync-button" :class="{'disabled' : !hasDataToSync}" v-on:click="syncData">
+    <div v-if="isSelection" class="admin-content">
+        <div class="admin-button" :class="{'disabled' : !hasDataToSync}" v-on:click="syncData">
             <font-awesome-icon class="admin-icon" :icon="icon" />
             <span>{{ syncText }}</span>
         </div>
         <span v-if="isErrorOnSync" class="sync-error-result">Error al intentar sincronizar</span>
+        <div class="admin-button" v-on:click="isSelection = false">Mostrar reporte</div>
+    </div>
+    <div v-if="!isSelection" class="report">
+        <div class="flex-container">
+            <div class="date-selector" v-on:click="onCalendarOpen('startDate')">{{ startDate === '' ? 'Fecha de inicio' : startDate}}</div>
+            <div class="date-selector" v-on:click="onCalendarOpen('endDate')">{{ endDate === '' ? 'Fecha de fin' : endDate}}</div>
+        </div>
+        <div class="flex-container result-container">
+            <div class="flex-container header-row">
+                <div class="result-content-item">Producto</div>
+                <div class="result-content-item">Cantidad</div>
+                <div class="result-content-item">Peso</div>
+            </div>
+            <div v-for="(result, index) of results" :key="index" class="flex-container result-row">
+                <div class="result-content-item">{{ result.name }}</div>
+                <div class="result-content-item">{{ result.sum }}</div>
+                <div class="result-content-item">{{ Number(result.weight).toLocaleString('es-ES', { maximumSignificantDigits: 1, minimumSignificantDigits: 1 }) }} Kg</div>
+            </div>
+        </div>
+        <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date" :actualDay="actualDay" :selectableDates="selectableDates"/>
     </div>
   </div>
 </template>
 
 <script>
 import HeaderBar from './HeaderBar';
+import Calendar from './Calendar';
+import * as moment from 'moment';
 
 export default {
     name: 'administration',
     props: ['user'],
-    components: {HeaderBar},
+    components: {HeaderBar, Calendar},
     created() {
         this.isSyncDone = false;
     },
@@ -25,7 +47,16 @@ export default {
         return {
             data: this.getFromLocalStorage('data'),
             isErrorOnSync: false,
-            isSyncDone: false
+            isSyncDone: false,
+            isSelection: true,
+            results: [],
+            calendarDate: '',
+            calendarOpen: false,
+            startDate: '',
+            endDate: '',
+            selectableDates: [],
+            actualDay: '',
+            date: ''
         }
     },
     methods: {
@@ -63,7 +94,7 @@ export default {
         getProductMeasureObj(product, measure){
             return {
                 'productid': product.id,
-                'measureid': measure.id,
+                'measureid': Number(measure.id),
                 'subproductid': product.subproductid,
                 'isSubproduct': product.subproductid !== 0
             };
@@ -80,10 +111,35 @@ export default {
             this.initLocalStorage();
             this.data = '';
             this.isSyncDone = true;
-            this.isErrorOnSync = false;
         },
         syncError(){
             this.isErrorOnSync = true;
+        },
+        showResult(){
+            let self = this;
+            this.getAll('getPickupProductsByDate', function(res){
+                self.results = res;
+                self.isSelection = false;
+            }, { 'startDate': this.startDate, 'endDate': this.endDate });
+        },
+        onCalendarOpen(calendarDate){
+            this.calendarDate = calendarDate;
+            this.calendarOpen = true;
+        },
+        onHideCalendar(){
+            this.calendarOpen = false;
+        },
+        onChangeDate(e){
+            let date = moment(e.date).format('DD/MM/YYYY');
+            if(this.calendarDate === 'startDate'){
+                this.startDate = date;
+            }else{
+                this.endDate = date;
+            }
+
+            if(this.startDate !== '' && this.endDate !== ''){
+                this.showResult();
+            }
         }
     },
     computed:{
@@ -101,6 +157,9 @@ export default {
 </script>
 
 <style scoped>
+    .admin-container{
+        height: 80vh;
+    }
     .admin-content{
         display: flex;
         justify-content: center;
@@ -108,7 +167,7 @@ export default {
         margin-top: 1rem;
         flex-direction: column;
     }
-    .sync-button{
+    .admin-button{
         display: flex;
         justify-content: center;
         align-items: center;
@@ -119,8 +178,9 @@ export default {
         font-size: 1rem;
         font-weight: bold;
         color: #06346f;
+        margin-bottom: 1rem;
     }
-    .sync-button span{
+    .admin-button span{
         margin-left: 0.725rem;
     }
     .sync-error-result{
@@ -134,5 +194,43 @@ export default {
     }
     .admin-icon{
         font-size: 1.5rem;
+    }
+
+    /* REPORT */
+    .report{
+        position: relative;
+    }
+    .flex-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .date-selector{
+        padding: 1rem 2rem;
+        min-width: 6rem;
+        background-color: white;
+        margin: 1rem;
+    }
+    .header-row{
+        background-color: lightgray;
+        font-weight: 700;
+        width: 96%;
+    }
+    .result-container{
+        width: 100%;
+        flex-direction: column;
+    }
+    .result-row{
+        width: 96%;
+        background-color: #f5f2f2;
+    }
+    .result-content-item{
+        flex: 1;
+        padding: 1rem 0;
+    }
+
+    .calendar{
+        top: 4rem;
+        position: absolute;
     }
 </style>

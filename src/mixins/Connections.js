@@ -42,11 +42,9 @@ Vue.mixin({
         },
         initLocalStorage(){
             localStorage.data = '';
-            localStorage.cities = '';
-            localStorage.measures = '';
         },
         updateLocalStorage(key, value){
-            localStorage[key] = JSON.stringify(value);
+            localStorage[key] = value === '' ? value : JSON.stringify(value);
         },
         getFromLocalStorage(key){
             var data = localStorage[key];
