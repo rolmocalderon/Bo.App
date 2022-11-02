@@ -24,7 +24,7 @@
                 <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
                     <span></span>
                 </div>
-                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey': !isSelectableDate(day) && selectableDates.length > 0 || isPreviousDay(day), 'selectable':selectableDates.length > 0 && isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
+                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey': selectableDates && !isSelectableDate(day) && selectableDates.length > 0, 'selectable': selectableDates && selectableDates.length > 0 && isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
                     <span>{{ day }}</span>
                 </div>
             </div>
@@ -91,9 +91,9 @@ export default {
             this.$emit("hideCalendar", e);
         },
         isSelectableDate(day){
-            let date = this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
+            let date = this.selectableDates ? this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day) : undefined;
 
-            return date != undefined ;
+            return date != undefined || !this.selectableDates ;
         },
 		isPreviousDay(day){
 			var currentDate = new Date();
@@ -102,7 +102,7 @@ export default {
 			return date.getTime() < currentDate.getTime();
 		},
         getSelectableDateId(day){
-            let date = this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day);
+            let date = this.selectableDates ? this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day) : undefined;
             return date ? date.id : "";
         },
         isSelectedDay(day){

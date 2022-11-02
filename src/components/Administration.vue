@@ -26,7 +26,7 @@
                 <div class="result-content-item">{{ Number(result.weight).toLocaleString('es-ES', { maximumSignificantDigits: 1, minimumSignificantDigits: 1 }) }} Kg</div>
             </div>
         </div>
-        <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date" :actualDay="actualDay" :selectableDates="selectableDates"/>
+        <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date" :actualDay="actualDay"/>
     </div>
   </div>
 </template>
