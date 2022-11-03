@@ -28,7 +28,7 @@ export default {
 	created(){
 		this.cities = this.getFromLocalStorage('cities');
 		if(this.getFromLocalStorage('data') !== ''){
-			this.selectedPickupId = sessionStorage.getItem('selectedPickup');
+			this.setCurrentPickup(this.getFromLocalStorage('selectedPickup'));
 			this.getProducts();
 			this.showProductList = true;
 			this.modalType = 'product';
@@ -54,11 +54,14 @@ export default {
 			this.modalType = 'pickup';
 		},
 		onDateChanged(e){
+			this.setCurrentPickup(e);
+			this.updateLocalStorage('selectedPickup', e);
+			this.getProducts();
+		},
+		setCurrentPickup(e){
 			this.selectedPickupName = e.selectedPickup;
 			this.selectedDate = e.date;
 			this.selectedPickupId = e.id;
-			sessionStorage.setItem('selectedPickup', e.id);
-			this.getProducts();
 		},
 		getProducts(){
 			var data = this.getFromLocalStorage('data');
@@ -67,7 +70,7 @@ export default {
 				let params = { pickupId: this.selectedPickupId };
 				this.getAll("getPickupProducts", function (res) {
 					self.products = self.parseProducts(res);
-					localStorage.data = JSON.stringify({ [self.selectedPickupId]:  {'products': self.products} });
+					this.updateLocalStorage('data', { [self.selectedPickupId]:  {'products': self.products} })
 					self.showProductList = true;
 					self.modalType = 'product';
 				}, params);

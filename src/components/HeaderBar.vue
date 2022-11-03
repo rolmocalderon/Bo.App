@@ -5,7 +5,7 @@
 		</div>
 		<div class="info">
 			<span v-if="title != ''">{{ title }}</span>
-			<span v-if="subtitle != ''">{{ subtitle }}</span>
+			<span v-if="subtitle != ''" class="subtitle">{{ subtitle }}</span>
 		</div>
 		<div v-if="modalType" class="add-product-icon" v-on:click="added">
 			<font-awesome-icon icon="calendar-plus" />
@@ -76,7 +76,10 @@ export default {
 	flex: 1;
 	margin-left: 2rem;
 	color: white;
-	}
+}
+.info > .subtitle{
+	font-size: 0.9rem;
+}
 .add-product-icon{
 	display: flex;
 	flex-direction: column;
