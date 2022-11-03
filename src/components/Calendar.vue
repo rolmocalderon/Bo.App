@@ -45,14 +45,13 @@ export default {
             actualYear: "",
             previousMonthDays: [],
             lastDayOfMonth: 0,
-            selectedDate: this.dateSelected,
             testing: ""
         }
     },
     created: function(){
         let currentDate = "";
-        if(this.selectedDate){
-            let dateValues = this.selectedDate.split('/');
+        if(this.dateSelected){
+            let dateValues = this.dateSelected.split('/');
             currentDate = moment(new Date(dateValues[2], dateValues[1] -1, dateValues[0]));
         }else{
             currentDate = moment(new Date());

@@ -59,6 +59,7 @@ export default {
   padding: 0.8rem 0;
   margin-bottom: 10px;
   font-size: 1rem;
+  border-radius: 4px;
 }
 
 .dropdown-content {

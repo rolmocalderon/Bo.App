@@ -16,7 +16,8 @@
         <input type="password" v-model="password" placeholder="Password" required />
       </div>
       <div class="row button">
-        <input type="submit" value="Login" v-on:click="submit"/>
+        <input v-if="!loading" type="submit" value="Login" v-on:click="submit"/>
+        <Spinner v-if="loading"/>
       </div>
     </form>
   </div>
@@ -24,18 +25,22 @@
 
 <script>
 import axios from "axios";
+import Spinner from "./Spinner";
 
 export default {
   name: "login",
+  components: { Spinner },
   data: function () {
     return {
       name: "",
       password: "",
+      loading: false
     };
   },
   methods: {
     submit(event) {
       event.preventDefault();
+      this.loading = true;
       this.login(this.name, this.password);
     },
     login(name, password) {
@@ -50,8 +55,9 @@ export default {
 		axios.post(process.env.VUE_APP_WEBAPI_URL + "/login", params, {headers})
 		.then((response) => {
 			if (response.data.data.length > 0) {
+        this.loading = false;
 				this.updateValue(response.data.data);
-				this.initLocalStorage();
+				//this.initLocalStorage();
 			}
 		});
     },

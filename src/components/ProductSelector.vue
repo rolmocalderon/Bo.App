@@ -39,10 +39,10 @@ export default {
           calendarOpen: false,
           selectedPickup: {},
           categoryUri: this.getCategoryUri(),
-          datesUri: this.getDatesUri(),
           dropdownMessage: this.selectorName === 'pickups' ? 'Selecciona una recogida' : 'Selecciona un reparto',
           isDropdownContentShown: false,
-          selectedValue: ''
+          selectedValue: '',
+          cityId: undefined
       }
   },
   methods:{
@@ -61,18 +61,19 @@ export default {
       }else{
         this.pickups = [];
       }
+
+      this.cityId = e.valueId;
     },
     onChangePickup(e) {
       if (e && e.name) {
         let params = {
-          pickupName: e.name
+          pickupName: e.name,
+          cityId: this.cityId
         };
         this.selectedPickup = e.name;
 
         let self = this;
-        db.getAll(
-          this.datesUri,
-          function (res) {
+        db.getAll("getPickupDates",function (res) {
             self.setSelectableDates(res)
           },
           params
@@ -113,14 +114,6 @@ export default {
           return 'getPickups';
         case 'delivery':
           return 'getDeliveries';
-      }
-    },
-    getDatesUri(){
-      switch(this.selectorName){
-        case 'pickups':
-          return 'getPickupDates';
-        case 'delivery':
-          return 'getDeliveryDates';
       }
     },
     changeDropdownStatus(value){
