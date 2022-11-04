@@ -147,7 +147,7 @@ a {
   align-items: center;
 }
 .background-blue {
-  background: #5d85c5 !important;
+  background: #4065AD !important;
   color: white;
 }
 .greeting {

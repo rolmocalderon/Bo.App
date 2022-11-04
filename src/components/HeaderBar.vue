@@ -61,7 +61,7 @@ export default {
 <style scoped>
 .info-box{
 	height: 3.5rem;
-	background: #5d85c5;
+	background: #4065AD;
 	display: flex;
 	justify-content: center;
 	align-items: center;
