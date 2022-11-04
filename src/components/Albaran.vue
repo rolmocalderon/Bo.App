@@ -50,7 +50,7 @@ export default {
 	methods: {
 		hideProductList(){
 			this.showProductList = false;
-			this.initLocalStorage();
+			//this.initLocalStorage();
 			this.modalType = 'pickup';
 		},
 		onDateChanged(e){
@@ -70,7 +70,13 @@ export default {
 				let params = { pickupId: this.selectedPickupId };
 				this.getAll("getPickupProducts", function (res) {
 					self.products = self.parseProducts(res);
-					this.updateLocalStorage('data', { [self.selectedPickupId]:  {'products': self.products} })
+					if(data.length > 0){
+						data[self.selectedPickupId] = {'products': self.products};
+					}else{
+						data = { [self.selectedPickupId]:  {'products': self.products} }
+					}
+					
+					self.updateLocalStorage('data', data);
 					self.showProductList = true;
 					self.modalType = 'product';
 				}, params);

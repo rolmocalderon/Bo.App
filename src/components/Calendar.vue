@@ -147,6 +147,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 .calendar__opts, .calendar__buttons {
   background-color: #fff;
