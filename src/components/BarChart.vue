@@ -73,7 +73,8 @@ export default {
           {
             label: 'Data',
             backgroundColor: '#93b6ef',
-            data: this.values.data
+            data: this.values.data,
+            dates: this.values.dates
           }
         ]
       },
@@ -85,17 +86,29 @@ export default {
                 display: false
             },
             tooltip: {
+                displayColors: false,
                 callbacks: {
                     label: function(context){
-                        return `Data: ${context.formattedValue} Kg`
+                        return [`Data: ${context.formattedValue} Kg`, `Fecha: ${context.dataset.dates[context.dataIndex]}`];
                     },
                     title: function(context) {
                         return context[0].label.replace(',',' ');
                     }
                 }
             }
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                grid: {
+                    display: false
+                }
+            }
         }
-        
       }
     }
   },
@@ -103,6 +116,8 @@ export default {
     values: function(val){
         this.chartData.datasets.data = val.data;
         this.chartData.labels = val.labels;
+        this.chartData.dates = val.dates;
+        this
     }
   }
 }

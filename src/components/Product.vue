@@ -15,7 +15,7 @@
                     <div class="product-count product-counter-item">
                         <span>{{ measure.amount }}</span>
                     </div>
-                    <div class="product-icon product-counter-item" v-on:click="productUpdated(true, measure.id)">
+                    <div class="product-icon product-counter-item" :class="{'disabled': !measure.id}" v-on:click="productUpdated(true, measure.id)">
                         <font-awesome-icon :icon="'plus-circle'" />
                     </div>
                 </div>

@@ -32,7 +32,8 @@ export default {
             this.getAll('getTopPickups', function(data){
                 self.values = {
                     labels: data.map(d => d.name.split(' ')),
-                    data: data.map(d => d.amount)
+                    data: data.map(d => d.amount),
+                    dates: data.map(d => d.date)
                 };
 
                 self.canShowChart = self.values.labels.length > 0;

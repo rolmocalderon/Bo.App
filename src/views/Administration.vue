@@ -1,6 +1,6 @@
 <template>
   <div class="admin-container">
-    <HeaderBar :user="user" :title="'Administración'" v-on:backSelected="goBack('')"/>
+    <HeaderBar :user="user" :title="'Administración'" v-on:backSelected="goBack()"/>
     <div v-if="isSelection" class="admin-content">
         <div class="admin-button" :class="{'disabled' : !hasDataToSync}" v-on:click="syncData">
             <font-awesome-icon class="admin-icon" :icon="icon" />
@@ -38,7 +38,13 @@ export default {
     },
     methods: {
         goBack(target = ''){
-			this.$emit('navigation', target);
+            console.log()
+            if(this.selectedOption === ''){
+                this.$emit('navigation', target);
+            }else{
+                this.selectedOption = '';
+                this.isSelection = true;
+            }
 		},
         syncData(){
             var productsData = [];
