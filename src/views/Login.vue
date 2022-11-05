@@ -25,7 +25,7 @@
 
 <script>
 import axios from "axios";
-import Spinner from "./Spinner";
+import Spinner from "../components/Spinner";
 
 export default {
   name: "login",

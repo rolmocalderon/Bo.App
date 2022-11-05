@@ -7,20 +7,23 @@
             <span>{{ syncText }}</span>
         </div>
         <span v-if="isErrorOnSync" class="sync-error-result">Error al intentar sincronizar</span>
-        <div class="admin-button" v-on:click="isSelection = false">Mostrar reporte</div>
+        <div class="admin-button" v-on:click="onOptionSelected('report')">Mostrar reporte</div>
+        <div class="admin-button" v-on:click="onOptionSelected('chartReport')">Mostrar Gráficas</div>
     </div>
-    <Report v-if="!isSelection"/>
+    <Report v-if="!isSelection && selectedOption === 'report'"/>
+    <ChartReport v-if="!isSelection && selectedOption === 'chartReport'" class="flex-container"/>
   </div>
 </template>
 
 <script>
-import HeaderBar from './HeaderBar';
+import HeaderBar from '../components/HeaderBar';
 import Report from './Admin/Report';
+import ChartReport from './Admin/ChartReport';
 
 export default {
     name: 'administration',
     props: ['user'],
-    components: {HeaderBar, Report},
+    components: {HeaderBar, Report, ChartReport},
     created() {
         this.isSyncDone = false;
     },
@@ -29,7 +32,8 @@ export default {
             data: this.getFromLocalStorage('data'),
             isErrorOnSync: false,
             isSyncDone: false,
-            isSelection: true
+            isSelection: true,
+            selectedOption: ''
         }
     },
     methods: {
@@ -87,6 +91,10 @@ export default {
         },
         syncError(){
             this.isErrorOnSync = true;
+        },
+        onOptionSelected(option){
+            this.isSelection = false;
+            this.selectedOption = option;
         }
     },
     computed:{

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Main from './components/Main.vue'
+import Main from './views/Main.vue'
 
 export default {
   name: 'App',
@@ -64,5 +64,11 @@ input:focus::placeholder {
 
 .hidden{
   display: none !important;
+}
+
+.flex-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

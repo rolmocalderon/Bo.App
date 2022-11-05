@@ -29,8 +29,8 @@
 </template>
 
 <script>
-import Calendar from '../Calendar';
-import Dropdown from '../Dropdown';
+import Calendar from '../../components/Calendar';
+import Dropdown from '../../components/Dropdown';
 import * as moment from 'moment';
 
 export default {
@@ -102,11 +102,6 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-    .flex-container{
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
     .date-selector{
         padding: 1rem 1rem;

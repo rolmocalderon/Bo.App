@@ -16,10 +16,10 @@
 </template>
 
 <script>
-import Product from "./Product";
+import Product from "../components/Product";
 import ProductSelector from "./ProductSelector";
-import Snackbar from './Snackbar';
-import HeaderBar from './HeaderBar';
+import Snackbar from '../components/Snackbar';
+import HeaderBar from '../components/HeaderBar';
 
 export default {
 	components: { Product, ProductSelector, HeaderBar, Snackbar },

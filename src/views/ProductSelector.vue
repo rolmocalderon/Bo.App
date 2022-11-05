@@ -21,8 +21,8 @@
 
 <script>
 import db from '../services/db';
-import Calendar from "./Calendar";
-import Dropdown from "./Dropdown";
+import Calendar from "../components/Calendar";
+import Dropdown from "../components/Dropdown";
 import * as moment from 'moment';
 
 export default {
@@ -38,7 +38,7 @@ export default {
           date: "",
           calendarOpen: false,
           selectedPickup: {},
-          categoryUri: this.getCategoryUri(),
+          categoryUri: 'getPickups',
           dropdownMessage: this.selectorName === 'pickups' ? 'Selecciona una recogida' : 'Selecciona un reparto',
           isDropdownContentShown: false,
           selectedValue: '',
@@ -107,14 +107,6 @@ export default {
     },
     datechanged(e){
         this.$emit('dateChanged', e);
-    },
-    getCategoryUri(){
-      switch(this.selectorName){
-        case 'pickups':
-          return 'getPickups';
-        case 'delivery':
-          return 'getDeliveries';
-      }
     },
     changeDropdownStatus(value){
       this.isDropdownContentShown = value;

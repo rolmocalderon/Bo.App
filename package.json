@@ -15,10 +15,12 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^2.0.8",
     "axios": "^0.24.0",
+    "chart.js": "^3.9.1",
     "core-js": "^3.6.5",
     "moment": "^2.29.1",
     "typeface-roboto": "^1.1.13",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-chartjs": "^4.1.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
