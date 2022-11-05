@@ -6,6 +6,7 @@
 		</div>
 		<div class="albaran-container" v-if="showProductList">
 			<HeaderBar :title="selectedPickupName" :subtitle="selectedDate" :modalType="modalType" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductAdded" v-on:backSelected="hideProductList"/>
+			<Alert :message="alertMessage"/>
 			<div class="product-container">
 				<Product v-for="(product) in products.filter(p => p.issubproduct === 'false')" :key="product.name" :product="product" :pickupId="selectedPickupId" :subproducts="getSubproducts(product)"/>
 			</div>
@@ -20,9 +21,10 @@ import Product from "../components/Product";
 import ProductSelector from "./ProductSelector";
 import Snackbar from '../components/Snackbar';
 import HeaderBar from '../components/HeaderBar';
+import Alert from '../components/alerts/Alert';
 
 export default {
-	components: { Product, ProductSelector, HeaderBar, Snackbar },
+	components: { Product, ProductSelector, HeaderBar, Snackbar, Alert },
 	name: "Albaran",
 	props: ["title"],
 	created(){
@@ -44,7 +46,8 @@ export default {
 			cities: [],
 			modalType: 'pickup',
 			canShowSnackbar: false,
-			showEditProductModal: false
+			showEditProductModal: false,
+			alertMessage: ''
 		};
 	},
 	methods: {
@@ -62,6 +65,7 @@ export default {
 			this.selectedPickupName = e.selectedPickup;
 			this.selectedDate = e.date;
 			this.selectedPickupId = e.id;
+			this.getAlertMessage(e.cityId)
 		},
 		getProducts(){
 			var data = this.getFromLocalStorage('data');
@@ -140,6 +144,19 @@ export default {
 		},
 		getSubproducts(product){
 			return this.products.filter(p => p.issubproduct === "true" && p.id === product.id);
+		},
+		getAlertMessage(cityId){
+			var self = this;
+			this.getAll('getNeededProducts', function(res){
+				var products = res.filter(p => p.amount > 0 && p.amount < p.monthlyaverage)
+				var message = 'Productos urgentes: {0}, {1} y {2}';
+				for(var product of products){
+					let index = products.indexOf(product);
+					message = message.replace(`{${index}}`, product.name);
+				}
+
+				self.alertMessage = message;
+			}, { cityId });
 		}
 	},
 };

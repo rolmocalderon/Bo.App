@@ -97,6 +97,7 @@ export default {
       this.actualDay = moment(e.date).date();
       e.selectedPickup = this.selectedPickup;
       e.date = this.date;
+      e.cityId = this.cityId;
       this.datechanged(e);
     },
     onHideCalendar(){

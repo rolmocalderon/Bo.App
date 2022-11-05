@@ -1,7 +1,7 @@
 <template>
   <!DOCTYPE html>
   <div class="wrapper">
-    <div class="title"><span>Login Form</span></div>
+    <img class="logo" alt="Vue logo" src="../assets/logo.png"/>
     <form action="#">
       <div class="row">
         <div class="login-icon">

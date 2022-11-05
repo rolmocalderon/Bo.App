@@ -2,7 +2,7 @@
     <div class="product-content" :class="{'selected-product': showSubproducts}">
         <div class="product" v-on:click="productSelected">
             <div class="product-info">
-                <span class="product-name">{{ product.name }}</span>
+                <span class="product-name">{{ product.name.replace('¤', 'ñ') }}</span>
             </div>
             <div v-if="!subproducts || subproducts.length === 0" class="product-counter">
                 <div v-for="(measure) in product.measures" :key="measure.id" class="product-counter-divisor">
