@@ -13,12 +13,20 @@
 </template>
 
 <script>
-import { Bar } from 'vue-chartjs/legacy';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { Bar } from 'vue-chartjs/legacy'
+
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+} from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 ChartJS.defaults.color = "#fff";
-ChartJS.defaults.font.size = "11px";
 
 export default {
   name: 'BarChart',
@@ -49,8 +57,8 @@ export default {
       default: () => {}
     },
     plugins: {
-      type: Object,
-      default: () => {}
+      type: Array,
+      default: () => []
     },
     values: {
         type: Object,
@@ -61,23 +69,33 @@ export default {
     return {
       chartData: {
         labels: this.values.labels,
-        datasets: [ { 
+        datasets: [
+          {
             label: 'Data',
-            data: this.values.data,
-            backgroundColor: ['#93b6ef'],
-            color: '#fff'
-        } ]
+            backgroundColor: '#93b6ef',
+            data: this.values.data
+          }
+        ]
       },
       chartOptions: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: false
             },
             tooltip: {
-                enabled: true
+                callbacks: {
+                    label: function(context){
+                        return `Data: ${context.formattedValue} Kg`
+                    },
+                    title: function(context) {
+                        return context[0].label.replace(',',' ');
+                    }
+                }
             }
         }
+        
       }
     }
   },
