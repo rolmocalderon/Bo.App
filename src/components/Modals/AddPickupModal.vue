@@ -99,5 +99,4 @@ export default {
 .not-validated::placeholder{
     color: #ff7c7c;
 }
-
 </style>
