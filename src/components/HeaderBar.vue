@@ -18,13 +18,13 @@
 </template>
 
 <script>
-import AddProductModal from './Modals/AddProductModal';
-import AddPickupModal from './Modals/AddPickupModal';
+import AddProductModal from './modals/AddProductModal';
+import AddPickupModal from './modals/AddPickupModal';
 
 export default {
 	name: 'header-bar',
 	components: { AddPickupModal, AddProductModal },
-	props: ['title', 'subtitle', 'modalType', 'selectedPickupId', 'cities'],
+	props: ['title', 'subtitle', 'modalType', 'cities'],
 	data(){
 		return {
 			showAddProductModal: false,

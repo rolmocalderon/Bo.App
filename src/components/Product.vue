@@ -71,7 +71,13 @@ export default {
             }
             
             var data = this.getFromLocalStorage('data');
-            var product = data[this.pickupId].products.find(p => p.id === this.product.id);
+            var product = {};
+            if(this.isSubproduct){
+                product = data[this.pickupId].products.find(p => p.subproductid === this.product.subproductid);
+            }else{
+                product = data[this.pickupId].products.find(p => p.id === this.product.id);
+            }
+
             product.measures = this.product.measures;
             this.updateLocalStorage('data', data);
         },

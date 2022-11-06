@@ -4,27 +4,19 @@
 			<HeaderBar v-if="!showProductList" v-on:backSelected="goBack" :title="title" :modalType="modalType" v-on:showSnackbar="showSnackbar" :cities="cities"/>
 			<ProductSelector v-on:dateChanged="onDateChanged" :selectorName="'pickups'" :cities="cities"></ProductSelector>
 		</div>
-		<div class="albaran-container" v-if="showProductList">
-			<HeaderBar :title="selectedPickupName" :subtitle="selectedDate" :modalType="modalType" :selectedPickupId="selectedPickupId" v-on:productAdded="onProductAdded" v-on:backSelected="hideProductList"/>
-			<Alert :message="alertMessage"/>
-			<div class="product-container">
-				<Product v-for="(product) in products.filter(p => p.issubproduct === 'false')" :key="product.name" :product="product" :pickupId="selectedPickupId" :subproducts="getSubproducts(product)"/>
-			</div>
-		</div>
-
+		<ProductList class="albaran-container" v-if="showProductList" :selectedPickup="selectedPickup" :modalType="modalType" :products="products" v-on:backSelected="hideProductList"/>
 		<Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
 	</div>
 </template>
 
 <script>
-import Product from "../components/Product";
 import ProductSelector from "./ProductSelector";
 import Snackbar from '../components/Snackbar';
 import HeaderBar from '../components/HeaderBar';
-import Alert from '../components/alerts/Alert';
+import ProductList from './ProductList';
 
 export default {
-	components: { Product, ProductSelector, HeaderBar, Snackbar, Alert },
+	components: { ProductSelector, HeaderBar, Snackbar, ProductList },
 	name: "Albaran",
 	props: ["title"],
 	created(){
@@ -40,14 +32,11 @@ export default {
 		return {
 			products: [],
 			showProductList: false,
-			selectedPickupId: "",
-			selectedPickupName: '',
 			selectedDate: '',
 			cities: [],
 			modalType: 'pickup',
 			canShowSnackbar: false,
-			showEditProductModal: false,
-			alertMessage: ''
+			selectedPickup: {}
 		};
 	},
 	methods: {
@@ -62,22 +51,19 @@ export default {
 			this.getProducts();
 		},
 		setCurrentPickup(e){
-			this.selectedPickupName = e.selectedPickup;
-			this.selectedDate = e.date;
-			this.selectedPickupId = e.id;
-			this.getAlertMessage(e.cityId)
+			this.selectedPickup = e;
 		},
 		getProducts(){
 			var data = this.getFromLocalStorage('data');
-			if(data === '' || !data[this.selectedPickupId]){
+			if(data === '' || !data[this.selectedPickup.id]){
 				let self = this;
-				let params = { pickupId: this.selectedPickupId };
+				let params = { pickupId: this.selectedPickup.id };
 				this.getAll("getPickupProducts", function (res) {
 					self.products = self.parseProducts(res);
 					if(data.length > 0){
-						data[self.selectedPickupId] = {'products': self.products};
+						data[self.selectedPickup.id] = {'products': self.products};
 					}else{
-						data = { [self.selectedPickupId]:  {'products': self.products} }
+						data = { [self.selectedPickup.id]:  {'products': self.products} }
 					}
 					
 					self.updateLocalStorage('data', data);
@@ -85,7 +71,7 @@ export default {
 					self.modalType = 'product';
 				}, params);
 			}else{
-				this.products = data[this.selectedPickupId].products;
+				this.products = data[this.selectedPickup.id].products;
 				this.showProductList = true;
 				this.modalType = 'product';
 			}
@@ -100,28 +86,9 @@ export default {
 				self.canShowSnackbar = false;
 			}, 5000);
 		},
-		onProductAdded(e){
-			let form = this.serializeForm(e);
-			let data = this.getFromLocalStorage("data");
-			let products = data[this.selectedPickupId].products;
-
-			if(!products.find(p => p.name.toLowerCase() === form.productName.toLowerCase())){
-				let newProduct = {
-					id: Math.max(...products.map(p => p.id)) + 1,
-					name: form.productName,
-					measures: [
-						{
-							id: form.measure,
-							type: form.measuretype,
-							amount: form.productAmount
-						}
-					]
-				}
-				products.push(newProduct);
-				this.updateLocalStorage("data", data);
-				this.showSnackbar();
-				this.getProducts();
-			}
+		onProductAdded(){
+			this.showSnackbar();
+			this.getProducts();
 		},
 		parseProducts(products){
 			var parsedProducts = [];
@@ -141,22 +108,6 @@ export default {
 			}
 
 			return parsedProducts;
-		},
-		getSubproducts(product){
-			return this.products.filter(p => p.issubproduct === "true" && p.id === product.id);
-		},
-		getAlertMessage(cityId){
-			var self = this;
-			this.getAll('getNeededProducts', function(res){
-				var products = res.filter(p => p.amount > 0 && p.amount < p.monthlyaverage)
-				var message = 'Productos urgentes: {0}, {1} y {2}';
-				for(var product of products){
-					let index = products.indexOf(product);
-					message = message.replace(`{${index}}`, product.name);
-				}
-
-				self.alertMessage = message;
-			}, { cityId });
 		}
 	},
 };
@@ -196,10 +147,5 @@ export default {
 .date-box span{
 	padding-left: 1rem;
 	color: #757575;
-}
-
-.product-container{
-	display: flex;
-	flex-direction: column;
 }
 </style>

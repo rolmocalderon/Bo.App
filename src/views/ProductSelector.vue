@@ -95,7 +95,7 @@ export default {
     onChangeDate(e){
       this.date = moment(e.date).format('DD/MM/YYYY');
       this.actualDay = moment(e.date).date();
-      e.selectedPickup = this.selectedPickup;
+      e.name = this.selectedPickup;
       e.date = this.date;
       e.cityId = this.cityId;
       this.datechanged(e);

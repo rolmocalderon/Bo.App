@@ -1,7 +1,5 @@
 <template>
-  <!DOCTYPE html>
   <div class="wrapper">
-    <img class="logo" alt="Vue logo" src="../assets/logo.png"/>
     <form action="#">
       <div class="row">
         <div class="login-icon">
@@ -103,7 +101,7 @@ body {
   margin: 170px auto;
 }
 .wrapper {
-  width: 100%;
+  width: 90%;
   background: #fff;
   border-radius: 5px;
   box-shadow: 0px 4px 10px 1px rgba(0, 0, 0, 0.1);
