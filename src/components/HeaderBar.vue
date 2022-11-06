@@ -29,8 +29,7 @@ export default {
 		return {
 			showAddProductModal: false,
 			showAddPickupModal: false,
-			iconSubtitle: "",
-			user: this.getFromLocalStorage('user')
+			iconSubtitle: ""
 		}
     },
     methods: {

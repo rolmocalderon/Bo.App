@@ -117,7 +117,6 @@ export default {
         this.chartData.datasets.data = val.data;
         this.chartData.labels = val.labels;
         this.chartData.dates = val.dates;
-        this
     }
   }
 }

@@ -1,17 +1,19 @@
 <template>
   <div class="admin-container">
-    <HeaderBar :user="user" :title="'Administración'" v-on:backSelected="goBack()"/>
+    <HeaderBar :title="'Administración'" v-on:backSelected="goBack()"/>
     <div v-if="isSelection" class="admin-content">
         <div class="admin-button" :class="{'disabled' : !hasDataToSync}" v-on:click="syncData">
             <font-awesome-icon class="admin-icon" :icon="icon" />
             <span>{{ syncText }}</span>
         </div>
         <span v-if="isErrorOnSync" class="sync-error-result">Error al intentar sincronizar</span>
+        <div class="admin-button" v-on:click="onOptionSelected('config')">Configuration</div>
         <div class="admin-button" v-on:click="onOptionSelected('report')">Mostrar reporte</div>
         <div class="admin-button" v-on:click="onOptionSelected('chartReport')">Mostrar Gráficas</div>
     </div>
     <Report v-if="!isSelection && selectedOption === 'report'"/>
     <ChartReport v-if="!isSelection && selectedOption === 'chartReport'" class="flex-container"/>
+    <Configuration v-if="!isSelection && selectedOption === 'config'" class="flex-container"/>
   </div>
 </template>
 
@@ -19,11 +21,11 @@
 import HeaderBar from '../components/HeaderBar';
 import Report from './Admin/Report';
 import ChartReport from './Admin/ChartReport';
+import Configuration from './Admin/Configuration';
 
 export default {
     name: 'administration',
-    props: ['user'],
-    components: {HeaderBar, Report, ChartReport},
+    components: {HeaderBar, Report, ChartReport, Configuration},
     created() {
         this.isSyncDone = false;
     },

@@ -61,12 +61,12 @@ export default {
   vertical-align: middle;
 }
 .modal-container {
-    width: 300px;
+    width: 85%;
     margin: 0px auto;
-    padding: 20px 20px;
+    padding: 1rem;
     background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 33%);
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -102,7 +102,10 @@ export default {
 }
 
 .modal-body {
-  margin: 3rem 0;
+  margin: 3rem 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .modal-body select{
@@ -117,8 +120,11 @@ export default {
     border: none;
     padding: 1rem 1rem;
     margin-bottom: 1rem;
-    box-shadow: 0 0 5px rgb(0 0 0 / 50%);
     border-radius: 2px;
+}
+
+.modal-body input[type="text"]{
+    box-shadow: 0 0 5px rgb(0 0 0 / 50%);
     width: 89%;
 }
 

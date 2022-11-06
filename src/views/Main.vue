@@ -29,13 +29,13 @@ export default {
   components: { Login, Albaran, Navigator, Administration },
   created() {
     if (this.isUserLogged()) {
-		this.isLogged = true;
-		this.user = cookies.getCookie("user");
-		this.initCities();
-		this.initMeasures();
-		this.loginCheckin();
+      this.isLogged = true;
+      this.user = cookies.getCookie("user");
+      this.initCities();
+      this.initMeasures();
+      this.loginCheckin();
     } else {
-		localStorage.cities = "";
+      localStorage.cities = "";
     }
 
     if (sessionStorage.getItem("currentPage") === "pickups") {
@@ -45,25 +45,20 @@ export default {
   data: function () {
     return {
       isLogged: false,
-      user: {},
       navigateOption: "",
       isCheckin: false,
     };
   },
   methods: {
     logIn(value) {
-		if(value){
-			this.user = {
-				name: value[0].name,
-				category: value[0].category,
-				cityid: value[0].cityid,
-			};
-			this.isLogged = true;
-			cookies.createCookie("user", JSON.stringify(this.user));
-			this.initCities();
-			this.initMeasures();
-			this.loginCheckin();
-		}
+      if(value){
+        this.setUser(value);
+        this.isLogged = true;
+        cookies.createCookie("user", JSON.stringify(this.user));
+        this.initCities();
+        this.initMeasures();
+        this.loginCheckin();
+      }
     },
     userNavigated(event) {
       if (event === "pickups") {
@@ -163,5 +158,38 @@ a {
 .log-off:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+
+/* TRANSITIONS */ 
+.slide-enter-active {
+   -moz-transition-duration: 0.3s;
+   -webkit-transition-duration: 0.3s;
+   -o-transition-duration: 0.3s;
+   transition-duration: 0.3s;
+   -moz-transition-timing-function: ease-in;
+   -webkit-transition-timing-function: ease-in;
+   -o-transition-timing-function: ease-in;
+   transition-timing-function: ease-in;
+}
+
+.slide-leave-active {
+   -moz-transition-duration: 0.3s;
+   -webkit-transition-duration: 0.3s;
+   -o-transition-duration: 0.3s;
+   transition-duration: 1s;
+   -moz-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+   -webkit-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+   -o-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+   transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.slide-enter-to, .slide-leave {
+   max-height: 100vh;
+   overflow: hidden;
+}
+
+.slide-enter, .slide-leave-to {
+   overflow: hidden;
+   max-height: 0;
 }
 </style>
