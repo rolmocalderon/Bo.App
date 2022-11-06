@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import AddProductModal from './modals/AddProductModal';
-import AddPickupModal from './modals/AddPickupModal';
+import AddProductModal from './Modals/AddProductModal';
+import AddPickupModal from './Modals/AddPickupModal';
 
 export default {
 	name: 'header-bar',
