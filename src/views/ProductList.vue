@@ -50,8 +50,8 @@ export default {
 		},
 		getAlertMessage(){
 			var self = this;
-			this.getAll('getNeededProducts', function(res){
-				var products = res.filter(p => p.amount > 0 && Number(p.amount) < Number(p.monthlyaverage))
+			this.getAll('getNeededProducts', function(products){
+				//products = products.filter(p => p.amount > 0 && Number(p.amount) < Number(p.monthlyaverage))
 				var message = products.length > 0 ? 'Productos urgentes: {0}, {1} y {2}' : '';
 				for(var product of products){
 					let index = products.indexOf(product);

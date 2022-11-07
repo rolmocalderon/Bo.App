@@ -11,16 +11,18 @@
             <span class="item">{{ product.name }}</span>
             <span class="item">{{ product.monthlyaverage }} Kg</span>
             <span class="item">1</span>
-            <font-awesome-icon icon="edit" class="right-icon"/>
+            <label class="checkbox-inline">
+              <input type="checkbox" name="urgent" class="item-selectable" v-on:click="setUrgent($event,product)" :checked="product.isurgent == 1"/>
+            </label>
           </div>
         </div>
       </transition>
     </div>
     <Modal v-if="showModal" :headerMessage="modalHeaderMessage" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="closeModal" v-on:submit="onSubmit">
       <input type="text" name="product" placeholder="Nombre del producto... " v-on:input="isSubmitActive = true" :value="selectedProduct.name">
-      <input type="text" name="monthlyaverage" placeholder="Media mensual... " v-on:input="isSubmitActive = true" :value="selectedProduct.monthlyaverage">
-      <input type="text" name="priority" placeholder="Prioridad... " v-on:input="isSubmitActive = true">
-      <label class="checkbox-inline">Es producto urgente: <input type="checkbox" name="terms" /></label>
+      <input type="number" name="monthlyaverage" placeholder="Media mensual... " min="0" :value="selectedProduct.monthlyaverage">
+      <input type="number" name="priority" placeholder="Prioridad... " min="0" :value="selectedProduct.isurgent">
+      <label class="checkbox-inline">Es producto urgente: <input type="checkbox" name="urgent" /></label>
     </Modal>
   </div>
 </template>
@@ -42,25 +44,14 @@ export default {
     }
   },
   mounted(){
-    this.getAll('getProducts', (function(res){
-      this.products = res;
-    }).bind(this));
+    this.getProducts();
   },
   methods: {
     onSubmit(e){
-      var product = e.target.querySelector('input').value;
-      var params = {
-        'name': product,
-        'id': this.selectedProduct.id
-      };
-
-      console.log(params);
+      var product = e.target.querySelector("[name='product']").value;
+      var avg = e.target.querySelector("[name='monthlyaverage']").value;
       this.closeModal();
-      /*this.insert('insertCity', (function() { 
-        this.getCities((function(){
-          this.cities = this.getFromLocalStorage('cities')
-        }).bind(this));
-      }).bind(this), params);*/
+      this.insertProduct(product, this.selectedProduct.id, avg);
     },
     itemSelected(product){
       this.selectedProduct = product;
@@ -74,6 +65,27 @@ export default {
     closeModal(){
       this.showModal = false;
       this.selectedProduct = {}
+    },
+    getProducts(){
+      this.getAll('getProducts', (function(res){
+        this.products = res;
+      }).bind(this));
+    },
+    setUrgent(e, product){
+      e.stopPropagation();
+      let items = Array.from(document.querySelectorAll('.item-selectable'))
+      if(items.filter(i => i.checked).length <= 3){
+        let isUrgent = e.target.checked ? 1 : 0;
+        this.insertProduct(product.name, product.id, product.monthlyaverage, isUrgent)
+      }else{
+        e.target.checked = false;
+      }
+    },
+    insertProduct(name, id, avg, isUrgent){
+      var params = { name, id, avg, isUrgent };
+      this.insert('insertProduct', (function() { 
+        this.getProducts();
+      }).bind(this), params);
     }
   }
 }
@@ -136,5 +148,12 @@ export default {
 }
 .item{
   flex: 1;
+}
+.item:first-child{
+  flex: 2;
+}
+.item-selectable{
+  height: 1.2rem;
+  width: 1.2rem;
 }
 </style>
