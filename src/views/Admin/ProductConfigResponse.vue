@@ -74,15 +74,22 @@ export default {
     setUrgent(e, product){
       e.stopPropagation();
       let items = Array.from(document.querySelectorAll('.item-selectable'))
+      let isUpdate = false;
       if(items.filter(i => i.checked).length <= 3){
-        let isUrgent = e.target.checked ? 1 : 0;
-        this.insertProduct(product.name, product.id, product.monthlyaverage, isUrgent)
-      }else{
+        isUpdate = true;
+      }else {
         e.target.checked = false;
       }
+
+      if(isUpdate){
+        this.insert('updateUrgentProduct', (function() { 
+          this.getProducts();
+        }).bind(this), { cityId: 2, productId: product.id, isAdd: e.target.checked });
+      }
+
     },
-    insertProduct(name, id, avg, isUrgent){
-      var params = { name, id, avg, isUrgent };
+    insertProduct(name, id, avg){
+      var params = { name, id, avg };
       this.insert('insertProduct', (function() { 
         this.getProducts();
       }).bind(this), params);

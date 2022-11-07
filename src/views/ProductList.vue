@@ -50,12 +50,22 @@ export default {
 		},
 		getAlertMessage(){
 			var self = this;
-			this.getAll('getNeededProducts', function(products){
+			this.getAll('getProducts', function(products){
 				//products = products.filter(p => p.amount > 0 && Number(p.amount) < Number(p.monthlyaverage))
-				var message = products.length > 0 ? 'Productos urgentes: {0}, {1} y {2}' : '';
+                products = products.filter(p => p.isurgent === 1);
+                console.log(products)
+				var message = products.length > 0 ? 'Productos urgentes: ' : '';
+                var index = 0;
 				for(var product of products){
-					let index = products.indexOf(product);
-					message = message.replace(`{${index}}`, product.name);
+                    if(index === 0){
+                        message += product.name;
+                    } else if(index !== products.length -1){
+                        message += `, ${product.name}`;
+                    } else if(index !== 0){
+                        message += ` y ${product.name}`;
+                    }
+
+                    index++;
 				}
 
 				self.alertMessage = message;
