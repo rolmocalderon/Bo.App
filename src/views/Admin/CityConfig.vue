@@ -9,7 +9,6 @@
         <div class="configuration-values" v-if="canShowContent">
           <div class="config-item" v-for="city of cities" :key="city.id" v-on:click="itemSelected(city)">
             <span>{{ city.name }}</span>
-            <font-awesome-icon icon="edit" class="right-icon"/>
           </div>
         </div>
       </transition>

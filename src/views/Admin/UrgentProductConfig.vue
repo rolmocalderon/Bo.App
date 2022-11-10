@@ -3,14 +3,12 @@
     <div class="configuration-content">
       <div class="configuration-header" v-on:click="$emit('showContent', 'urgentProduct', $event)">
         <span>Productos Urgentes</span>
-        <font-awesome-icon icon="plus" class="right-icon" v-if="canShowContent"/>
       </div>
       <transition name="slide">
         <div class="configuration-values" v-if="canShowContent">
           <Dropdown :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="onChangeCity"></Dropdown>
           <div class="config-item flex-container" v-for="product of products" :key="product.id">
             <span class="item">{{ product.name }}</span>
-            <span class="item">{{ product.monthlyaverage }} Kg</span>
             <label class="checkbox-inline">
               <input type="checkbox" name="urgent" class="item-selectable" v-on:click="setUrgent($event,product)" :checked="product.isurgent == 1"/>
             </label>

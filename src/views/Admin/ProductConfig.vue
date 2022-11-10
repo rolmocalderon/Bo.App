@@ -10,10 +10,6 @@
           <div class="config-item flex-container" v-for="product of products" :key="product.id" v-on:click="itemSelected(product)">
             <span class="item">{{ product.name }}</span>
             <span class="item">{{ product.monthlyaverage }} Kg</span>
-            <span class="item">1</span>
-            <label class="checkbox-inline">
-              <input type="checkbox" name="urgent" class="item-selectable" v-on:click="setUrgent($event,product)" :checked="product.isurgent == 1"/>
-            </label>
           </div>
         </div>
       </transition>
@@ -21,8 +17,6 @@
     <Modal v-if="showModal" :headerMessage="modalHeaderMessage" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="closeModal" v-on:submit="onSubmit">
       <input type="text" name="product" placeholder="Nombre del producto... " v-on:input="isSubmitActive = true" :value="selectedProduct.name">
       <input type="number" name="monthlyaverage" placeholder="Media mensual... " min="0" :value="selectedProduct.monthlyaverage">
-      <input type="number" name="priority" placeholder="Prioridad... " min="0" :value="selectedProduct.isurgent">
-      <label class="checkbox-inline">Es producto urgente: <input type="checkbox" name="urgent" /></label>
     </Modal>
   </div>
 </template>
@@ -70,23 +64,6 @@ export default {
       this.getAll('getProducts', (function(res){
         this.products = res;
       }).bind(this));
-    },
-    setUrgent(e, product){
-      e.stopPropagation();
-      let items = Array.from(document.querySelectorAll('.item-selectable'))
-      let isUpdate = false;
-      if(items.filter(i => i.checked).length <= 3){
-        isUpdate = true;
-      }else {
-        e.target.checked = false;
-      }
-
-      if(isUpdate){
-        this.insert('updateUrgentProduct', (function() { 
-          this.getProducts();
-        }).bind(this), { cityId: 2, productId: product.id, isAdd: e.target.checked });
-      }
-
     },
     insertProduct(name, id, avg){
       var params = { name, id, avg };
