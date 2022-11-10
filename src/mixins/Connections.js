@@ -2,9 +2,13 @@ import Vue from 'vue';
 import axios from "axios";
 
 Vue.mixin({
+    created(){
+        this.navigation = JSON.parse(sessionStorage.getItem("currentPage"));
+    },
     data(){
         return {
-            user: {}
+            user: {},
+            currentPage: {}
         }
     },
 	methods: {
@@ -79,6 +83,13 @@ Vue.mixin({
                 category: value[0].category,
                 cityid: value[0].cityid,
             };
+        },
+        navigate(page, params){
+            this.navigation = {
+                page,
+                params
+            };
+            sessionStorage.setItem("currentPage", JSON.stringify(this.navigation));
         }
     }
 });

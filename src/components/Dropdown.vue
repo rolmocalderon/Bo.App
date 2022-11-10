@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     onClickedDropdown(){
-      this.showDropdownContent = true;
+      this.showDropdownContent = !this.showDropdownContent;
       window.removeEventListener('click', this.onWindowClicked);
       window.addEventListener('click', this.onWindowClicked);
       this.$emit("dropDownShown", true);

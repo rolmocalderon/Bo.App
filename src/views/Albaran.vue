@@ -21,8 +21,8 @@ export default {
 	props: ["title"],
 	created(){
 		this.cities = this.getFromLocalStorage('cities');
-		if(this.getFromLocalStorage('data') !== ''){
-			this.setCurrentPickup(this.getFromLocalStorage('selectedPickup'));
+		if(this.navigation.page.includes("productList")){
+			this.setCurrentPickup(this.navigation.params.selectedPickup);
 			this.getProducts();
 			this.showProductList = true;
 			this.modalType = 'product';
@@ -42,7 +42,7 @@ export default {
 	methods: {
 		hideProductList(){
 			this.showProductList = false;
-			//this.initLocalStorage();
+			this.navigate('pickups');
 			this.modalType = 'pickup';
 		},
 		onDateChanged(e){
@@ -68,11 +68,13 @@ export default {
 					
 					self.updateLocalStorage('data', data);
 					self.showProductList = true;
+					self.navigate('pickups-productList', {selectedPickup: self.selectedPickup});
 					self.modalType = 'product';
 				}, params);
 			}else{
 				this.products = data[this.selectedPickup.id].products;
 				this.showProductList = true;
+				this.navigate('pickups-productList', {selectedPickup: this.selectedPickup});
 				this.modalType = 'product';
 			}
 		},

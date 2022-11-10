@@ -7,8 +7,8 @@
 		</div>
     <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')"/>
 		<Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
-		<Albaran v-if="navigateOption == 'pickups'" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
-		<Administration v-if="navigateOption == 'admin'" :user="user" v-on:navigation="userNavigated" />
+		<Albaran v-if="navigateOption.includes('pickups')" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
+		<Administration v-if="navigateOption.includes('admin')" :user="user" v-on:navigation="userNavigated" />
     </div>
     <div v-if="!isLogged" class="login-container">
       <img class="logo" alt="Vue logo" src="../assets/logo.png"/>
@@ -35,12 +35,10 @@ export default {
       this.initMeasures();
       this.loginCheckin();
     } else {
-      localStorage.cities = "";
+      localStorage.cities = ""; 
     }
 
-    if (sessionStorage.getItem("currentPage") === "pickups") {
-      this.navigateOption = "pickups";
-    }
+    this.navigateOption = this.navigation ? this.navigation.page : '';
   },
   data: function () {
     return {
@@ -61,12 +59,8 @@ export default {
       }
     },
     userNavigated(event) {
-      if (event === "pickups") {
-        sessionStorage.setItem("currentPage", "pickups");
-      } else {
-        sessionStorage.setItem("currentPage", "");
-      }
       this.navigateOption = event;
+      this.navigate(event);
     },
     isUserLogged() {
       let cookie = cookies.getCookie("user");
