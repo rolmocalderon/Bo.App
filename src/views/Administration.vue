@@ -40,7 +40,6 @@ export default {
     },
     methods: {
         goBack(target = ''){
-            console.log()
             if(this.selectedOption === ''){
                 this.$emit('navigation', target);
             }else{

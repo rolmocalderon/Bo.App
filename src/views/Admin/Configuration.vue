@@ -1,17 +1,20 @@
 <template>
   <div class="container">
-    <CityConfigResponse class="flex-container" :canShowContent="contentShown === 'city'" v-on:showContent="onShowContent"/>
-    <ProductConfigResponse class="flex-container" :canShowContent="contentShown === 'product'" v-on:showContent="onShowContent"/>
+    <CityConfig class="flex-container" :canShowContent="contentShown === 'city'" v-on:showContent="onShowContent"/>
+    <ProductConfig class="flex-container" :canShowContent="contentShown === 'product'" v-on:showContent="onShowContent"/>
+    <UrgentProductConfig class="flex-container" :canShowContent="contentShown === 'urgentProduct'" v-on:showContent="onShowContent"/>
   </div>
 </template>
 
 <script>
 
-import CityConfigResponse from './CityConfigResponse';
-import ProductConfigResponse from './ProductConfigResponse';
+import CityConfig from './CityConfig';
+import ProductConfig from './ProductConfig';
+import UrgentProductConfig from './UrgentProductConfig';
+
 export default {
     name: 'configuration',
-    components: { CityConfigResponse, ProductConfigResponse },
+    components: { CityConfig, ProductConfig, UrgentProductConfig },
     data(){
       return {
         contentShown: ''
