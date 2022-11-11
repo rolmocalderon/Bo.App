@@ -52,6 +52,5 @@ export default {
 }
 .city-container{
     width: 20rem;
-    margin: 1rem;
 }
 </style>

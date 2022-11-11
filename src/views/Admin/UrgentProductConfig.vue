@@ -6,7 +6,7 @@
       </div>
       <transition name="slide">
         <div class="configuration-values" v-if="canShowContent">
-          <Dropdown :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="onChangeCity"></Dropdown>
+          <Dropdown v-if="canShowContent" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="onChangeCity"></Dropdown>
           <div class="config-item flex-container" v-for="product of products" :key="product.id">
             <span class="item">{{ product.name }}</span>
             <label class="checkbox-inline">
@@ -33,12 +33,14 @@ export default {
       isSubmitActive: false,
       selectedProduct: {},
       modalHeaderMessage: '',
-      selectedCityId: {},
+      selectedCityId: '',
       cities: []
     }
   },
   mounted(){
     this.cities = this.getFromLocalStorage('cities');
+    this.selectedCityId = '';
+    this.products = [];
   },
   methods: {
     onChangeCity(city){
@@ -65,7 +67,14 @@ export default {
           this.getProducts();
         }).bind(this), { cityId: this.selectedCityId, productId: product.id, isAdd: e.target.checked });
       }
-
+    }
+  },
+  watch: {
+    canShowContent(val) {
+      if(!val){
+        this.products = [];
+        this.selectedCityId = '';
+      }
     }
   }
 }
