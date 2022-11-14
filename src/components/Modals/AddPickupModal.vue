@@ -19,14 +19,14 @@ import Dropdown from '../Dropdown';
 export default {
     name: "add-pickup-modal",
     components: { Calendar, Modal, Dropdown },
-    props: ['cities'],
+    props: ['city', 'selectedPickup', 'cities'],
     data: function(){
         return {
             calendarOpen: false,
             date: undefined,
             isPlaceSelected: false,
             isSubmitActive: false,
-            selectedCity: {}
+            selectedCity: this.city
         }
     },
     methods:{

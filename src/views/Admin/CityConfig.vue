@@ -1,5 +1,5 @@
 <template>
-    <div class="configuration-container">
+  <div class="configuration-container">
     <div class="configuration-content">
       <div class="configuration-header" v-on:click="$emit('showContent', 'city', $event)">
         <span>Ciudades</span>
@@ -14,7 +14,7 @@
       </transition>
     </div>
     <Modal v-if="showModal" :headerMessage="modalHeaderMessage" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="closeModal" v-on:submit="onSubmit">
-      <input type="text" name="city" placeholder="Nombre de la ciuad... " v-on:input="isSubmitActive = true" :value="selectedCity.name">
+      <input type="text" name="city" placeholder="Nombre de la ciudad... " v-on:keyup="isSubmitActive = true" :value="selectedCity.name">
     </Modal>
   </div>
 </template>

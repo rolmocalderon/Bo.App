@@ -1,75 +1,85 @@
 <template>
     <div class="configuration-container">
     <div class="configuration-content">
-      <div class="configuration-header" v-on:click="$emit('showContent', 'product', $event)">
-        <span>Productos</span>
+      <div class="configuration-header" v-on:click="$emit('showContent', 'pickup', $event)">
+        <span>Recogidas</span>
         <font-awesome-icon icon="plus" class="right-icon" v-on:click="openModal" v-if="canShowContent"/>
       </div>
       <transition name="slide">
         <div class="configuration-values" v-if="canShowContent">
-          <div class="config-item flex-container" v-for="product of products" :key="product.id" v-on:click="itemSelected(product)">
-            <span class="item">{{ product.name }}</span>
-            <span class="item">{{ product.monthlyaverage }} Kg</span>
+          <Dropdown v-if="canShowContent" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="onChangeCity"></Dropdown>
+          <div class="config-item flex-container" v-for="pickup of pickups" :key="pickup.id" v-on:click="itemSelected(pickup)">
+            <span class="item">{{ pickup.name }}</span>
           </div>
         </div>
       </transition>
     </div>
-    <Modal v-if="showModal" :headerMessage="modalHeaderMessage" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="closeModal" v-on:submit="onSubmit">
-      <input type="text" name="product" placeholder="Nombre del producto... " v-on:keyup="isSubmitActive = true" :value="selectedProduct.name">
-      <input type="number" name="monthlyaverage" placeholder="Media mensual... " min="0" :value="selectedProduct.monthlyaverage">
-    </Modal>
+    <AddPickupModal v-if="showModal" :selectedCity="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup" :cities="cities"/>
   </div>
 </template>
 
 <script>
-import Modal from '../../components/Modal';
+import AddPickupModal from '../../components/Modals/AddPickupModal';
+import Dropdown from '../../components/Dropdown';
 
 export default {
   name: 'config-response',
-  components: { Modal },
+  components: { AddPickupModal, Dropdown },
   props: ['itemType', 'items', 'canShowContent'],
   data(){
     return {
-      products: [],
+      pickups: [],
       showModal: false,
       isSubmitActive: false,
-      selectedProduct: {},
-      modalHeaderMessage: ''
+      selectedPickup: {},
+      modalHeaderMessage: '',
+      cities: [],
+      selectedCity: '',
+      date: ''
     }
   },
   mounted(){
-    this.getProducts();
+    this.cities = this.getFromLocalStorage('cities');
+    this.selectedCity = {};
+    this.pickups = [];
   },
   methods: {
     onSubmit(e){
-      var product = e.target.querySelector("[name='product']").value;
-      var avg = e.target.querySelector("[name='monthlyaverage']").value;
+      let pickup = e.target.querySelector("[name='pickup']").value;
       this.closeModal();
-      this.insertProduct(product, this.selectedProduct.id, avg);
+      this.insertPickup(pickup, this.selectedPickup.id);
     },
-    itemSelected(product){
-      this.selectedProduct = product;
-      this.modalHeaderMessage = 'Modificar producto';
+    itemSelected(pickup){
+      this.selectedPickup = pickup;
+      this.modalHeaderMessage = 'Modificar recogida';
       this.showModal = true;
     },
     openModal(){
-      this.modalHeaderMessage = 'Añadir producto';
+      this.modalHeaderMessage = 'Añadir recogida';
       this.showModal = true;
     },
     closeModal(){
       this.showModal = false;
-      this.selectedProduct = {}
+      this.selectedPickup = {}
     },
-    getProducts(){
-      this.getAll('getProducts', (function(res){
-        this.products = res;
-      }).bind(this));
-    },
-    insertProduct(name, id, avg){
-      var params = { name, id, avg };
-      this.insert('insertProduct', (function() { 
-        this.getProducts();
+    getPickups(){
+      let params = {cityId: this.selectedCity.valueId}
+      this.getAll('getPickups', (function(res){
+        this.pickups = res;
       }).bind(this), params);
+    },
+    insertPickup(name, id, avg){
+      var params = { name, id, avg };
+      this.insert('insertPickup', (function() { 
+        this.getPickups();
+      }).bind(this), params);
+    },
+    onChangeCity(city){
+      this.selectedCity = city;
+      this.getPickups();
+    },
+    onClose(){
+      this.showModal = false;
     }
   }
 }

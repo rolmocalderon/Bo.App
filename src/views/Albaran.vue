@@ -1,8 +1,8 @@
 <template>
 	<div class="albaran">
 		<div class="albaran-selector" v-if="!showProductList">
-			<HeaderBar v-if="!showProductList" v-on:backSelected="goBack" :title="title" :modalType="modalType" v-on:showSnackbar="showSnackbar" :cities="cities"/>
-			<ProductSelector v-on:dateChanged="onDateChanged" :selectorName="'pickups'" :cities="cities"></ProductSelector>
+			<HeaderBar v-if="!showProductList" v-on:backSelected="goBack" :title="title" v-on:showSnackbar="showSnackbar"/>
+			<ProductSelector v-on:pickupSelected="onPickupSelected" :cities="cities"></ProductSelector>
 		</div>
 		<ProductList class="albaran-container" v-if="showProductList" :selectedPickup="selectedPickup" :modalType="modalType" :products="products" v-on:backSelected="hideProductList"/>
 		<Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
@@ -45,7 +45,8 @@ export default {
 			this.navigate('pickups');
 			this.modalType = 'pickup';
 		},
-		onDateChanged(e){
+		onPickupSelected(e){
+			console.log(e)
 			this.setCurrentPickup(e);
 			this.updateLocalStorage('selectedPickup', e);
 			this.getProducts();

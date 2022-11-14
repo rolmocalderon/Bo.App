@@ -68,7 +68,7 @@ export default {
 				}
 
 				self.alertMessage = message;
-			}, { 'cityId': this.selectedPickup.cityId });
+			}, { 'cityId': this.selectedPickup.cityid });
 		}
     },
     mounted() {

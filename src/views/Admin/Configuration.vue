@@ -3,6 +3,7 @@
     <CityConfig class="flex-container" :canShowContent="contentShown === 'city'" v-on:showContent="onShowContent"/>
     <ProductConfig class="flex-container" :canShowContent="contentShown === 'product'" v-on:showContent="onShowContent"/>
     <UrgentProductConfig class="flex-container" :canShowContent="contentShown === 'urgentProduct'" v-on:showContent="onShowContent"/>
+    <PickupConfig class="flex-container" :canShowContent="contentShown === 'pickup'" v-on:showContent="onShowContent"/>
   </div>
 </template>
 
@@ -11,10 +12,11 @@
 import CityConfig from './CityConfig';
 import ProductConfig from './ProductConfig';
 import UrgentProductConfig from './UrgentProductConfig';
+import PickupConfig from './PickupConfig';
 
 export default {
     name: 'configuration',
-    components: { CityConfig, ProductConfig, UrgentProductConfig },
+    components: { CityConfig, ProductConfig, UrgentProductConfig, PickupConfig },
     data(){
       return {
         contentShown: ''

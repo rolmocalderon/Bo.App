@@ -1,8 +1,7 @@
 <template>
   <div class="product-selector-container almost-full-width">
     <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
-    <Dropdown v-on:changeDropdown="onChangePickup" v-on:dropDownShown="changeDropdownStatus" :disabled="pickups.length == 0" :values="pickups" :textMessage="dropdownMessage" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
-    <div v-if="showDates && pickups.length > 0" class="dates">
+    <div class="dates">
       <div class="date-box" v-on:click="calendarStatusChanged">
         <span v-if="date">{{ date }}</span>
         <span v-if="!date">Escoge una fecha</span>
@@ -12,15 +11,25 @@
         v-on:changeDate="onChangeDate"
         v-on:hideCalendar="onHideCalendar"
         :dateSelected="date"
-        :actualDay="actualDay"
-        :selectableDates="selectableDates"
       />
+    </div>
+    <div class="configuration-container flex-container">
+      <div class="configuration-content">
+        <div class="configuration-header">
+          <span>Recogidas disponibles</span>
+        </div>
+        <div class="configuration-values">
+          <div class="config-item flex-container" v-for="pickup of pickups" :key="pickup.id" v-on:click="$emit('pickupSelected', pickup)">
+            <span class="item">{{ pickup.name }}</span>
+            <span class="item" v-if="date === ''">{{ pickup.date }}</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import db from '../services/db';
 import Calendar from "../components/Calendar";
 import Dropdown from "../components/Dropdown";
 import * as moment from 'moment';
@@ -28,86 +37,44 @@ import * as moment from 'moment';
 export default {
   name: "ProductSelector",
   components: { Calendar, Dropdown },
-  props: ["selectorName", 'cities'],
+  props: ['cities'],
   data: function(){
       return{
           pickups: [],
-          showDates: false,
-          selectableDates: [],
-          actualDay: "",
           date: "",
           calendarOpen: false,
-          selectedPickup: {},
-          categoryUri: 'getPickups',
-          dropdownMessage: this.selectorName === 'pickups' ? 'Selecciona una recogida' : 'Selecciona un reparto',
           isDropdownContentShown: false,
-          selectedValue: '',
           cityId: undefined
       }
   },
   methods:{
-    async getPickups(cityId) {
-      let self = this;
-      let params = {
-        cityId : cityId
-      };
-      db.getAll(this.categoryUri, function (res) {
-        self.pickups = res;
-      }, params);
+    async getPickups() {
+      if(this.cityId){
+        let params = { date: this.date, cityId: this.cityId };
+        this.getAll('getPickups', (function(response){
+          this.pickups = response;
+        }).bind(this), params)
+      }
     },
     onChangeCity(e){
       if (e && e.valueId) {
-        this.getPickups(e.valueId);
+        this.cityId = e.valueId;
+        this.getPickups();
       }else{
         this.pickups = [];
       }
 
       this.cityId = e.valueId;
     },
-    onChangePickup(e) {
-      if (e && e.name) {
-        let params = {
-          pickupName: e.name,
-          cityId: this.cityId
-        };
-        this.selectedPickup = e.name;
-
-        let self = this;
-        db.getAll("getPickupDates",function (res) {
-            self.setSelectableDates(res)
-          },
-          params
-        );
-      }else{
-          this.dates = [];
-      }
-    },
-    setSelectableDates(res){
-        this.showDates = true;
-        let datesSelectables = [];
-        for(let pickupDate of res){
-            let splittedDate = pickupDate.date.split('/');
-            datesSelectables.push({ 'year': splittedDate[2], 'month': splittedDate[1], 'day': splittedDate[0], 'id': pickupDate.id });
-        }
-
-        this.selectableDates = datesSelectables;
-    },
     onChangeDate(e){
       this.date = moment(e.date).format('DD/MM/YYYY');
-      this.actualDay = moment(e.date).date();
-      e.name = this.selectedPickup;
-      e.date = this.date;
-      e.cityId = this.cityId;
-      this.datechanged(e);
+      this.getPickups(this.cityId,this.date);
     },
     onHideCalendar(){
       this.calendarStatusChanged();
     },
     calendarStatusChanged(){
       this.calendarOpen = !this.calendarOpen;
-    },
-    datechanged(e){
-        this.$emit('dateChanged', e);
     },
     changeDropdownStatus(value){
       this.isDropdownContentShown = value;
@@ -122,11 +89,10 @@ export default {
   width: 100%;
   padding-top: 0.8rem;
 }
-.disabled{
-  background: #e9e9e9;
-  color: grey;
-}
 .almost-full-width{
 	width: 90%;
+}
+.white{
+  color:white;
 }
 </style>

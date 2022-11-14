@@ -96,54 +96,50 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .report{
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .date-selector{
-        padding: 1rem 1rem;
-        width: 7rem;
-        background-color: white;
-        margin: 1rem;
-        border-radius: 4px;
-    }
-    .title-row{
-        background-color: #4065AD;
-        font-weight: 700;
-        color: white;
-        width: 95%;
-    }
-    .title-row.top{
-        border-radius: 5px 5px 0 0;
-    }
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.date-selector{
+    padding: 1rem 1rem;
+    width: 7rem;
+    background-color: white;
+    margin: 1rem;
+    border-radius: 4px;
+}
+.title-row{
+    background-color: #4065AD;
+    font-weight: 700;
+    color: white;
+    width: 95%;
+}
+.title-row.top{
+    border-radius: 5px 5px 0 0;
+}
 
-    .title-row.bottom{
-        border-radius: 0 0 5px 5px;
-        margin-bottom: 1rem;
-    }
-    .result-container{
-        width: 100%;
-        flex-direction: column;
-    }
-    .result-row{
-        width: 95%;
-        background-color: white;
-        border-bottom: 1px solid rgba(0,0,0,0.1);
-    }
-    .result-content-item{
-        flex: 1;
-        padding: 1rem 0;
-    }
+.title-row.bottom{
+    border-radius: 0 0 5px 5px;
+    margin-bottom: 1rem;
+}
+.result-container{
+    width: 100%;
+    flex-direction: column;
+}
+.result-row{
+    width: 95%;
+    background-color: white;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+.result-content-item{
+    flex: 1;
+    padding: 1rem 0;
+}
 
-    .calendar{
-        top: 4rem;
-        position: absolute;
-    }
-    .city-container{
-        width: 20rem;
-        margin: 1rem 0 -10px 0px;
-    }
+.city-container{
+    width: 20rem;
+    margin: 1rem 0 -10px 0px;
+}
 </style>

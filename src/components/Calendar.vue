@@ -137,6 +137,9 @@ export default {
   box-shadow: 0 0 5px rgb(0 0 0 / 50%);
   width: 100%;
   margin-top: 0.5rem;
+  position: absolute;
+  top: 3rem;
+  z-index: 1000;
 }
 .calendar select {
   background-color: #f3f4f6;

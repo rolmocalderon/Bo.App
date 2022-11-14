@@ -12,24 +12,20 @@
 			<span>{{ getSubtitle }}</span>
 		</div>
 
-		<AddPickupModal v-if="showAddPickupModal" @close="showAddPickupModal = false" v-on:pickupAdded="onPickupAdded" :cities="cities"/>
 		<AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" v-on:productAdded="onProductAdded($event)"/>
 	</div>
 </template>
 
 <script>
 import AddProductModal from './Modals/AddProductModal';
-import AddPickupModal from './Modals/AddPickupModal';
 
 export default {
 	name: 'header-bar',
-	components: { AddPickupModal, AddProductModal },
-	props: ['title', 'subtitle', 'modalType', 'cities'],
+	components: { AddProductModal },
+	props: ['title', 'subtitle', 'modalType'],
 	data(){
 		return {
-			showAddProductModal: false,
-			showAddPickupModal: false,
-			iconSubtitle: ""
+			showAddProductModal: false
 		}
     },
     methods: {
@@ -37,16 +33,11 @@ export default {
             this.$emit('backSelected');
         },
         added(){
-            this.showAddPickupModal = this.modalType === 'pickup';
 			this.showAddProductModal = this.modalType === 'product';
         },
 		onProductAdded(e){
 			this.showAddProductModal = false;
 			this.$emit('productAdded', e);
-		},
-		onPickupAdded(){
-			this.$emit('showSnackbar');
-			this.showAddPickupModal = false;
 		}
     },
 	computed:{
