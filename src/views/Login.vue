@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <form action="#">
+    <form action="#" v-on:submit="submit">
       <div class="row">
         <div class="login-icon">
           <font-awesome-icon icon="user" />
@@ -14,7 +14,7 @@
         <input type="password" v-model="password" placeholder="Password" required />
       </div>
       <div class="row button">
-        <input v-if="!loading" type="submit" value="Login" v-on:click="submit"/>
+        <input v-if="!loading" type="submit" value="Login"/>
         <Spinner v-if="loading"/>
       </div>
     </form>
@@ -55,7 +55,6 @@ export default {
 			if (response.data.data.length > 0) {
         this.loading = false;
 				this.updateValue(response.data.data);
-				//this.initLocalStorage();
 			}
 		});
     },

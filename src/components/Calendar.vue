@@ -1,35 +1,41 @@
 <template>
-    <div class="calendar">
-        <div class="calendar__opts">
-            <select class="select" name="calendar__month" id="calendar__month" v-on:change="monthSelected">
-                <option v-for="month in months" :key="month" :value="month" :selected="month == actualMonth">{{ month }}</option>>
-            </select>
+	<div class="dates">
+		<div class="date-box" v-on:click="calendarStatusChanged">
+			<span v-if="date">{{ date }}</span>
+			<span v-if="!date">Escoge una fecha</span>
+		</div>
+		<div v-if="calendarOpen" class="calendar">
+			<div class="calendar__opts">
+				<select class="select" name="calendar__month" id="calendar__month" v-on:change="monthSelected">
+					<option v-for="month in months" :key="month" :value="month" :selected="month == actualMonth">{{ month }}</option>>
+				</select>
 
-            <select class="select" name="calendar__year" id="calendar__year" v-on:change="yearSelected">
-                <option v-for="year in years" :key="year" :value="year" :selected="year == actualYear">{{ year }}</option>
-            </select>
-        </div>
-        <div class="calendar__body">
-            <div class="calendar__days">
-                <div>L</div>
-                <div>M</div>
-                <div>X</div>
-                <div>J</div>
-                <div>V</div>
-                <div>S</div>
-                <div>D</div>
-            </div>
+				<select class="select" name="calendar__year" id="calendar__year" v-on:change="yearSelected">
+					<option v-for="year in years" :key="year" :value="year" :selected="year == actualYear">{{ year }}</option>
+				</select>
+			</div>
+			<div class="calendar__body">
+				<div class="calendar__days">
+					<div>L</div>
+					<div>M</div>
+					<div>X</div>
+					<div>J</div>
+					<div>V</div>
+					<div>S</div>
+					<div>D</div>
+				</div>
 
-            <div class="calendar__dates">
-                <div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
-                    <span></span>
-                </div>
-                <div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey': selectableDates && !isSelectableDate(day) && selectableDates.length > 0, 'selectable': selectableDates && selectableDates.length > 0 && isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
-                    <span>{{ day }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="calendar__dates">
+					<div v-for="day in previousMonthDays" :key="'previousMonth' + day" class="calendar__date calendar__date--grey">
+						<span></span>
+					</div>
+					<div v-for="day in lastDayOfMonth" :key="day" :productId="getSelectableDateId(day)" class="calendar__date" :class="{ 'calendar__date--grey': selectableDates && !isSelectableDate(day) && selectableDates.length > 0, 'selectable': selectableDates && selectableDates.length > 0 && isSelectableDate(day), 'selected': isSelectedDay(day) }" v-on:click="daySelected">
+						<span>{{ day }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -45,7 +51,9 @@ export default {
             actualYear: "",
             previousMonthDays: [],
             lastDayOfMonth: 0,
-            testing: ""
+            testing: "",
+			calendarOpen: false,
+			date: undefined
         }
     },
     created: function(){
@@ -84,11 +92,17 @@ export default {
             this.setDate(incomingDate);
         },
         changeDate(e){
+			moment.locale("es");
+			this.date = moment(e.date).format('LL');
             this.$emit("changeDate", e);
         },
-        hideCalendar(e){
-            this.$emit("hideCalendar", e);
+        hideCalendar(){
+            this.calendarOpen = false;
         },
+		calendarStatusChanged(){
+			this.calendarOpen = !this.calendarOpen;
+			this.date = this.calendarOpen ? '' : this.date;
+		},
         isSelectableDate(day){
             let date = this.selectableDates ? this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day) : undefined;
 
@@ -151,6 +165,7 @@ export default {
     justify-content: center;
     align-items: center;
     position: relative;
+	width: 100%;
 }
 .calendar__opts, .calendar__buttons {
   background-color: #fff;

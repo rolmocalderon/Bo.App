@@ -1,12 +1,8 @@
 <template>
     <Modal :headerMessage="'Añadiendo recogida'" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="$emit('close')" v-on:submit="onSubmit">
-        <Dropdown dropdownName="cities" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="changeDropdown"></Dropdown>
-        <input type="text" value="" class="date-box" name="placeName" placeholder="Nombre del lugar" @keyup="handleButtonState($event)">
-        <div class="date-box" v-on:click="calendarStatusChanged">
-            <span v-if="date">{{ date }}</span>
-            <span v-if="!date">Escoge una fecha</span>
-        </div>
-        <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="calendarStatusChanged" :selectableDates="[]"/>
+        <Dropdown v-if="city === ''" dropdownName="cities" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="changeDropdown"></Dropdown>
+        <input type="text" :value="selectedPickup.name" class="date-box" name="placeName" placeholder="Nombre del lugar" @keyup="handleButtonState($event)">
+        <Calendar v-on:changeDate="onChangeDate"/>
     </Modal>
 </template>
 
@@ -36,6 +32,7 @@ export default {
                 e.target.appendChild(this.createInput("hidden", "cityId", this.selectedCity.valueId));
                 e.target.appendChild(this.createInput("hidden", "date", this.date));
                 let self = this;		
+                console.log(e.target)
                 this.insert('insertPickup', function() { 
                     self.$emit('pickupAdded');
                 }, { 'data': this.serializeForm(e.target) });

@@ -1,18 +1,7 @@
 <template>
   <div class="product-selector-container almost-full-width">
     <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
-    <div class="dates">
-      <div class="date-box" v-on:click="calendarStatusChanged">
-        <span v-if="date">{{ date }}</span>
-        <span v-if="!date">Escoge una fecha</span>
-      </div>
-      <Calendar
-        v-if="calendarOpen"
-        v-on:changeDate="onChangeDate"
-        v-on:hideCalendar="onHideCalendar"
-        :dateSelected="date"
-      />
-    </div>
+    <Calendar v-on:changeDate="onChangeDate" :dateSelected="date"/>
     <div class="configuration-container flex-container">
       <div class="configuration-content">
         <div class="configuration-header">
@@ -35,7 +24,7 @@ import Dropdown from "../components/Dropdown";
 import * as moment from 'moment';
 
 export default {
-  name: "ProductSelector",
+  name: "PickupSelector",
   components: { Calendar, Dropdown },
   props: ['cities'],
   data: function(){
@@ -70,21 +59,14 @@ export default {
       this.date = moment(e.date).format('DD/MM/YYYY');
       this.getPickups(this.cityId,this.date);
     },
-    onHideCalendar(){
-      this.calendarStatusChanged();
-    },
-    calendarStatusChanged(){
-      this.calendarOpen = !this.calendarOpen;
-    },
     changeDropdownStatus(value){
       this.isDropdownContentShown = value;
-      this.calendarOpen = this.calendarOpen ? !value : this.calendarOpen;
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .product-selector-container{
   width: 100%;
   padding-top: 0.8rem;
@@ -94,5 +76,8 @@ export default {
 }
 .white{
   color:white;
+}
+.configuration-content{
+  width: 100%;
 }
 </style>

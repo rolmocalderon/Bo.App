@@ -1,72 +1,81 @@
 <template>
-    <div class="configuration-container">
-    <div class="configuration-content">
-      <div class="configuration-header" v-on:click="$emit('showContent', 'pickup', $event)">
-        <span>Recogidas</span>
-        <font-awesome-icon icon="plus" class="right-icon" v-on:click="openModal" v-if="canShowContent"/>
-      </div>
-      <transition name="slide">
-        <div class="configuration-values" v-if="canShowContent">
-          <Dropdown v-if="canShowContent" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="onChangeCity"></Dropdown>
-          <div class="config-item flex-container" v-for="pickup of pickups" :key="pickup.id" v-on:click="itemSelected(pickup)">
-            <span class="item">{{ pickup.name }}</span>
-          </div>
+  <div class="pickup-selector-container almost-full-width">
+    <div class="configuration-container flex-container">
+      <div class="configuration-content">
+        <div class="configuration-header" v-on:click="$emit('showContent', 'pickup', $event)">
+          <span>Recogidas</span>
+          <font-awesome-icon icon="plus" class="right-icon" v-on:click="openModal" v-if="canShowContent"/>
         </div>
-      </transition>
+        <transition name="slide">
+          <div class="configuration-values" v-if="canShowContent">
+            <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
+            <Calendar v-on:changeDate="onChangeDate" class="pickup-selector-calendar"/>
+            <div class="pickup-config config-item flex-container" v-for="pickup of pickups" :key="pickup.id" v-on:click="itemSelected(pickup)">
+              <span class="item">{{ pickup.name }}</span>
+              <span class="item" v-if="date === ''">{{ pickup.date }}</span>
+            </div>
+            <div class="flex-container non-values" v-if="pickups.length === 0">
+              <span>No hay valores para mostrar</span>
+            </div>
+          </div>
+        </transition>
+      </div>
     </div>
-    <AddPickupModal v-if="showModal" :selectedCity="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup" :cities="cities"/>
+    <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup" :cities="cities"/>
   </div>
 </template>
 
 <script>
 import AddPickupModal from '../../components/Modals/AddPickupModal';
+import Calendar from '../../components/Calendar';
 import Dropdown from '../../components/Dropdown';
+import * as moment from 'moment';
 
 export default {
   name: 'config-response',
-  components: { AddPickupModal, Dropdown },
+  components: { AddPickupModal, Dropdown, Calendar },
   props: ['itemType', 'items', 'canShowContent'],
   data(){
     return {
       pickups: [],
       showModal: false,
-      isSubmitActive: false,
       selectedPickup: {},
       modalHeaderMessage: '',
       cities: [],
       selectedCity: '',
-      date: ''
+      isDropdownContentShown: false,
+      date: "",
+      city: ''
     }
   },
   mounted(){
     this.cities = this.getFromLocalStorage('cities');
-    this.selectedCity = {};
+    this.selectedCity = '';
     this.pickups = [];
   },
   methods: {
-    onSubmit(e){
-      let pickup = e.target.querySelector("[name='pickup']").value;
-      this.closeModal();
-      this.insertPickup(pickup, this.selectedPickup.id);
-    },
     itemSelected(pickup){
       this.selectedPickup = pickup;
       this.modalHeaderMessage = 'Modificar recogida';
       this.showModal = true;
     },
     openModal(){
+      this.selectedCity = '';
+      this.selectedPickup = '';
       this.modalHeaderMessage = 'Añadir recogida';
       this.showModal = true;
     },
     closeModal(){
       this.showModal = false;
-      this.selectedPickup = {}
+      this.selectedPickup = {};
     },
     getPickups(){
-      let params = {cityId: this.selectedCity.valueId}
-      this.getAll('getPickups', (function(res){
-        this.pickups = res;
-      }).bind(this), params);
+      if(this.city !== ''){
+        let params = {cityId: this.city.valueId, date: this.date}
+        this.getAll('getPickups', (function(res){
+          this.pickups = res;
+        }).bind(this), params);
+      }
     },
     insertPickup(name, id, avg){
       var params = { name, id, avg };
@@ -76,78 +85,46 @@ export default {
     },
     onChangeCity(city){
       this.selectedCity = city;
+      this.city = this.selectedCity;
       this.getPickups();
     },
     onClose(){
       this.showModal = false;
-    }
+      this.selectedCity = this.city;
+    },
+    changeDropdownStatus(value){
+      this.isDropdownContentShown = value;
+    },
+    onChangeDate(e){
+      console.log(e)
+      this.date = moment(e.date).format('DD/MM/YYYY');
+      this.getPickups();
+    },
   }
 }
 </script>
 
 <style>
-.configuration-container{
+.pickup-selector-container{
   width: 100%;
-  margin-top: 1rem;
-}
-.configuration-content{
-  width: 90%;
-}
-.configuration-header{
-  padding: 1rem;
-  background-color: #4065AD;
-  color: white;
-  border-radius: 4px 4px 0 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  font-size: 1rem;
-  font-weight: 700;
-}
-.configuration-values{
-  display: flex;
-  flex-direction: column;
-}
-.config-item{
-  padding: 1rem;
-  background-color: white;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-  position: relative;
-}
-.config-item:last-child{
-  border-radius: 0 0 4px 4px;
-  margin-bottom: 1rem;
-}
-.configuration-header > .right-icon{
-  position: absolute;
-  right: 1rem;
-  font-size: 1.5rem;
 }
 
-.config-item > .right-icon{
-  position: absolute;
-  right: 1rem;
-  font-size: 1.2rem;
+.pickup-selector-calendar{
+  margin-bottom: 1rem;
 }
-.checkbox-inline{
-  position: relative;
-  display: inline-block;
-  padding-left: 20px;
-  margin-bottom: 0;
-  font-weight: 400;
-  vertical-align: middle;
-  cursor: pointer;
+
+.pickup-selector-calendar > .date-box{
+    border-radius: 4px;
 }
-.item{
-  flex: 1;
+
+.dropdown.date-box{
+  border-radius: 0 0 4px 4px;
 }
-.item:first-child{
-  flex: 2;
+
+.config-item:last-child{
+  border-radius: 0 !important;
 }
-.item-selectable{
-  height: 1.2rem;
-  width: 1.2rem;
+.non-values{
+  color: white;
 }
 </style>

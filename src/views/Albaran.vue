@@ -2,7 +2,7 @@
 	<div class="albaran">
 		<div class="albaran-selector" v-if="!showProductList">
 			<HeaderBar v-if="!showProductList" v-on:backSelected="goBack" :title="title" v-on:showSnackbar="showSnackbar"/>
-			<ProductSelector v-on:pickupSelected="onPickupSelected" :cities="cities"></ProductSelector>
+			<PickupSelector v-on:pickupSelected="onPickupSelected" :cities="cities"/>
 		</div>
 		<ProductList class="albaran-container" v-if="showProductList" :selectedPickup="selectedPickup" :modalType="modalType" :products="products" v-on:backSelected="hideProductList"/>
 		<Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
@@ -10,13 +10,13 @@
 </template>
 
 <script>
-import ProductSelector from "./ProductSelector";
+import PickupSelector from "./PickupSelector";
 import Snackbar from '../components/Snackbar';
 import HeaderBar from '../components/HeaderBar';
 import ProductList from './ProductList';
 
 export default {
-	components: { ProductSelector, HeaderBar, Snackbar, ProductList },
+	components: { PickupSelector, HeaderBar, Snackbar, ProductList },
 	name: "Albaran",
 	props: ["title"],
 	created(){
@@ -149,6 +149,7 @@ export default {
 
 .date-box span{
 	padding-left: 1rem;
-	color: #757575;
+	color: #06346f;
+    font-weight: 700;
 }
 </style>

@@ -186,4 +186,72 @@ a {
    overflow: hidden;
    max-height: 0;
 }
+
+/* CONFIGURATION */
+
+.configuration-container{
+  width: 100%;
+  margin-top: 1rem;
+}
+.configuration-content{
+  width: 90%;
+}
+.configuration-header{
+  padding: 1rem;
+  background-color: #4065AD;
+  color: white;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.configuration-values{
+  display: flex;
+  flex-direction: column;
+}
+.config-item{
+  padding: 1rem;
+  background-color: white;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  position: relative;
+}
+.config-item:last-child{
+  border-radius: 0 0 4px 4px;
+  margin-bottom: 1rem;
+}
+.configuration-header > .right-icon{
+  position: absolute;
+  right: 1rem;
+  font-size: 1.5rem;
+}
+
+.config-item > .right-icon{
+  position: absolute;
+  right: 1rem;
+  font-size: 1.2rem;
+}
+
+.checkbox-inline{
+  position: relative;
+  display: inline-block;
+  padding-left: 20px;
+  margin-bottom: 0;
+  font-weight: 400;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.item{
+  flex: 1;
+}
+.item:first-child{
+  flex: 2;
+}
+.item-selectable{
+  height: 1.2rem;
+  width: 1.2rem;
+}
 </style>
