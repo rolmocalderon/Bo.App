@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import axios from "axios";
+import cookies from "../services/cookies";
 
 Vue.mixin({
     created(){
@@ -90,6 +91,9 @@ Vue.mixin({
                 params
             };
             sessionStorage.setItem("currentPage", JSON.stringify(this.navigation));
+        },
+        getUser(){
+            return cookies.getCookie("user");
         }
     }
 });

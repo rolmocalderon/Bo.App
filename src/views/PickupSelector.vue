@@ -1,6 +1,6 @@
 <template>
   <div class="product-selector-container almost-full-width">
-    <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
+    <Dropdown v-if="defaultCityId === ''" v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
     <Calendar v-on:changeDate="onChangeDate" :dateSelected="date"/>
     <div class="configuration-container flex-container">
       <div class="configuration-content">
@@ -12,6 +12,9 @@
             <span class="item">{{ pickup.name }}</span>
             <span class="item" v-if="date === ''">{{ pickup.date }}</span>
           </div>
+          <div class="flex-container non-values" v-if="pickups.length === 0">
+            <span>No hay valores para mostrar</span>
+          </div>
         </div>
       </div>
     </div>
@@ -22,18 +25,25 @@
 import Calendar from "../components/Calendar";
 import Dropdown from "../components/Dropdown";
 import * as moment from 'moment';
+import cookies from "../services/cookies";
 
 export default {
   name: "PickupSelector",
   components: { Calendar, Dropdown },
   props: ['cities'],
+  created(){
+    this.user = cookies.getCookie("user");
+    this.defaultCityId = this.user.cityid;
+    this.cityId = this.defaultCityId;
+  },
   data: function(){
       return{
           pickups: [],
           date: "",
           calendarOpen: false,
           isDropdownContentShown: false,
-          cityId: undefined
+          cityId: undefined,
+          defaultCityId: ''
       }
   },
   methods:{
@@ -79,5 +89,9 @@ export default {
 }
 .configuration-content{
   width: 100%;
+}
+.non-values{
+  margin-top: 1rem;
+  color: white;
 }
 </style>

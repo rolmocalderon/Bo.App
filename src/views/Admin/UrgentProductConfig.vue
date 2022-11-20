@@ -6,7 +6,7 @@
       </div>
       <transition name="slide">
         <div class="configuration-values" v-if="canShowContent">
-          <Dropdown v-if="canShowContent" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="onChangeCity"></Dropdown>
+          <Dropdown v-if="canShowContent && defaultCity === ''" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="onChangeCity"></Dropdown>
           <div class="config-item flex-container" v-for="product of products" :key="product.id">
             <span class="item">{{ product.name }}</span>
             <label class="checkbox-inline">
@@ -21,6 +21,7 @@
 
 <script>
 import Dropdown from '../../components/Dropdown';
+import cookies from "../../services/cookies";
 
 export default {
   name: 'config-response',
@@ -34,13 +35,20 @@ export default {
       selectedProduct: {},
       modalHeaderMessage: '',
       selectedCityId: '',
-      cities: []
+      cities: [],
+      defaultCity: ''
     }
   },
   mounted(){
     this.cities = this.getFromLocalStorage('cities');
     this.selectedCityId = '';
     this.products = [];
+    this.user = cookies.getCookie("user");
+    if(this.user.cityid && this.user.cityid !== ''){
+      this.defaultCity = this.cities.find(c => c.id === this.user.cityid);
+      this.selectedCityId = this.defaultCity.id;
+      this.getProducts();
+    }
   },
   methods: {
     onChangeCity(city){

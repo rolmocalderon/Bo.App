@@ -1,7 +1,7 @@
 <template>
     <Modal :headerMessage="headerMessage" :submitMessage="submitMessage" v-on:close="$emit('close')" v-on:submit="onSubmit" :modalColor="'dark-blue'" :isSubmitActive="true">
-        <input type="text" name="productName" placeholder="Nombre del producto">
-        <input type="number" min="0" max="10000" name="productAmount" placeholder="Cantidad">
+        <input type="text" name="productName" placeholder="Nombre del producto" class="date-box">
+        <input type="number" min="0" max="10000" name="productAmount" placeholder="Cantidad" class="date-box">
         <div class="measure-container">
             <select name="measure">
                 <option v-for="measure in measures" v-bind:key="measure.id" :value="measure.id" :selected="measure.id == currentTypeOfMeasure" v-on:change="currentTypeOfMeasure = measure.type">{{ measure.type }}</option>
@@ -77,6 +77,7 @@ export default {
 .measure-container{
     display: flex;
     margin-bottom: 1rem;
+    width: 100%;
 }
 
 .measure-container input{
@@ -91,5 +92,7 @@ export default {
 .golden{
     background: #ab9d00 !important;
 }
-
+.product-input{
+    padding: 15px 0;
+}
 </style>

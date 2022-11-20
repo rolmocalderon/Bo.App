@@ -1,6 +1,6 @@
 <template>
   <div class="report">
-        <div class="city-container">
+        <div v-if="!defaultCity" class="city-container">
             <Dropdown v-on:changeDropdown="onChangeCity" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
         </div>
         <div class="flex-container">
@@ -24,7 +24,7 @@
                 <div class="result-content-item">{{ Object.values(results).reduce((a, b) => a + Number(b.weight), 0)}} Kg</div>
             </div>
         </div>
-        <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date" :actualDay="actualDay"/>
+        <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date" :actualDay="actualDay" :isOpenCalendar="calendarOpen"/>
     </div>
 </template>
 
@@ -36,7 +36,6 @@ import * as moment from 'moment';
 export default {
     name: "report",
     components: { Calendar, Dropdown },
-    prop: ['results'],
     data(){
         return{
             cities: [],
@@ -54,6 +53,8 @@ export default {
     },
     created(){
         this.cities = this.getFromLocalStorage('cities');
+        this.defaultCity = this.getUser().cityid;
+        this.cityId = this.defaultCity;
     },
     methods: {
         onCalendarOpen(calendarDate){
@@ -79,7 +80,7 @@ export default {
             this.showResult();
         },
         onChangeCity(e){
-            this.cityId = e.valueId;
+            this.cityId = e.id;
             this.showResult();
         },
         showResult(){

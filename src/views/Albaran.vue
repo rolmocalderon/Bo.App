@@ -46,7 +46,6 @@ export default {
 			this.modalType = 'pickup';
 		},
 		onPickupSelected(e){
-			console.log(e)
 			this.setCurrentPickup(e);
 			this.updateLocalStorage('selectedPickup', e);
 			this.getProducts();

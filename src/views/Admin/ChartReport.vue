@@ -17,6 +17,7 @@ export default {
     components: { BarChart, Dropdown },
     created(){
         this.cities = this.getFromLocalStorage('cities');
+        console.log(this.getUser());
     },
     data(){
         return {
@@ -37,7 +38,7 @@ export default {
                 };
 
                 self.canShowChart = self.values.labels.length > 0;
-            }, { 'cityId': city.valueId });
+            }, { 'cityId': city.id });
         }
     }
 }

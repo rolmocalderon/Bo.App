@@ -13,7 +13,7 @@
     </div>
     <Report v-if="!isSelection && selectedOption === 'report'"/>
     <ChartReport v-if="!isSelection && selectedOption === 'chartReport'" class="flex-container"/>
-    <Configuration v-if="!isSelection && selectedOption === 'config'" class="flex-container"/>
+    <Configuration v-if="!isSelection && selectedOption === 'config'" class="flex-container" :user="user"/>
   </div>
 </template>
 

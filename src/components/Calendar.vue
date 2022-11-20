@@ -1,10 +1,10 @@
 <template>
 	<div class="dates">
-		<div class="date-box" v-on:click="calendarStatusChanged">
+		<div v-if="!hasCalendarOpener" class="date-box" v-on:click="calendarStatusChanged">
 			<span v-if="date">{{ date }}</span>
 			<span v-if="!date">Escoge una fecha</span>
 		</div>
-		<div v-if="calendarOpen" class="calendar">
+		<div v-if="calendarOpen || isOpenCalendar" class="calendar">
 			<div class="calendar__opts">
 				<select class="select" name="calendar__month" id="calendar__month" v-on:change="monthSelected">
 					<option v-for="month in months" :key="month" :value="month" :selected="month == actualMonth">{{ month }}</option>>
@@ -42,7 +42,7 @@
 import * as moment from 'moment';
 export default {
     name: "calendar",
-    props: ["dateSelected", "selectableDates", "actualDay"],
+    props: ["dateSelected", "selectableDates", "actualDay", 'hasCalendarOpener', 'isOpenCalendar'],
     data: function(){
         return {
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
@@ -98,6 +98,7 @@ export default {
         },
         hideCalendar(){
             this.calendarOpen = false;
+			this.$emit('hideCalendar');
         },
 		calendarStatusChanged(){
 			this.calendarOpen = !this.calendarOpen;

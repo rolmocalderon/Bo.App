@@ -1,6 +1,6 @@
 <template>
     <Modal :headerMessage="'Añadiendo recogida'" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="$emit('close')" v-on:submit="onSubmit">
-        <Dropdown v-if="city === ''" dropdownName="cities" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="changeDropdown"></Dropdown>
+        <Dropdown v-if="city === '' && defaultCity === ''" dropdownName="cities" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="changeDropdown"></Dropdown>
         <input type="text" :value="selectedPickup.name" class="date-box" name="placeName" placeholder="Nombre del lugar" @keyup="handleButtonState($event)">
         <Calendar v-on:changeDate="onChangeDate"/>
     </Modal>
@@ -15,7 +15,7 @@ import Dropdown from '../Dropdown';
 export default {
     name: "add-pickup-modal",
     components: { Calendar, Modal, Dropdown },
-    props: ['city', 'selectedPickup', 'cities'],
+    props: ['city', 'selectedPickup', 'cities', 'defaultCity'],
     data: function(){
         return {
             calendarOpen: false,
@@ -32,7 +32,6 @@ export default {
                 e.target.appendChild(this.createInput("hidden", "cityId", this.selectedCity.valueId));
                 e.target.appendChild(this.createInput("hidden", "date", this.date));
                 let self = this;		
-                console.log(e.target)
                 this.insert('insertPickup', function() { 
                     self.$emit('pickupAdded');
                 }, { 'data': this.serializeForm(e.target) });

@@ -114,6 +114,7 @@ export default {
     border-radius: 2px;
     border: none;
     background: transparent;
+    text-align: center;
 }
 
 .modal-body input{
@@ -125,6 +126,8 @@ export default {
 .modal-body input[type="text"], .modal-body input[type="number"]{
     box-shadow: 0 0 5px rgb(0 0 0 / 50%);
     width: 100%;
+    text-indent: 1rem;
+    padding: 0.8rem 0;
 }
 
 .modal-footer{

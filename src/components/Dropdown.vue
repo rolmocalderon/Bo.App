@@ -32,7 +32,7 @@ export default {
       this.showDropdownContent = false;
       window.removeEventListener('click', this.onWindowClicked);
       let request = {
-        'valueId': e.target.getAttribute('valueId'),
+        'id': e.target.getAttribute('valueId'),
         'name': this.shownMessage
       }
       this.$emit("changeDropdown", request);

@@ -8,7 +8,7 @@
     <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')"/>
 		<Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
 		<Albaran v-if="navigateOption.includes('pickups')" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
-		<Administration v-if="navigateOption.includes('admin')" :user="user" v-on:navigation="userNavigated" />
+		<Administration v-if="navigateOption.includes('admin')" v-on:navigation="userNavigated" :user="user"/>
     </div>
     <div v-if="!isLogged" class="login-container">
       <img class="logo" alt="Vue logo" src="../assets/logo.png"/>
@@ -99,12 +99,12 @@ export default {
       }
     },
     logOff() {
-		this.isLogged = false;
-		sessionStorage.clear();
-		cookies.removeCookie('user');
-		this.navigateOption = '';
-		this.updateLocalStorage('cities', '');
-        this.updateLocalStorage('measures', '');
+      this.isLogged = false;
+      sessionStorage.clear();
+      cookies.removeCookie('user');
+      this.navigateOption = '';
+      this.updateLocalStorage('cities', '');
+      this.updateLocalStorage('measures', '');
     }
   }
 };

@@ -8,7 +8,7 @@
         </div>
         <transition name="slide">
           <div class="configuration-values" v-if="canShowContent">
-            <Dropdown v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
+            <Dropdown v-if="defaultCity === ''" v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
             <Calendar v-on:changeDate="onChangeDate" class="pickup-selector-calendar"/>
             <div class="pickup-config config-item flex-container" v-for="pickup of pickups" :key="pickup.id" v-on:click="itemSelected(pickup)">
               <span class="item">{{ pickup.name }}</span>
@@ -21,7 +21,7 @@
         </transition>
       </div>
     </div>
-    <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup" :cities="cities"/>
+    <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup" :cities="cities" :defaultCity="defaultCity"/>
   </div>
 </template>
 
@@ -30,6 +30,7 @@ import AddPickupModal from '../../components/Modals/AddPickupModal';
 import Calendar from '../../components/Calendar';
 import Dropdown from '../../components/Dropdown';
 import * as moment from 'moment';
+import cookies from "../../services/cookies";
 
 export default {
   name: 'config-response',
@@ -45,13 +46,17 @@ export default {
       selectedCity: '',
       isDropdownContentShown: false,
       date: "",
-      city: ''
+      city: '',
+      defaultCity: ''
     }
   },
   mounted(){
     this.cities = this.getFromLocalStorage('cities');
-    this.selectedCity = '';
     this.pickups = [];
+    this.user = cookies.getCookie("user");
+    if(this.user.cityid && this.user.cityid !== ''){
+      this.defaultCity = this.cities.find(c => c.id === this.user.cityid);
+    }
   },
   methods: {
     itemSelected(pickup){
@@ -70,8 +75,9 @@ export default {
       this.selectedPickup = {};
     },
     getPickups(){
-      if(this.city !== ''){
-        let params = {cityId: this.city.valueId, date: this.date}
+      let paramCity = this.defaultCity !== '' ? this.defaultCity : this.city;
+      if(paramCity !== ''){
+        let params = {cityId: paramCity.id, date: this.date}
         this.getAll('getPickups', (function(res){
           this.pickups = res;
         }).bind(this), params);
@@ -96,10 +102,17 @@ export default {
       this.isDropdownContentShown = value;
     },
     onChangeDate(e){
-      console.log(e)
       this.date = moment(e.date).format('DD/MM/YYYY');
       this.getPickups();
-    },
+    }
+  },
+  watch: {
+    canShowContent(val) {
+      if(!val){
+        this.pickups = [];
+        this.city = '';
+      }
+    }
   }
 }
 </script>
