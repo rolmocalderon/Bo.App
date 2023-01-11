@@ -1,6 +1,6 @@
 <template>
   <div class="product-selector-container almost-full-width">
-    <Dropdown v-if="defaultCityId === ''" v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
+    <Dropdown v-if="!defaultCityId || defaultCityId === ''" v-on:changeDropdown="onChangeCity" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
     <Calendar v-on:changeDate="onChangeDate" :dateSelected="date"/>
     <div class="configuration-container flex-container">
       <div class="configuration-content">
@@ -35,6 +35,7 @@ export default {
     this.user = cookies.getCookie("user");
     this.defaultCityId = this.user.cityid;
     this.cityId = this.defaultCityId;
+    console.log(this.cityId)
   },
   data: function(){
       return{
@@ -56,14 +57,13 @@ export default {
       }
     },
     onChangeCity(e){
-      if (e && e.valueId) {
-        this.cityId = e.valueId;
+      console.log(e)
+      if (e && e.id) {
+        this.cityId = e.id;
         this.getPickups();
       }else{
         this.pickups = [];
       }
-
-      this.cityId = e.valueId;
     },
     onChangeDate(e){
       this.date = moment(e.date).format('DD/MM/YYYY');

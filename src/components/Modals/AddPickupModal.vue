@@ -22,18 +22,19 @@ export default {
             date: undefined,
             isPlaceSelected: false,
             isSubmitActive: false,
-            selectedCity: this.city
+            selectedCity: this.defaultCity && this.defaultCity !== '' ? this.defaultCity : this.city
         }
     },
     methods:{
         onSubmit(e){
             let inputs = Array.from(e.target.querySelectorAll('input'));
             if(this.validations(inputs)){              
-                e.target.appendChild(this.createInput("hidden", "cityId", this.selectedCity.valueId));
+                e.target.appendChild(this.createInput("hidden", "cityId", this.selectedCity.id));
                 e.target.appendChild(this.createInput("hidden", "date", this.date));
-                let self = this;		
-                this.insert('insertPickup', function() { 
-                    self.$emit('pickupAdded');
+
+                this.insert('insertPickup', () => { 
+                    this.$emit('pickupAdded');
+                    this.$emit('close');
                 }, { 'data': this.serializeForm(e.target) });
             }
         },

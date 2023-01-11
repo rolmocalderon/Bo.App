@@ -21,7 +21,8 @@
         </transition>
       </div>
     </div>
-    <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup" :cities="cities" :defaultCity="defaultCity"/>
+    <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup" :cities="cities" :defaultCity="defaultCity" v-on:pickupAdded="showSnackbar"/>
+    <Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
   </div>
 </template>
 
@@ -31,10 +32,11 @@ import Calendar from '../../components/Calendar';
 import Dropdown from '../../components/Dropdown';
 import * as moment from 'moment';
 import cookies from "../../services/cookies";
+import Snackbar from '../../components/Snackbar';
 
 export default {
   name: 'config-response',
-  components: { AddPickupModal, Dropdown, Calendar },
+  components: { AddPickupModal, Dropdown, Calendar, Snackbar },
   props: ['itemType', 'items', 'canShowContent'],
   data(){
     return {
@@ -47,7 +49,8 @@ export default {
       isDropdownContentShown: false,
       date: "",
       city: '',
-      defaultCity: ''
+      defaultCity: '',
+      canShowSnackbar: false
     }
   },
   mounted(){
@@ -104,7 +107,13 @@ export default {
     onChangeDate(e){
       this.date = moment(e.date).format('DD/MM/YYYY');
       this.getPickups();
-    }
+    },
+    showSnackbar(){
+			this.canShowSnackbar = true;
+			setTimeout(() => {
+        this.canShowSnackbar = false;
+      }, 5000);
+		},
   },
   watch: {
     canShowContent(val) {
