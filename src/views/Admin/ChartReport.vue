@@ -17,7 +17,6 @@ export default {
     components: { BarChart, Dropdown },
     created(){
         this.cities = this.getFromLocalStorage('cities');
-        console.log(this.getUser());
     },
     data(){
         return {

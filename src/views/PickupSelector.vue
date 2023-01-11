@@ -35,7 +35,6 @@ export default {
     this.user = cookies.getCookie("user");
     this.defaultCityId = this.user.cityid;
     this.cityId = this.defaultCityId;
-    console.log(this.cityId)
   },
   data: function(){
       return{
@@ -57,7 +56,6 @@ export default {
       }
     },
     onChangeCity(e){
-      console.log(e)
       if (e && e.id) {
         this.cityId = e.id;
         this.getPickups();
