@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     onChangeCity(city){
-      this.selectedCityId = city.valueId;
+      this.selectedCityId = city.id;
       this.getProducts();
     },
     getProducts(){
