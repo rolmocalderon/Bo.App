@@ -84,12 +84,11 @@ export default {
             this.showResult();
         },
         showResult(){
-            if(this.startDate !== '' && this.endDate !== ''){
-                let self = this;
+            if(this.startDate !== '' && this.endDate !== '' && this.cityId){
                 let params =  { 'startDate': this.startDate, 'endDate': this.endDate, 'cityId': this.cityId };
-                this.getAll('getPickupProductsByDate', function(res){
-                    self.results = res;
-                    self.isSelection = false;
+                this.getAll('getPickupProductsByDate', (res) => {
+                    this.results = res;
+                    this.isSelection = false;
                 }, params);   
             }
         }

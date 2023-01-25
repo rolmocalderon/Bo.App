@@ -21,13 +21,13 @@
         </transition>
       </div>
     </div>
-    <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup" :cities="cities" :defaultCity="defaultCity" v-on:pickupAdded="showSnackbar"/>
+    <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup || {}" :cities="cities" :defaultCity="defaultCity" v-on:pickupAdded="showSnackbar"/>
     <Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
   </div>
 </template>
 
 <script>
-import AddPickupModal from '../../components/Modals/AddPickupModal';
+import AddPickupModal from '../../components/modals/AddPickupModal';
 import Calendar from '../../components/Calendar';
 import Dropdown from '../../components/Dropdown';
 import * as moment from 'moment';
@@ -64,6 +64,7 @@ export default {
   methods: {
     itemSelected(pickup){
       this.selectedPickup = pickup;
+      console.log(this.selectedPickup)
       this.modalHeaderMessage = 'Modificar recogida';
       this.showModal = true;
     },

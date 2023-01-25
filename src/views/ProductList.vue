@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderBar :title="selectedPickup.name" :subtitle="selectedPickup.date" :modalType="modalType" v-on:productAdded="onProductAdded" v-on:backSelected="$emit('backSelected')"/>
+    <HeaderBar :title="selectedPickup.name" :subtitle="selectedPickup.date" v-on:backSelected="$emit('backSelected')"/>
     <Alert v-if="alertMessage !== ''" :message="alertMessage"/>
     <div class="product-container">
         <Product v-for="(product) in products.filter(p => p.issubproduct === 'false')" :key="product.name" :product="product" :pickupId="selectedPickup.id" :subproducts="getSubproducts(product)"/>
@@ -23,28 +23,6 @@ export default {
         }
     },
     methods: {
-        onProductAdded(e){
-			let form = this.serializeForm(e);
-			let data = this.getFromLocalStorage("data");
-			let products = data[this.selectedPickup.id].products;
-
-			if(!products.find(p => p.name.toLowerCase() === form.productName.toLowerCase())){
-				let newProduct = {
-					id: Math.max(...products.map(p => p.id)) + 1,
-					name: form.productName,
-					measures: [
-						{
-							id: form.measure,
-							type: form.measuretype,
-							amount: form.productAmount
-						}
-					]
-				}
-				products.push(newProduct);
-				this.updateLocalStorage("data", data);
-                this.$emit('productAdded')
-			}
-		},
         getSubproducts(product){
 			return this.products.filter(p => p.issubproduct === "true" && p.id === product.id);
 		},

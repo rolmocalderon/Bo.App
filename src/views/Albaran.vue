@@ -135,6 +135,8 @@ export default {
 	margin-left: 1rem;
 	font-size: 1.5rem;
 	color: rgb(231 231 231);
+	position: absolute;
+    left: 0;
 }
 .date-box{
 	width: 100%;

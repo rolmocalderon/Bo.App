@@ -69,11 +69,7 @@ export default {
     initCities() {
       let cities = this.getFromLocalStorage('cities');
       if(cities === '') {
-        let self = this;
-        this.getAll("getCities", function (res) {
-          let cities = self.user.cityid ? res.filter((c) => c.id === self.user.cityid) : res;
-          self.updateLocalStorage('cities', cities);
-        });
+        this.getCities()
       }
     },
     initMeasures() {

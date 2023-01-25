@@ -44,96 +44,102 @@ export default {
     name: "calendar",
     props: ["dateSelected", "selectableDates", "actualDay", 'hasCalendarOpener', 'isOpenCalendar'],
     data: function(){
-        return {
-            months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-            years: Array.from({length: 3}, (v, i) => new Date().getFullYear() + i),
-            actualMonth: "",
-            actualYear: "",
-            previousMonthDays: [],
-            lastDayOfMonth: 0,
-            testing: "",
+		return {
+			months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+			years: Array.from({length: 3}, (v, i) => new Date().getFullYear() + i),
+			actualMonth: "",
+			actualYear: "",
+			previousMonthDays: [],
+			lastDayOfMonth: 0,
+			testing: "",
 			calendarOpen: false,
 			date: undefined
-        }
+		}
     },
     created: function(){
         let currentDate = "";
         if(this.dateSelected){
             let dateValues = this.dateSelected.split('/');
             currentDate = moment(new Date(dateValues[2], dateValues[1] -1, dateValues[0]));
+			currentDate.locale("es");
+			this.date = currentDate.format('LL');
         }else{
             currentDate = moment(new Date());
         }
+		
         this.setDate(currentDate);
     },
     methods: {
-        setDate(incomingDate){
-            let currentDate = moment(incomingDate);
-            this.lastDayOfMonth = new Date(currentDate.year(), currentDate.month() + 1, 0).getDate();
-            let lastDayOfLastMonth = moment(new Date(currentDate.subtract(1,'months').endOf('month').format('YYYY-MM-DD')));
-            let previousMonthDays = [lastDayOfLastMonth.date()];
-            while(lastDayOfLastMonth.day() < 7 && lastDayOfLastMonth.day() > 1){
-                let day = lastDayOfLastMonth.subtract(1, 'day');
-                previousMonthDays.push(day.date())
-            }
-            previousMonthDays.reverse();
-            this.actualMonth = this.months[moment(incomingDate).month()];
-            this.actualYear = moment(incomingDate).year();
-            this.previousMonthDays = previousMonthDays;
-        },
-        monthSelected(e){
-            let selectedPickup = Array.from(e.target.children).find((x) => x.selected);
-            let incomingDate = new Date(this.actualYear, this.months.indexOf(selectedPickup.value));
-            this.setDate(incomingDate);
-        },
-        yearSelected(e){
-            let selectedPickup = Array.from(e.target.children).find((x) => x.selected);
-            let incomingDate = new Date(selectedPickup.value, this.months.indexOf(this.actualMonth));
-            this.setDate(incomingDate);
-        },
-        changeDate(e){
-			moment.locale("es");
-			this.date = moment(e.date).format('LL');
-            this.$emit("changeDate", e);
-        },
-        hideCalendar(){
-            this.calendarOpen = false;
-			this.$emit('hideCalendar');
-        },
-		calendarStatusChanged(){
-			this.calendarOpen = !this.calendarOpen;
-			this.date = this.calendarOpen ? '' : this.date;
-		},
-        isSelectableDate(day){
-            let date = this.selectableDates ? this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day) : undefined;
-
-            return date != undefined || !this.selectableDates ;
-        },
-		isPreviousDay(day){
-			var currentDate = new Date();
-			var date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), day);
-
-			return date.getTime() < currentDate.getTime();
-		},
-        getSelectableDateId(day){
-            let date = this.selectableDates ? this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day) : undefined;
-            return date ? date.id : "";
-        },
-        isSelectedDay(day){
-            return this.actualDay === day;
-        },
-        daySelected(e){
-			e.stopPropagation();
-			let element = e.target.querySelector('span');
-			let daySelected = element.innerHTML;
-
-			let params = {
-				'date': new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected),
-				'id': e.target.getAttribute('productid')
-			};
-			this.changeDate(params);
-			this.hideCalendar();
+      setDate(incomingDate){
+		let initialDate = moment(incomingDate);
+		let currentDate = moment(incomingDate);
+        this.lastDayOfMonth = new Date(currentDate.year(), currentDate.month() + 1, 0).getDate();
+        let lastDayOfLastMonth = moment(new Date(currentDate.subtract(1,'months').endOf('month').format('YYYY-MM-DD')));
+        let previousMonthDays = [lastDayOfLastMonth.date()];
+		
+        while(lastDayOfLastMonth.day() < 7 && lastDayOfLastMonth.day() > 1){
+            let day = lastDayOfLastMonth.subtract(1, 'day');
+            previousMonthDays.push(day.date())
         }
+
+        previousMonthDays.reverse();
+        this.actualMonth = this.months[initialDate.month()];
+        this.actualYear = initialDate.year();
+        this.previousMonthDays = previousMonthDays;
+      },
+      monthSelected(e){
+        let selectedPickup = Array.from(e.target.children).find((x) => x.selected);
+        let incomingDate = new Date(this.actualYear, this.months.indexOf(selectedPickup.value));
+        this.setDate(incomingDate);
+      },
+      yearSelected(e){
+        let selectedPickup = Array.from(e.target.children).find((x) => x.selected);
+        let incomingDate = new Date(selectedPickup.value, this.months.indexOf(this.actualMonth));
+        this.setDate(incomingDate);
+      },
+      changeDate(e){
+        moment.locale("es");
+        this.date = moment(e.date).format('LL');
+        this.$emit("changeDate", e);
+      },
+      hideCalendar(){
+        this.calendarOpen = false;
+        this.$emit('hideCalendar');
+      },
+      calendarStatusChanged(){
+        this.calendarOpen = !this.calendarOpen;
+        this.date = this.calendarOpen ? '' : this.date;
+      },
+      isSelectableDate(day){
+        let date = this.selectableDates ? this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day) : undefined;
+
+        return date != undefined || !this.selectableDates ;
+      },
+      isPreviousDay(day){
+        var currentDate = new Date();
+        var date = new Date(this.actualYear, this.months.indexOf(this.actualMonth), day);
+
+        return date.getTime() < currentDate.getTime();
+      },
+      getSelectableDateId(day){
+        let date = this.selectableDates ? this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day) : undefined;
+        return date ? date.id : "";
+      },
+      isSelectedDay(day){
+        return this.actualDay === day;
+      },
+      daySelected(e){
+        e.stopPropagation();
+        let element = e.target.querySelector('span');
+        let daySelected = element.innerHTML;
+
+        let params = {
+          'date': new Date(this.actualYear, this.months.indexOf(this.actualMonth), daySelected),
+          'id': e.target.getAttribute('productid')
+        };
+        this.changeDate(params);
+        this.hideCalendar();
+      }
     }
 }
 </script>

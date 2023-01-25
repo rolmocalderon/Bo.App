@@ -59,6 +59,7 @@ export default {
 .modal-wrapper {
   display: table-cell;
   vertical-align: middle;
+  overflow: scroll;
 }
 .modal-container {
     width: 85%;

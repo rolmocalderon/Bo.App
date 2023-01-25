@@ -1,8 +1,8 @@
 <template>
-    <Modal :headerMessage="'Añadiendo recogida'" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="$emit('close')" v-on:submit="onSubmit">
+    <Modal :headerMessage="isPickupSelected ? 'Modificando recogida' : 'Añadiendo recogida'" :submitMessage="isPickupSelected ? 'Modificar' : 'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="$emit('close')" v-on:submit="onSubmit">
         <Dropdown v-if="city === '' && defaultCity === ''" dropdownName="cities" :values="cities" :textMessage="'Selecciona una ciudad'" v-on:changeDropdown="changeDropdown"></Dropdown>
-        <input type="text" :value="selectedPickup.name" class="date-box" name="placeName" placeholder="Nombre del lugar" @keyup="handleButtonState($event)">
-        <Calendar v-on:changeDate="onChangeDate"/>
+        <input type="text" :value="selectedPickupName" class="date-box" name="placeName" placeholder="Nombre del lugar" @keyup="handleButtonState($event)">
+        <Calendar v-on:changeDate="onChangeDate" :dateSelected="selectedPickup.date"/>
     </Modal>
 </template>
 
@@ -21,8 +21,10 @@ export default {
             calendarOpen: false,
             date: undefined,
             isPlaceSelected: false,
-            isSubmitActive: false,
-            selectedCity: this.defaultCity && this.defaultCity !== '' ? this.defaultCity : this.city
+            isPickupSelected: Object.keys(this.selectedPickup).length > 0,
+            isSubmitActive: Object.keys(this.selectedPickup).length > 0,
+            selectedCity: this.defaultCity && this.defaultCity !== '' ? this.defaultCity : this.city,
+            selectedPickupName: this.selectedPickup ? this.selectedPickup.name : ''
         }
     },
     methods:{
@@ -35,7 +37,7 @@ export default {
                 this.insert('insertPickup', () => { 
                     this.$emit('pickupAdded');
                     this.$emit('close');
-                }, { 'data': this.serializeForm(e.target) });
+                }, this.serializeForm(e.target));
             }
         },
         createInput(type, name, value){
@@ -60,25 +62,20 @@ export default {
         },
         onChangeDate(e){
             this.date = moment(e.date).format('DD/MM/YYYY');
-            this.isSubmitActive = this.date && this.isPlaceSelected;
+            this.isSubmitActive = this.date && this.isPlaceSelected && this.selectedCity !== '';
         },
         calendarStatusChanged(){
             this.calendarOpen = !this.calendarOpen;
         },
         handleButtonState(event){
-            var inputs = event.srcElement.parentNode.querySelectorAll('input');
-            for(let input of inputs){
-                if(input.value == ""){
-                    this.isPlaceSelected = false;
-                    return;
-                }
-            }
-
-            this.isPlaceSelected = true;
-            this.isSubmitActive = this.date && this.isPlaceSelected;
+            var input = event.srcElement.parentNode.querySelector('input');
+            this.isPlaceSelected = input.value.length > 0;
+            this.isSubmitActive = this.date && this.isPlaceSelected && this.selectedCity !== '';
+            this.selectedPickupName = input.value;
         },
         changeDropdown(data){
             this.selectedCity = data;
+            this.isSubmitActive = this.date && this.isPlaceSelected && this.selectedCity !== '';
         }
     }
 }

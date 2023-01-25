@@ -7,44 +7,20 @@
 			<span v-if="title != ''">{{ title }}</span>
 			<span v-if="subtitle != ''" class="subtitle">{{ subtitle }}</span>
 		</div>
-		<div v-if="modalType" class="add-product-icon" v-on:click="added">
-			<font-awesome-icon icon="calendar-plus" />
-			<span>{{ getSubtitle }}</span>
-		</div>
-
-		<AddProductModal v-if="showAddProductModal" @close="showAddProductModal = false" v-on:productAdded="onProductAdded($event)"/>
 	</div>
 </template>
 
 <script>
-import AddProductModal from './Modals/AddProductModal';
 
 export default {
 	name: 'header-bar',
-	components: { AddProductModal },
-	props: ['title', 'subtitle', 'modalType'],
-	data(){
-		return {
-			showAddProductModal: false
-		}
-    },
+	props: ['title', 'subtitle'],
+
     methods: {
         backSelected(){
             this.$emit('backSelected');
-        },
-        added(){
-			this.showAddProductModal = this.modalType === 'product';
-        },
-		onProductAdded(e){
-			this.showAddProductModal = false;
-			this.$emit('productAdded', e);
-		}
-    },
-	computed:{
-		getSubtitle(){
-			return this.modalType === 'pickup' ? "Añadir recogida" : "Añadir Producto";
-		}	
-	}
+        }
+    }
 };
 </script>
 
@@ -56,6 +32,7 @@ export default {
 	justify-content: center;
 	align-items: center;
 	width: 100%;
+	position: relative;
 }
 .info{
 	display: flex;

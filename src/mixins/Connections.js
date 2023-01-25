@@ -16,20 +16,20 @@ Vue.mixin({
         async getAll(endPoint, callback, params) {
 			axios({
 				method: "get",
-				url: process.env.VUE_APP_WEBAPI_URL + "/" + endPoint,
+				url: process.env.VUE_APP_WEBAPI_URL + "/api/" + endPoint,
 				headers: {
 					"Access-Control-Allow-Origin": "*",
 					"Content-Type": "application/json",
 				},
 				params: params,
 			}).then((response) => {
-				callback(response.data.data);
+				callback(response.data);
 			});
 		},
         async insert(endPoint, callback, params, errorCallback = function(){}){
             axios({
                 method: "post",
-                url: process.env.VUE_APP_WEBAPI_URL + "/" + endPoint,
+                url: process.env.VUE_APP_WEBAPI_URL + "/api/" + endPoint,
                 data: params
             }).then((response) => {
                 callback(response);
@@ -68,14 +68,13 @@ Vue.mixin({
 			}, {});
 		},
         getCities(callback){
-            let self = this;
-            this.getAll("getCities", function (res) {
-              let cities = self.user.cityid ? res.filter((c) => c.id === self.user.cityid) : res;
-              self.updateLocalStorage('cities', cities);
+            this.getAll("getCities", (res) => {
+                let cities = this.user.cityid ? res.filter((c) => c.id === this.user.cityid) : res;
+                this.updateLocalStorage('cities', cities);
 
-              if(callback){
-                callback();
-              }
+                if(callback){
+                    callback();
+                }
             });
         },
         setUser(value){

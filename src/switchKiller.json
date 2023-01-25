@@ -1,0 +1,24 @@
+{
+    "switchKillers": [
+        {
+            "id": "cityConfig",
+            "active": true
+        },
+        {
+            "id": "productConfig",
+            "active": true
+        },
+        {
+            "id": "urgentProductConfig",
+            "active": true
+        },
+        {
+            "id": "pickupConfig",
+            "active": true
+        },
+        {
+            "id": "familyConfig",
+            "active": false
+        }
+    ]
+}

@@ -50,11 +50,11 @@ export default {
           name: name,
           password: password,
         };
-		axios.post(process.env.VUE_APP_WEBAPI_URL + "/login", params, {headers})
+		axios.post(process.env.VUE_APP_WEBAPI_URL + "/api/login", params, {headers})
 		.then((response) => {
-			if (response.data.data.length > 0) {
+			if (response.data.length > 0) {
         this.loading = false;
-				this.updateValue(response.data.data);
+				this.updateValue(response.data);
 			}
 		});
     },

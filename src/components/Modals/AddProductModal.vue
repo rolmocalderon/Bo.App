@@ -1,7 +1,6 @@
 <template>
-    <Modal :headerMessage="headerMessage" :submitMessage="submitMessage" v-on:close="$emit('close')" v-on:submit="onSubmit" :modalColor="'dark-blue'" :isSubmitActive="true">
-        <input type="text" name="productName" placeholder="Nombre del producto" class="date-box">
-        <input type="number" min="0" max="10000" name="productAmount" placeholder="Cantidad" class="date-box">
+    <Modal :headerMessage="Object.keys(selectedProduct).length > 0 ? modifyMessage : addMessage" :submitMessage="Object.keys(selectedProduct).length > 0 ? modifySubmitMessage : addSubmitMessage" v-on:close="$emit('close')" v-on:submit="onSubmit" :modalColor="'dark-blue'" :isSubmitActive="true">
+        <input type="text" name="productName" placeholder="Nombre del producto" class="date-box" :value="selectedProduct.name">
         <div class="measure-container">
             <select name="measure">
                 <option v-for="measure in measures" v-bind:key="measure.id" :value="measure.id" :selected="measure.id == currentTypeOfMeasure" v-on:change="currentTypeOfMeasure = measure.type">{{ measure.type }}</option>
@@ -22,16 +21,20 @@ export default {
     },
     data: function(){
         return {
-            submitMessage: '',
-            headerMessage: '',
+            addSubmitMessage: '',
+            modifySubmitMessage: '',
+            addMessage: '',
+            modifyMessage: '',
             currentTypeOfMeasure: '',
             measures: []
         }
     },
     methods:{
         init(){
-            this.submitMessage = 'Añadir';
-            this.headerMessage = 'Añadiendo producto';
+            this.addSubmitMessage = 'Añadir';
+            this.modifySubmitMessage = "Modificar";
+            this.addMessage = 'Añadiendo producto';
+            this.modifyMessage = 'Modificando producto';
             this.getMeasures();
         },
         onSubmit(e){
@@ -54,7 +57,12 @@ export default {
         },
         getMeasures(){
             let measures = this.getFromLocalStorage('measures');
-            this.currentTypeOfMeasure = measures[0].type;
+
+            if(this.selectedProduct){
+                let currentMeasure = measures.find(measure => measure.id === this.selectedProduct.measureid);
+                this.currentTypeOfMeasure = currentMeasure ? currentMeasure.id : '';
+            }
+            
             this.measures = measures;
         }
     }

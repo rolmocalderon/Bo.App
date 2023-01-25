@@ -63,7 +63,7 @@ export default {
                 }
             }
 
-            this.insert('syncProducts', this.syncSuccess, { productsData,productMeasuresData,productsPicked }, this.syncError);
+            this.insert('syncProductPicked', this.syncSuccess, { productsData,productMeasuresData,productsPicked }, this.syncError);
         },
         getMeasureObj(product, measure, pickup){
             return {
@@ -95,9 +95,11 @@ export default {
             this.initLocalStorage();
             this.data = '';
             this.isSyncDone = true;
+            this.isErrorOnSync = false;
         },
         syncError(){
             this.isErrorOnSync = true;
+            this.isSyncDone = false;
         },
         onOptionSelected(option){
             this.isSelection = false;
