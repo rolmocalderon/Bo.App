@@ -21,7 +21,7 @@
         </transition>
       </div>
     </div>
-    <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup || {}" :cities="cities" :defaultCity="defaultCity" v-on:pickupAdded="showSnackbar"/>
+    <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup || {}" :cities="cities" :defaultCity="defaultCity" v-on:pickupAdded="onPickupAdded"/>
     <Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
   </div>
 </template>
@@ -43,7 +43,6 @@ export default {
       pickups: [],
       showModal: false,
       selectedPickup: {},
-      modalHeaderMessage: '',
       cities: [],
       selectedCity: '',
       isDropdownContentShown: false,
@@ -64,14 +63,11 @@ export default {
   methods: {
     itemSelected(pickup){
       this.selectedPickup = pickup;
-      console.log(this.selectedPickup)
-      this.modalHeaderMessage = 'Modificar recogida';
       this.showModal = true;
     },
     openModal(){
       this.selectedCity = '';
       this.selectedPickup = '';
-      this.modalHeaderMessage = 'Añadir recogida';
       this.showModal = true;
     },
     closeModal(){
@@ -86,12 +82,6 @@ export default {
           this.pickups = res;
         }).bind(this), params);
       }
-    },
-    insertPickup(name, id, avg){
-      var params = { name, id, avg };
-      this.insert('insertPickup', (function() { 
-        this.getPickups();
-      }).bind(this), params);
     },
     onChangeCity(city){
       this.selectedCity = city;
@@ -115,6 +105,10 @@ export default {
         this.canShowSnackbar = false;
       }, 5000);
 		},
+    onPickupAdded(){
+      this.showSnackbar();
+      this.getPickups();
+    }
   },
   watch: {
     canShowContent(val) {

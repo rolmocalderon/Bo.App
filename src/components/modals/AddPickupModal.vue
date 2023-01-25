@@ -33,8 +33,8 @@ export default {
             if(this.validations(inputs)){              
                 e.target.appendChild(this.createInput("hidden", "cityId", this.selectedCity.id));
                 e.target.appendChild(this.createInput("hidden", "date", this.date));
-
-                this.insert('insertPickup', () => { 
+                e.target.appendChild(this.createInput('hidden', 'id', this.selectedPickup.id));
+                this.insert('insertPickup', () => {
                     this.$emit('pickupAdded');
                     this.$emit('close');
                 }, this.serializeForm(e.target));
@@ -62,6 +62,7 @@ export default {
         },
         onChangeDate(e){
             this.date = moment(e.date).format('DD/MM/YYYY');
+            this.isPlaceSelected = this.selectedPickupName !==  '';
             this.isSubmitActive = this.date && this.isPlaceSelected && this.selectedCity !== '';
         },
         calendarStatusChanged(){
@@ -75,6 +76,7 @@ export default {
         },
         changeDropdown(data){
             this.selectedCity = data;
+            this.isPlaceSelected = this.selectedPickupName !==  '';
             this.isSubmitActive = this.date && this.isPlaceSelected && this.selectedCity !== '';
         }
     }

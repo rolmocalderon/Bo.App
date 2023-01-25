@@ -37,6 +37,20 @@ Vue.mixin({
                 errorCallback(response);
             })
         },
+        async doLogin(params){
+            const headers = {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+            };
+            
+            axios.post(process.env.VUE_APP_WEBAPI_URL + "/api/login", params, {headers})
+            .then((response) => {
+                if (response.data.length > 0) {
+                    this.loading = false;
+                    this.updateValue(response.data);
+                }
+            });
+        },
         serializeForm (form) {
 			var obj = {};
 			var formData = new FormData(form);

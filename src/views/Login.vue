@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Spinner from "../components/Spinner";
 
 export default {
@@ -42,21 +41,11 @@ export default {
       this.login(this.name, this.password);
     },
     login(name, password) {
-		const headers = {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-		};
 		const params = {
           name: name,
           password: password,
         };
-		axios.post(process.env.VUE_APP_WEBAPI_URL + "/api/login", params, {headers})
-		.then((response) => {
-			if (response.data.length > 0) {
-        this.loading = false;
-				this.updateValue(response.data);
-			}
-		});
+		this.doLogin(params);
     },
     updateValue: function (value) {
       this.$emit("input", value);

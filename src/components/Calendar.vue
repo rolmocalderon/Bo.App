@@ -108,7 +108,7 @@ export default {
       },
       calendarStatusChanged(){
         this.calendarOpen = !this.calendarOpen;
-        this.date = this.calendarOpen ? '' : this.date;
+        this.date = this.calendarOpen || !this.date ? '' : this.date;
       },
       isSelectableDate(day){
         let date = this.selectableDates ? this.selectableDates.find(x => x.month - 1 == this.months.indexOf(this.actualMonth) && x.year == this.actualYear && x.day == day) : undefined;
