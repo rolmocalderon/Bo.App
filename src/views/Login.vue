@@ -1,24 +1,25 @@
 <template>
-  <div class="wrapper">
-    <form action="#" v-on:submit="submit">
-      <div class="row">
-        <div class="login-icon">
-          <font-awesome-icon icon="user" />
-        </div>
-        <input type="text" v-model="name" placeholder="Name" required />
-      </div>
-      <div class="row">
-        <div class="login-icon">
-          <font-awesome-icon icon="lock" />
-        </div>
-        <input type="password" v-model="password" placeholder="Password" required />
-      </div>
-      <div class="row button">
-        <input v-if="!loading" type="submit" value="Login"/>
-        <Spinner v-if="loading"/>
-      </div>
-    </form>
-  </div>
+	<div class="wrapper">
+		<form action="#" v-on:submit="submit">
+			<div class="row">
+				<div class="login-icon">
+					<font-awesome-icon icon="user" />
+				</div>
+				<input type="text" v-model="name" placeholder="Name" required />
+			</div>
+			<div class="row">
+				<div class="login-icon">
+				<font-awesome-icon icon="lock" />
+				</div>
+				<input type="password" v-model="password" placeholder="Password" required />
+			</div>
+			<div class="row button">
+				<input v-if="!loading" type="submit" value="Login"/>
+				<Spinner v-if="loading"/>
+			</div>
+			<div class="error-message" v-if="errorMessage !== ''">{{ errorMessage }}</div>
+		</form>
+	</div>
 </template>
 
 <script>
@@ -29,9 +30,10 @@ export default {
   components: { Spinner },
   data: function () {
     return {
-      name: "",
-      password: "",
-      loading: false
+		name: "",
+		password: "",
+		loading: false,
+		errorMessage: ''
     };
   },
   methods: {
@@ -159,8 +161,8 @@ form .row input::placeholder {
   font-size: 20px;
   font-weight: 500;
   padding-left: 0px;
-  background: #4386c9;
-  border: 1px solid #4386c9;
+  background: #ec671a;
+  border: 1px solid #ec671a;
   cursor: pointer;
 }
 form .button input:hover {
@@ -177,5 +179,10 @@ form .button input:hover {
 }
 form .signup-link a:hover {
   text-decoration: underline;
+}
+.error-message{
+	margin-bottom: 0;
+    height: auto;
+	color: red;
 }
 </style>

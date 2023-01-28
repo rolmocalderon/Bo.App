@@ -14,12 +14,14 @@ Vue.mixin({
     },
 	methods: {
         async getAll(endPoint, callback, params) {
+            const token = this.getUser().token;
 			axios({
 				method: "get",
 				url: process.env.VUE_APP_WEBAPI_URL + "/api/" + endPoint,
 				headers: {
 					"Access-Control-Allow-Origin": "*",
 					"Content-Type": "application/json",
+                    "x-access-token": token
 				},
 				params: params,
 			}).then((response) => {
@@ -27,9 +29,13 @@ Vue.mixin({
 			});
 		},
         async insert(endPoint, callback, params, errorCallback = function(){}){
+            const token = this.getUser().token;
             axios({
                 method: "post",
                 url: process.env.VUE_APP_WEBAPI_URL + "/api/" + endPoint,
+                headers: {
+                    "x-access-token": token
+                },
                 data: params
             }).then((response) => {
                 callback(response);
@@ -42,13 +48,16 @@ Vue.mixin({
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json",
             };
-            
+
             axios.post(process.env.VUE_APP_WEBAPI_URL + "/api/login", params, {headers})
             .then((response) => {
-                if (response.data.length > 0) {
-                    this.loading = false;
+                if (response.data && response.data.token) {
                     this.updateValue(response.data);
                 }
+                this.loading = false;
+            }).catch((error) => {
+                this.loading = false;
+                this.errorMessage = error.response.data;
             });
         },
         serializeForm (form) {
@@ -91,11 +100,12 @@ Vue.mixin({
                 }
             });
         },
-        setUser(value){
+        setUser(currentUser){
             this.user = {
-                name: value[0].name,
-                category: value[0].category,
-                cityid: value[0].cityid,
+                name: currentUser.name,
+                category: currentUser.category,
+                cityid: currentUser.cityid,
+                token: currentUser.token
             };
         },
         navigate(page, params){

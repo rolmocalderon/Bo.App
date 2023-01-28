@@ -48,7 +48,7 @@ html,body{
 }
 
 .logo{
-  width: 7rem;
+  width: 12rem;
   margin: 1rem;
 }
 

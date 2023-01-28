@@ -5,13 +5,15 @@
 			<span>Te damos la bienvenida <strong>{{ user.name }}</strong></span>
 			<span class="log-off" v-on:click="logOff">Salir</span>
 		</div>
-    <img class="logo" alt="Vue logo" src="../assets/logo.png" v-on:click="userNavigated('')"/>
+    <div v-if="isLogged">
+      <img class="logo" alt="Vue logo" :src="require('../assets/logo.png')" v-on:click="userNavigated('')"/>
+    </div>
 		<Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
 		<Albaran v-if="navigateOption.includes('pickups')" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
 		<Administration v-if="navigateOption.includes('admin')" v-on:navigation="userNavigated" :user="user"/>
     </div>
     <div v-if="!isLogged" class="login-container">
-      <img class="logo" alt="Vue logo" src="../assets/logo.png"/>
+      <img class="logo" alt="Vue logo" src="../assets/logo_cuadrado.png"/>
       <Login v-on:input="logIn" />
     </div>
   </div>
