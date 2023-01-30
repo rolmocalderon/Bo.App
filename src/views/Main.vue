@@ -10,7 +10,7 @@
     </div>
 		<Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
 		<Albaran v-if="navigateOption.includes('pickups')" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
-		<Administration v-if="navigateOption.includes('admin')" v-on:navigation="userNavigated" :user="user"/>
+		<Administration v-if="navigateOption.includes('admin')" v-on:navigation="userNavigated"/>
     </div>
     <div v-if="!isLogged" class="login-container">
       <img class="logo" alt="Vue logo" src="../assets/logo_cuadrado.png"/>

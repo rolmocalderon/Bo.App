@@ -10,27 +10,33 @@
           <div class="config-item flex-container" v-for="(product, index) of products" :key="index" v-on:click="itemSelected(product)">
             <span class="item">{{ product.name }}</span>
             <span class="item">{{ getMeasure(product.measureid) }}</span>
+            <div class="config-item-close" v-on:click="openCloseModal($event, product)">
+              <font-awesome-icon icon="times" />
+            </div>
           </div>
         </div>
       </transition>
     </div>
     <AddProductModal v-if="showModal" v-on:close="closeModal" v-on:productAdded="onSubmit" :selectedProduct="selectedProduct"/>
+    <CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deleteProduct"/>
   </div>
 </template>
 
 <script>
 import AddProductModal from '../../components/modals/AddProductModal';
+import CloseModal from '../../components/modals/CloseModal';
 
 export default {
   name: 'config-response',
-  components: { AddProductModal },
+  components: { AddProductModal, CloseModal },
   props: ['itemType', 'items', 'canShowContent'],
   data(){
     return {
       products: [],
       showModal: false,
       isSubmitActive: false,
-      selectedProduct: {}
+      selectedProduct: {},
+      showCloseModal: false
     }
   },
   mounted(){
@@ -51,6 +57,7 @@ export default {
     },
     closeModal(){
       this.showModal = false;
+      this.showCloseModal = false;
       this.selectedProduct = {}
     },
     getProducts(){
@@ -60,7 +67,7 @@ export default {
     },
     insertProduct(name, id, measureid){
       var params = { name, id, measureid };
-      this.insert('insertProduct', (function() { 
+      this.doPost('insertProduct', (function() { 
         this.getProducts();
       }).bind(this), params);
     },
@@ -72,6 +79,19 @@ export default {
       let measures = this.getFromLocalStorage('measures');
       this.currentTypeOfMeasure = measures[0].type;
       return measures;
+    },
+    openCloseModal(e, product){
+      e.preventDefault();
+      e.stopPropagation();
+      this.showCloseModal = true;
+      this.selectedProduct = product;
+    },
+    deleteProduct(){
+      console.log(this.selectedProduct)
+      this.doPost('deleteProduct', () => {
+        this.getProducts();
+        this.closeModal();
+      }, {id: this.selectedProduct.id});
     }
   }
 }

@@ -17,7 +17,7 @@
                             <slot></slot>
                         </div>
 
-                        <div class="modal-footer">
+                        <div class="modal-footer" v-if="submitMessage && submitMessage !== ''">
                             <slot name="footer">
                                 <button class="modal-default-button" :class="{'disabled': !isSubmitActive, [modalColor]: modalColor }">
                                     {{ submitMessage }}

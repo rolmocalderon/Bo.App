@@ -71,7 +71,7 @@ export default {
       }
 
       if(isUpdate){
-        this.insert('updateUrgentProduct', (function() { 
+        this.doPost('updateUrgentProduct', (function() { 
           this.getProducts();
         }).bind(this), { cityId: this.selectedCityId, productId: product.id, isAdd: e.target.checked });
       }

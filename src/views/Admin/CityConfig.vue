@@ -9,6 +9,9 @@
         <div class="configuration-values" v-if="canShowContent">
           <div class="config-item" v-for="city of cities" :key="city.id" v-on:click="itemSelected(city)">
             <span>{{ city.name }}</span>
+            <div class="config-item-close" v-on:click="openCloseModal(city)">
+				<font-awesome-icon icon="times" />
+            </div>
           </div>
         </div>
       </transition>
@@ -16,26 +19,30 @@
     <Modal v-if="showModal" :headerMessage="modalHeaderMessage" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="closeModal" v-on:submit="onSubmit">
       <input type="text" name="city" placeholder="Nombre de la ciudad... " v-on:keyup="isSubmitActive = true" :value="selectedCity.name">
     </Modal>
+
+	<CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deleteCity"/>
   </div>
 </template>
 
 <script>
 import Modal from '../../components/Modal';
+import CloseModal from '../../components/modals/CloseModal';
 
 export default {
   name: 'config-response',
-  components: { Modal },
+  components: { CloseModal, Modal },
   props: ['items', 'canShowContent'],
   created(){
     this.cities = this.getFromLocalStorage('cities');
   },
   data(){
     return {
-      cities: [],
-      showModal: false,
-      isSubmitActive: false,
-      selectedCity: {},
-      modalHeaderMessage: ''
+		cities: [],
+		showModal: false,
+		showCloseModal: false,
+		isSubmitActive: false,
+		selectedCity: {},
+		modalHeaderMessage: ''
     }
   },
   methods: {
@@ -47,29 +54,64 @@ export default {
       };
 
       this.closeModal();
-      this.insert('insertCity', (function() { 
+      this.doPost('insertCity', (function() { 
         this.getCities((function(){
           this.cities = this.getFromLocalStorage('cities')
         }).bind(this));
       }).bind(this), params);
     },
     itemSelected(city){
-      this.selectedCity = city;
-      this.modalHeaderMessage = 'Modificar nombre de ciudad';
-      this.showModal = true;
+		this.selectedCity = city;
+		this.modalHeaderMessage = 'Modificar nombre de ciudad';
+		this.showModal = true;
     },
     openModal(){
       this.modalHeaderMessage = 'Añadir ciudad';
       this.showModal = true;
     },
     closeModal(){
-      this.showModal = false;
-      this.selectedCity = {}
-    }
+		this.showModal = false;
+		this.showCloseModal = false;
+		this.selectedCity = {}
+    },
+	openCloseModal(city){
+		this.showCloseModal = true;
+		this.selectedCity = city;
+	},
+	deleteCity(){
+		this.doPost('deleteCity', () => {
+			this.getCities((function(){
+			this.cities = this.getFromLocalStorage('cities')
+			}).bind(this));
+			this.closeModal();
+		}, {id: this.selectedCity.id});
+	}
   }
 }
 </script>
 
 <style>
+.config-item-close{
+	position: absolute;
+    right: 0;
+    top: 0;
+    color: rgb(51 51 51 / 41%);
+    height: 100%;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.accept-button{
+	background-color: #be0000;
+    color: white;
+    margin: 1rem 0.5rem;
+}
+
+.cancel-button{
+	background-color: green;
+    color: white;
+    margin: 1rem 0.5rem;
+}
 </style>

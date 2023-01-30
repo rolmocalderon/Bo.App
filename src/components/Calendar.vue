@@ -107,6 +107,9 @@ export default {
         this.$emit('hideCalendar');
       },
       calendarStatusChanged(){
+		if(!this.date){
+			this.$emit("changeDate");
+		}
         this.calendarOpen = !this.calendarOpen;
         this.date = this.calendarOpen || !this.date ? '' : this.date;
       },

@@ -133,7 +133,7 @@ export default {
 }
 .product-icon{
     opacity: 0.7;
-    color: #06346f;
+    color: #ec671a;
 }
 .product-counter{
     display: flex;

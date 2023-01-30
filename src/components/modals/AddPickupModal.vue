@@ -33,8 +33,11 @@ export default {
             if(this.validations(inputs)){              
                 e.target.appendChild(this.createInput("hidden", "cityId", this.selectedCity.id));
                 e.target.appendChild(this.createInput("hidden", "date", this.date));
-                e.target.appendChild(this.createInput('hidden', 'id', this.selectedPickup.id));
-                this.insert('insertPickup', () => {
+                if(this.selectedPickup.id){
+                    e.target.appendChild(this.createInput('hidden', 'id', this.selectedPickup.id));
+                }
+                
+                this.doPost('insertPickup', () => {
                     this.$emit('pickupAdded');
                     this.$emit('close');
                 }, this.serializeForm(e.target));

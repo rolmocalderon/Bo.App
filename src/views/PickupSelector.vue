@@ -15,6 +15,7 @@
           <div class="flex-container non-values" v-if="pickups.length === 0">
             <span>No hay valores para mostrar</span>
           </div>
+          <font-awesome-icon icon="times" />
         </div>
       </div>
     </div>
@@ -64,7 +65,7 @@ export default {
       }
     },
     onChangeDate(e){
-      this.date = moment(e.date).format('DD/MM/YYYY');
+      this.date = e ? moment(e.date).format('DD/MM/YYYY') : undefined;      
       this.getPickups(this.cityId,this.date);
     },
     changeDropdownStatus(value){

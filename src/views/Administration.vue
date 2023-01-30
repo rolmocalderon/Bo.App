@@ -63,7 +63,7 @@ export default {
                 }
             }
 
-            this.insert('syncProductPicked', this.syncSuccess, { productsData,productMeasuresData,productsPicked }, this.syncError);
+            this.doPost('syncProductPicked', this.syncSuccess, { productsData,productMeasuresData,productsPicked }, this.syncError);
         },
         getMeasureObj(product, measure, pickup){
             return {

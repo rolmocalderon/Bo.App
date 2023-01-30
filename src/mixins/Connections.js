@@ -28,7 +28,7 @@ Vue.mixin({
 				callback(response.data);
 			});
 		},
-        async insert(endPoint, callback, params, errorCallback = function(){}){
+        async doPost(endPoint, callback, params, errorCallback = function(){}){
             const token = this.getUser().token;
             axios({
                 method: "post",
