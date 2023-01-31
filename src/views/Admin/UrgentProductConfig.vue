@@ -56,7 +56,7 @@ export default {
       this.getProducts();
     },
     getProducts(){
-      this.getAll('getUrgentProducts', (function(res){
+      this.getAll('urgentProducts', (function(res){
         this.products = res;
       }).bind(this),{cityId: this.selectedCityId});
     },

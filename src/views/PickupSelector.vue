@@ -51,7 +51,7 @@ export default {
     async getPickups() {
       if(this.cityId){
         let params = { date: this.date, cityId: this.cityId };
-        this.getAll('getPickups', (function(response){
+        this.getAll('pickups', (function(response){
           this.pickups = response;
         }).bind(this), params)
       }

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="column-container">
     <CityConfig v-if="!defaultCity && canShow('cityConfig')" class="flex-container" :canShowContent="contentShown === 'city'" v-on:showContent="onShowContent"/>
     <ProductConfig v-if="canShow('productConfig')" class="flex-container" :canShowContent="contentShown === 'product'" v-on:showContent="onShowContent"/>
     <UrgentProductConfig v-if="canShow('urgentProductConfig')" class="flex-container" :canShowContent="contentShown === 'urgentProduct'" v-on:showContent="onShowContent"/>
@@ -44,8 +44,20 @@ export default {
 }
 </script>
 
-<style scoped>
-.container{
+<style>
+.column-container{
   flex-direction: column;
+}
+
+.config-item-close{
+	position: absolute;
+    right: 0;
+    top: 0;
+    color: rgb(51 51 51 / 41%);
+    height: 100%;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>

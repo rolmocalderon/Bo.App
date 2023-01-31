@@ -28,10 +28,16 @@ Vue.mixin({
 				callback(response.data);
 			});
 		},
-        async doPost(endPoint, callback, params, errorCallback = function(){}){
+        async doPost(endPoint, callback, params, errorCallback){
+            this.doApiCall(endPoint, 'post', params, callback, errorCallback);
+        },
+        async doDelete(endPoint, callback, params, errorCallback){
+            this.doApiCall(endPoint, 'delete', params, callback, errorCallback);
+        },
+        async doApiCall(endPoint, method, params, callback, errorCallback = function(){}){
             const token = this.getUser().token;
             axios({
-                method: "post",
+                method: method,
                 url: process.env.VUE_APP_WEBAPI_URL + "/api/" + endPoint,
                 headers: {
                     "x-access-token": token
@@ -41,7 +47,7 @@ Vue.mixin({
                 callback(response);
             }).catch((response) =>{
                 errorCallback(response);
-            })
+            });
         },
         async doLogin(params){
             const headers = {
@@ -91,7 +97,7 @@ Vue.mixin({
 			}, {});
 		},
         getCities(callback){
-            this.getAll("getCities", (res) => {
+            this.getAll("cities", (res) => {
                 let cities = this.user.cityid ? res.filter((c) => c.id === this.user.cityid) : res;
                 this.updateLocalStorage('cities', cities);
 

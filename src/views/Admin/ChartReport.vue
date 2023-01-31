@@ -29,7 +29,7 @@ export default {
         onChangeCity(city){
             var self = this;
             this.canShowChart = false;
-            this.getAll('getTopPickups', function(data){
+            this.getAll('topPickups', function(data){
                 self.values = {
                     labels: data.map(d => d.name.split(' ')),
                     data: data.map(d => d.amount),

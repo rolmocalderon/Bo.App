@@ -57,8 +57,7 @@ export default {
 			var data = this.getFromLocalStorage('data');
 			if(data === '' || !data[this.selectedPickup.id]){
 				let self = this;
-				let params = { pickupId: this.selectedPickup.id };
-				this.getAll("getPickupProducts", function (res) {
+				this.getAll(`pickupProducts/${this.selectedPickup.id}`, function (res) {
 					self.products = self.parseProducts(res);
 					if(data.length > 0){
 						data[self.selectedPickup.id] = {'products': self.products};
@@ -70,7 +69,7 @@ export default {
 					self.showProductList = true;
 					self.navigate('pickups-productList', {selectedPickup: self.selectedPickup});
 					self.modalType = 'product';
-				}, params);
+				});
 			}else{
 				this.products = data[this.selectedPickup.id].products;
 				this.showProductList = true;

@@ -54,7 +54,7 @@ export default {
       };
 
       this.closeModal();
-      this.doPost('insertCity', (function() { 
+      this.doPost('city', (function() { 
         this.getCities((function(){
           this.cities = this.getFromLocalStorage('cities')
         }).bind(this));
@@ -79,39 +79,17 @@ export default {
 		this.selectedCity = city;
 	},
 	deleteCity(){
-		this.doPost('deleteCity', () => {
+		this.doDelete(`city/${this.selectedCity.id}`, () => {
 			this.getCities((function(){
 			this.cities = this.getFromLocalStorage('cities')
 			}).bind(this));
 			this.closeModal();
-		}, {id: this.selectedCity.id});
+		});
 	}
   }
 }
 </script>
 
 <style>
-.config-item-close{
-	position: absolute;
-    right: 0;
-    top: 0;
-    color: rgb(51 51 51 / 41%);
-    height: 100%;
-    width: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.accept-button{
-	background-color: #be0000;
-    color: white;
-    margin: 1rem 0.5rem;
-}
-
-.cancel-button{
-	background-color: green;
-    color: white;
-    margin: 1rem 0.5rem;
-}
 </style>

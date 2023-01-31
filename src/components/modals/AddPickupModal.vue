@@ -37,7 +37,7 @@ export default {
                     e.target.appendChild(this.createInput('hidden', 'id', this.selectedPickup.id));
                 }
                 
-                this.doPost('insertPickup', () => {
+                this.doPost('pickup', () => {
                     this.$emit('pickupAdded');
                     this.$emit('close');
                 }, this.serializeForm(e.target));
@@ -64,6 +64,7 @@ export default {
             return canSubmit;
         },
         onChangeDate(e){
+            if(!e) return;
             this.date = moment(e.date).format('DD/MM/YYYY');
             this.isPlaceSelected = this.selectedPickupName !==  '';
             this.isSubmitActive = this.date && this.isPlaceSelected && this.selectedCity !== '';

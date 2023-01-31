@@ -13,6 +13,9 @@
             <div class="pickup-config config-item flex-container" v-for="pickup of pickups" :key="pickup.id" v-on:click="itemSelected(pickup)">
               <span class="item">{{ pickup.name }}</span>
               <span class="item" v-if="date === ''">{{ pickup.date }}</span>
+              <div class="config-item-close" v-on:click="openCloseModal($event, pickup)">
+                <font-awesome-icon icon="times" />
+              </div>
             </div>
             <div class="flex-container non-values" v-if="pickups.length === 0">
               <span>No hay valores para mostrar</span>
@@ -22,6 +25,7 @@
       </div>
     </div>
     <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup || {}" :cities="cities" :defaultCity="defaultCity" v-on:pickupAdded="onPickupAdded"/>
+    <CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deletePickup"/>
     <Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
   </div>
 </template>
@@ -33,10 +37,11 @@ import Dropdown from '../../components/Dropdown';
 import * as moment from 'moment';
 import cookies from "../../services/cookies";
 import Snackbar from '../../components/Snackbar';
+import CloseModal from '../../components/modals/CloseModal';
 
 export default {
   name: 'config-response',
-  components: { AddPickupModal, Dropdown, Calendar, Snackbar },
+  components: { AddPickupModal, Dropdown, Calendar, Snackbar, CloseModal },
   props: ['itemType', 'items', 'canShowContent'],
   data(){
     return {
@@ -49,7 +54,8 @@ export default {
       date: "",
       city: '',
       defaultCity: '',
-      canShowSnackbar: false
+      canShowSnackbar: false,
+      showCloseModal: false
     }
   },
   mounted(){
@@ -72,13 +78,14 @@ export default {
     },
     closeModal(){
       this.showModal = false;
+      this.showCloseModal = false;
       this.selectedPickup = {};
     },
     getPickups(){
       let paramCity = this.defaultCity !== '' ? this.defaultCity : this.city;
       if(paramCity !== ''){
         let params = {cityId: paramCity.id, date: this.date}
-        this.getAll('getPickups', (function(res){
+        this.getAll('pickups', (function(res){
           this.pickups = res;
         }).bind(this), params);
       }
@@ -96,6 +103,7 @@ export default {
       this.isDropdownContentShown = value;
     },
     onChangeDate(e){
+      if(!e) return;
       this.date = moment(e.date).format('DD/MM/YYYY');
       this.getPickups();
     },
@@ -108,6 +116,18 @@ export default {
     onPickupAdded(){
       this.showSnackbar();
       this.getPickups();
+    },
+    openCloseModal(e, pickup){
+      e.preventDefault();
+      e.stopPropagation();
+      this.showCloseModal = true;
+      this.selectedPickup = pickup;
+    },
+    deletePickup(){
+      this.doDelete(`pickup/${this.selectedPickup.id}`, () => {
+        this.getPickups();
+        this.closeModal();
+      });
     }
   },
   watch: {

@@ -86,7 +86,7 @@ export default {
         showResult(){
             if(this.startDate !== '' && this.endDate !== '' && this.cityId){
                 let params =  { 'startDate': this.startDate, 'endDate': this.endDate, 'cityId': this.cityId };
-                this.getAll('getPickupProductsByDate', (res) => {
+                this.getAll('pickupProductsByDate', (res) => {
                     this.results = res;
                     this.isSelection = false;
                 }, params);   

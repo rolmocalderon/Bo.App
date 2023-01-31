@@ -61,13 +61,13 @@ export default {
       this.selectedProduct = {}
     },
     getProducts(){
-      this.getAll('getProducts', (function(res){
+      this.getAll('products', (function(res){
         this.products = res;
       }).bind(this));
     },
     insertProduct(name, id, measureid){
       var params = { name, id, measureid };
-      this.doPost('insertProduct', (function() { 
+      this.doPost('product', (function() { 
         this.getProducts();
       }).bind(this), params);
     },
@@ -87,11 +87,12 @@ export default {
       this.selectedProduct = product;
     },
     deleteProduct(){
-      console.log(this.selectedProduct)
-      this.doPost('deleteProduct', () => {
+      this.doDelete(`product/${this.selectedProduct.id}`, () => {
         this.getProducts();
         this.closeModal();
-      }, {id: this.selectedProduct.id});
+      }, {}, () => {
+        this.closeModal();
+      });
     }
   }
 }

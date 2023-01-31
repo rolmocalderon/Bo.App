@@ -17,18 +17,6 @@ export default {
 }
 </script>
 <style scoped>
-.config-item-close{
-	position: absolute;
-    right: 0;
-    top: 0;
-    color: rgb(51 51 51 / 41%);
-    height: 100%;
-    width: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .accept-button{
 	background-color: #be0000;
     color: white;

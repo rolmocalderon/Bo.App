@@ -78,7 +78,7 @@ export default {
       let measures = this.getFromLocalStorage("measures");
       if (measures === "") {
         let self = this;
-        this.getAll("getMeasures", function (res) {
+        this.getAll("measures", function (res) {
 			self.updateLocalStorage("measures", res);
         });
       }
