@@ -5,6 +5,7 @@
     <UrgentProductConfig v-if="canShow('urgentProductConfig')" class="flex-container" :canShowContent="contentShown === 'urgentProduct'" v-on:showContent="onShowContent"/>
     <PickupConfig v-if="canShow('pickupConfig')" class="flex-container" :canShowContent="contentShown === 'pickup'" v-on:showContent="onShowContent"/>
     <FamilyConfig v-if="canShow('familyConfig')" class="flex-container" :canShowContent="contentShown === 'family'" v-on:showContent="onShowContent"/>
+    <MeasureConfig v-if="canShow('measureConfig')" class="flex-container" :canShowContent="contentShown === 'measure'" v-on:showContent="onShowContent"/>
   </div>
 </template>
 
@@ -15,11 +16,12 @@ import ProductConfig from './ProductConfig';
 import UrgentProductConfig from './UrgentProductConfig';
 import PickupConfig from './PickupConfig';
 import FamilyConfig from './FamilyConfig';
+import MeasureConfig from './MeasureConfig';
 import switchKiller from '../../switchKiller.json';
 
 export default {
     name: 'configuration',
-    components: { CityConfig, ProductConfig, UrgentProductConfig, PickupConfig, FamilyConfig },
+    components: { CityConfig, ProductConfig, UrgentProductConfig, PickupConfig, FamilyConfig, MeasureConfig },
     created(){
       this.defaultCity = this.getUser().cityid;
     },

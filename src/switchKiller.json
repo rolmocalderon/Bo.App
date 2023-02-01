@@ -19,6 +19,10 @@
         {
             "id": "familyConfig",
             "active": false
+        },
+        {
+            "id": "measureConfig",
+            "active": true
         }
     ]
 }

@@ -9,7 +9,7 @@
         <div class="configuration-values" v-if="canShowContent">
           <div class="config-item" v-for="city of cities" :key="city.id" v-on:click="itemSelected(city)">
             <span>{{ city.name }}</span>
-            <div class="config-item-close" v-on:click="openCloseModal(city)">
+            <div class="config-item-close" v-on:click="openCloseModal(city)" v-if="getUser().category === 'Admin'">
 				<font-awesome-icon icon="times" />
             </div>
           </div>
@@ -54,11 +54,11 @@ export default {
       };
 
       this.closeModal();
-      this.doPost('city', (function() { 
-        this.getCities((function(){
+      this.doPost('city', () => { 
+        this.getCities(() => {
           this.cities = this.getFromLocalStorage('cities')
-        }).bind(this));
-      }).bind(this), params);
+        });
+      }, params);
     },
     itemSelected(city){
 		this.selectedCity = city;
@@ -80,9 +80,9 @@ export default {
 	},
 	deleteCity(){
 		this.doDelete(`city/${this.selectedCity.id}`, () => {
-			this.getCities((function(){
-			this.cities = this.getFromLocalStorage('cities')
-			}).bind(this));
+			this.getCities(() => {
+				this.cities = this.getFromLocalStorage('cities');
+			});
 			this.closeModal();
 		});
 	}

@@ -7,6 +7,7 @@
             <span>{{ syncText }}</span>
         </div>
         <span v-if="isErrorOnSync" class="sync-error-result">Error al intentar sincronizar</span>
+        <div class="admin-button" v-on:click="showCloseModal = true" :class="{'disabled' : !hasDataToSync}" v-if="getUser().category === 'Admin'">Purgar datos</div>
         <div class="admin-button" v-on:click="onOptionSelected('config')">Configuration</div>
         <div class="admin-button" v-on:click="onOptionSelected('report')">Mostrar reporte</div>
         <div class="admin-button" v-on:click="onOptionSelected('chartReport')">Mostrar Gráficas</div>
@@ -14,6 +15,7 @@
     <Report v-if="!isSelection && selectedOption === 'report'"/>
     <ChartReport v-if="!isSelection && selectedOption === 'chartReport'" class="flex-container"/>
     <Configuration v-if="!isSelection && selectedOption === 'config'" class="flex-container" :user="user"/>
+    <CloseModal v-if="showCloseModal" v-on:close="showCloseModal = false" v-on:delete="purge"/>
   </div>
 </template>
 
@@ -22,10 +24,11 @@ import HeaderBar from '../components/HeaderBar';
 import Report from './Admin/Report';
 import ChartReport from './Admin/ChartReport';
 import Configuration from './Admin/Configuration';
+import CloseModal from '../components/modals/CloseModal';
 
 export default {
     name: 'administration',
-    components: {HeaderBar, Report, ChartReport, Configuration},
+    components: {HeaderBar, Report, ChartReport, Configuration, CloseModal},
     created() {
         this.isSyncDone = false;
     },
@@ -35,7 +38,8 @@ export default {
             isErrorOnSync: false,
             isSyncDone: false,
             isSelection: true,
-            selectedOption: ''
+            selectedOption: '',
+            showCloseModal: false
         }
     },
     methods: {
@@ -90,6 +94,11 @@ export default {
                 'subproductid': product.subproductid,
                 'isSubproduct': product.subproductid !== 0
             };
+        },
+        purge(){
+            this.initLocalStorage();
+            this.data = '';
+            this.showCloseModal = false;
         },
         syncSuccess(){
             this.initLocalStorage();

@@ -46,7 +46,7 @@ export default {
     data: function(){
 		return {
 			months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-			years: Array.from({length: 3}, (v, i) => new Date().getFullYear() + i),
+			years: Array.from({length: 4}, (v, i) => new Date().getFullYear() + i - 1),
 			actualMonth: "",
 			actualYear: "",
 			previousMonthDays: [],
@@ -107,9 +107,9 @@ export default {
         this.$emit('hideCalendar');
       },
       calendarStatusChanged(){
-		if(!this.date){
-			this.$emit("changeDate");
-		}
+        if(!this.date){
+          this.$emit("changeDate");
+        }
         this.calendarOpen = !this.calendarOpen;
         this.date = this.calendarOpen || !this.date ? '' : this.date;
       },

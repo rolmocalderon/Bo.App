@@ -106,6 +106,15 @@ Vue.mixin({
                 }
             });
         },
+        getMeasures(callback){
+            this.getAll("measures", (res) => {
+                this.updateLocalStorage('measures', res);
+                this.measures = res;
+                if(callback){
+                    callback();
+                }
+            });
+        },
         setUser(currentUser){
             this.user = {
                 name: currentUser.name,

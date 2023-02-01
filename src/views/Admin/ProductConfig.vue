@@ -10,7 +10,7 @@
           <div class="config-item flex-container" v-for="(product, index) of products" :key="index" v-on:click="itemSelected(product)">
             <span class="item">{{ product.name }}</span>
             <span class="item">{{ getMeasure(product.measureid) }}</span>
-            <div class="config-item-close" v-on:click="openCloseModal($event, product)">
+            <div class="config-item-close" v-on:click="openCloseModal($event, product)" v-if="getUser().category === 'Admin'">
               <font-awesome-icon icon="times" />
             </div>
           </div>
@@ -72,13 +72,9 @@ export default {
       }).bind(this), params);
     },
     getMeasure(measureId){
-      let measure = this.getMeasures().find(m => m.id === measureId);
-      return measure ? measure.type : '';
-    },
-    getMeasures(){
       let measures = this.getFromLocalStorage('measures');
-      this.currentTypeOfMeasure = measures[0].type;
-      return measures;
+      let measure = measures.find(m => m.id === measureId);
+      return measure ? measure.type : '';
     },
     openCloseModal(e, product){
       e.preventDefault();

@@ -1,9 +1,11 @@
 <template>
-    <div class="snackbar-container" :class="{ 'fadeinout': canShowSnackbar}">
+    <div class="snackbar-container" :class="{ 'fadeinout': canShowSnackbar, 'snackbar-error': isError, 'snackbar-success': !isError }">
         <div class="snackbar-content">
             <span class="snackbar-text">
-                <font-awesome-icon icon="check-circle" class="snackbar-icon"/>
-                <span>Añadido correctamente</span>
+                <font-awesome-icon v-if="!isError" icon="check-circle" class="snackbar-icon"/>
+                <font-awesome-icon v-if="isError" icon="check-circle" class="snackbar-icon"/>
+                <span v-if="!isError">Añadido correctamente</span>
+                <span v-if="isError">Error al añadir</span>
             </span>
         </div>
     </div>
@@ -12,13 +14,13 @@
 <script>
 export default {
     name: 'snackbar',
-    props: ['snackbarText','icon', 'canShowSnackbar']
+    props: ['snackbarText','icon', 'canShowSnackbar', 'isError']
 }
 </script>
 
 <style scoped>
     .snackbar-container {
-        width: 60%;
+        width: 70%;
         position: absolute;
         display: flex;
         align-items: center;
@@ -29,12 +31,20 @@ export default {
 
     .snackbar-content {
         width: 100%;
-        background-color: #7ed17e;
-        height: 3rem;
+        height: 4rem;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 0 5px;
+    }
+
+    .snackbar-success{
+        background-color: #7ed17e;
+    }
+
+    .snackbar-error{
+        background-color: #a61919;
+        color: white;
     }
 
     .snackbar-icon {
@@ -49,12 +59,12 @@ export default {
     }
 
     .fadeinout{
-        animation: fadeinout 4s linear forwards;
+        animation: fadeinout 5s linear forwards;
     }
 
     @keyframes fadeinout {
         from { opacity: 0; }
         20%, 70% { opacity: 1; }
-        to { opacity: 0; }
+        
     }
 </style>

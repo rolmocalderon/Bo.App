@@ -13,7 +13,7 @@
             <div class="pickup-config config-item flex-container" v-for="pickup of pickups" :key="pickup.id" v-on:click="itemSelected(pickup)">
               <span class="item">{{ pickup.name }}</span>
               <span class="item" v-if="date === ''">{{ pickup.date }}</span>
-              <div class="config-item-close" v-on:click="openCloseModal($event, pickup)">
+              <div class="config-item-close" v-on:click="openCloseModal($event, pickup)" v-if="getUser().category === 'Admin'">
                 <font-awesome-icon icon="times" />
               </div>
             </div>

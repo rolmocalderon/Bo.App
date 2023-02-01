@@ -64,7 +64,10 @@ export default {
             return canSubmit;
         },
         onChangeDate(e){
-            if(!e) return;
+            if(!e) {
+                this.isSubmitActive = false;
+                return;
+            }
             this.date = moment(e.date).format('DD/MM/YYYY');
             this.isPlaceSelected = this.selectedPickupName !==  '';
             this.isSubmitActive = this.date && this.isPlaceSelected && this.selectedCity !== '';

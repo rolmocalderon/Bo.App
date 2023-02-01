@@ -79,7 +79,7 @@ export default {
       if (measures === "") {
         let self = this;
         this.getAll("measures", function (res) {
-			self.updateLocalStorage("measures", res);
+          self.updateLocalStorage("measures", res);
         });
       }
     },
