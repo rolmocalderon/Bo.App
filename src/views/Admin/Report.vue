@@ -7,6 +7,7 @@
             <div class="date-selector" v-on:click="onCalendarOpen('startDate')" :class="{'disabled': this.cityId === ''}">{{ startDate === '' ? 'Fecha de inicio' : startDate}}</div>
             <div class="date-selector" v-on:click="onCalendarOpen('endDate')" :class="{'disabled': this.cityId === ''}">{{ endDate === '' ? 'Fecha de fin' : endDate}}</div>
         </div>
+        <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date" :actualDay="actualDay" :isOpenCalendar="calendarOpen"/>
         <div class="flex-container result-container">
             <div class="flex-container title-row top">
                 <div class="result-content-item">Producto</div>
@@ -24,7 +25,6 @@
                 <div class="result-content-item">{{ Object.values(results).reduce((a, b) => a + Number(b.weight), 0)}} Kg</div>
             </div>
         </div>
-        <Calendar v-if="calendarOpen" v-on:changeDate="onChangeDate" v-on:hideCalendar="onHideCalendar" :dateSelected="date" :actualDay="actualDay" :isOpenCalendar="calendarOpen"/>
     </div>
 </template>
 
@@ -43,7 +43,6 @@ export default {
             calendarOpen: false,
             startDate: '',
             endDate: '',
-            selectableDates: [],
             actualDay: '',
             date: '',
             isDropdownContentShown: false,
@@ -59,7 +58,7 @@ export default {
     methods: {
         onCalendarOpen(calendarDate){
             this.calendarDate = calendarDate;
-            this.calendarOpen = true;
+            this.calendarOpen = !this.calendarOpen;
             if(this.calendarDate === 'startDate'){
                 this.date = this.startDate;
             }else{

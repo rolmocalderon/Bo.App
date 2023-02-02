@@ -1,8 +1,14 @@
 <template>
   <div class="navigators-container">
       <div class="navigator" v-for="navigator of navigators" v-bind:key="navigator.title">
-          <div class="navigator-element" v-on:click="navigatorSelected" :id="navigator.id">
-              {{ navigator.title }}</div>
+            <div class="navigator-element" v-on:click="navigatorSelected" :id="navigator.id">
+                {{ navigator.title }}
+            </div>
+      </div>
+      <div class="navigator" v-on:click="$emit('logOff')">
+            <div class="navigator-element log-off">
+                Desconectar
+            </div>
       </div>
   </div>
 </template>
@@ -45,10 +51,6 @@ export default {
     justify-content: center;
 }
 
-.navigator-element:active{
-    background: #4386c9;
-}
-
 .navigator-element{
     width: 80%;
     padding: 1rem;
@@ -57,5 +59,10 @@ export default {
     background: white;
     font-size: 1.2rem;
     font-weight: 700;
+}
+
+.log-off{
+    background-color: #e27e16;
+    color: white;
 }
 </style>

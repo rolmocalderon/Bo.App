@@ -161,8 +161,8 @@ form .row input::placeholder {
   font-size: 20px;
   font-weight: 500;
   padding-left: 0px;
-  background: #ec671a;
-  border: 1px solid #ec671a;
+  background: #e27e16;
+  border: 1px solid #e27e16;
   cursor: pointer;
 }
 form .button input:hover {

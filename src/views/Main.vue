@@ -1,16 +1,10 @@
 <template>
   <div class="app-content">
     <div v-if="isLogged" class="container">
-		<div class="greeting background-blue">
-			<span>Te damos la bienvenida <strong>{{ user.name }}</strong></span>
-			<span class="log-off" v-on:click="logOff">Salir</span>
-		</div>
-    <div v-if="isLogged">
-      <img class="logo" alt="Vue logo" :src="require('../assets/logo.png')" v-on:click="userNavigated('')"/>
-    </div>
-		<Navigator v-if="navigateOption == ''" @navigated="userNavigated"/>
-		<Albaran v-if="navigateOption.includes('pickups')" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
-		<Administration v-if="navigateOption.includes('admin')" v-on:navigation="userNavigated"/>
+      <img class="logo" alt="Vue logo" loading="lazy" :src="require('../assets/logo.png')" v-on:click="userNavigated('')"/>
+      <Navigator v-if="navigateOption == ''" @navigated="userNavigated" v-on:logOff="logOff"/>
+      <Albaran v-if="navigateOption.includes('pickups')" :user="user" v-on:navigation="userNavigated" :title="'Recogidas'"/>
+      <Administration v-if="navigateOption.includes('admin')" v-on:navigation="userNavigated"/>
     </div>
     <div v-if="!isLogged" class="login-container">
       <img class="logo" alt="Vue logo" src="../assets/logo_cuadrado.png"/>
@@ -124,32 +118,17 @@ a {
   color: #42b983;
 }
 
-.app-content {
-  height: 100%;
-}
-
 .login-container {
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-top: 5rem;
 }
+
 .background-blue {
   background: #4065AD !important;
   color: white;
-}
-.greeting {
-  width: 100%;
-  padding: 0.5rem;
-}
-.log-off {
-	float: right;
-    margin-right: 1rem;
-}
-.log-off:hover {
-  cursor: pointer;
-  text-decoration: underline;
 }
 
 /* TRANSITIONS */ 
