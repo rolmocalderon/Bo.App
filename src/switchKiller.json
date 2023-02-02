@@ -23,6 +23,10 @@
         {
             "id": "measureConfig",
             "active": true
+        },
+        {
+            "id": "usersConfig",
+            "active": true
         }
     ]
 }

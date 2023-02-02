@@ -18,7 +18,7 @@
     </div>
     <Modal v-if="showModal" :headerMessage="modalHeaderMessage" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="closeModal" v-on:submit="onSubmit">
         <input type="text" name="measure" placeholder="Tipo de medida..." v-on:keyup="isSubmitActive = true" :value="selectedMeasure.type" required>
-        <input type="text" name="weight" placeholder="Peso en kg..." :value="selectedMeasure.weight" required>
+        <input type="text" name="weight" placeholder="Peso en kg..." v-on:keyup="isSubmitActive = true" :value="selectedMeasure.weight" required>
         <span class="weight-note">*La medida del peso es en Kg</span>
     </Modal>
 	<CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deleteMeasure"/>

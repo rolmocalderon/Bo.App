@@ -124,7 +124,7 @@ export default {
     border-radius: 2px;
 }
 
-.modal-body input[type="text"], .modal-body input[type="number"]{
+.modal-body input[type="text"], .modal-body input[type="number"], .modal-body input[type="password"]{
     box-shadow: 0 0 5px rgb(0 0 0 / 50%);
     width: 100%;
     text-indent: 1rem;

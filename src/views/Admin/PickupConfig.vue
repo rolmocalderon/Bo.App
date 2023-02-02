@@ -85,9 +85,9 @@ export default {
       let paramCity = this.defaultCity !== '' ? this.defaultCity : this.city;
       if(paramCity !== ''){
         let params = {cityId: paramCity.id, date: this.date}
-        this.getAll('pickups', (function(res){
+        this.getAll('pickups', (res) => {
           this.pickups = res;
-        }).bind(this), params);
+        }, params);
       }
     },
     onChangeCity(city){
