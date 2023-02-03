@@ -2,7 +2,8 @@
     "switchKillers": [
         {
             "id": "cityConfig",
-            "active": true
+            "active": true,
+            "allowedUsers": ["Admin"]
         },
         {
             "id": "productConfig",
@@ -18,7 +19,8 @@
         },
         {
             "id": "familyConfig",
-            "active": false
+            "active": false,
+            "allowedUsers": ["Admin"]
         },
         {
             "id": "measureConfig",
@@ -26,7 +28,8 @@
         },
         {
             "id": "usersConfig",
-            "active": true
+            "active": true,
+            "allowedUsers": ["Admin"]
         }
     ]
 }

@@ -2,7 +2,7 @@
   <div class="configuration-container">
     <div class="configuration-content">
         <div class="configuration-header" v-on:click="$emit('showContent', 'measure', $event)">
-            <span>Medidas de producto</span>
+            <span>{{title}}</span>
             <font-awesome-icon icon="plus" class="right-icon" v-on:click="openModal" v-if="canShowContent"/>
         </div>
         <transition name="slide">
@@ -16,13 +16,13 @@
             </div>
         </transition>
     </div>
-    <Modal v-if="showModal" :headerMessage="modalHeaderMessage" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="closeModal" v-on:submit="onSubmit">
-        <input type="text" name="measure" placeholder="Tipo de medida..." v-on:keyup="isSubmitActive = true" :value="selectedMeasure.type" required>
-        <input type="text" name="weight" placeholder="Peso en kg..." v-on:keyup="isSubmitActive = true" :value="selectedMeasure.weight" required>
+    <Modal v-if="showModal" :headerMessage="modalHeaderMessage" :submitMessage="'Añadir'" :isSubmitActive="true" v-on:close="closeModal" v-on:submit="onSubmit">
+        <input type="text" name="measure" placeholder="Tipo de medida..." :value="selectedMeasure.type" autocomplete="off" required>
+        <input type="text" name="weight" placeholder="Peso en kg..." :value="selectedMeasure.weight" autocomplete="off" required>
         <span class="weight-note">*La medida del peso es en Kg</span>
     </Modal>
 	<CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deleteMeasure"/>
-    <Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar" :isError="isSnackbarError"/>
+    <Snackbar :canShowSnackbar="canShowSnackbar" :isError="isSnackbarError"/>
   </div>
 </template>
 
@@ -40,14 +40,13 @@ export default {
   },
   data(){
     return {
+        title: 'Medidas de producto',
 		measures: [],
 		showModal: false,
 		showCloseModal: false,
-		isSubmitActive: false,
 		selectedMeasure: {},
 		modalHeaderMessage: '',
-        canShowSnackbar: false,
-        isSnackbarError: false
+        canShowSnackbar: false
     }
   },
   methods: {
@@ -64,9 +63,7 @@ export default {
                 this.measures = this.getFromLocalStorage('measures');
                 this.showSnackbar();
             });
-        }, params, () => {
-            this.showSnackbar(true);
-        });
+        }, params, this.showSnackbar);
     },
     itemSelected(measure){
 		this.selectedMeasure = measure;
@@ -95,14 +92,7 @@ export default {
                 this.closeModal();
             });
 		});
-	},
-    showSnackbar(isError){
-        this.isSnackbarError = isError;
-        this.canShowSnackbar = true;
-        setTimeout(() => {
-            this.canShowSnackbar = false;
-        }, 5000);
-    },
+	}
   }
 }
 </script>

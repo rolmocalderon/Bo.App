@@ -1,6 +1,6 @@
 <template>
   <div class="column-container">
-    <CityConfig v-if="!defaultCity && canShow('cityConfig')" class="flex-container" :canShowContent="contentShown === 'city'" v-on:showContent="onShowContent"/>
+    <CityConfig v-if="canShow('cityConfig')" class="flex-container" :canShowContent="contentShown === 'city'" v-on:showContent="onShowContent"/>
     <ProductConfig v-if="canShow('productConfig')" class="flex-container" :canShowContent="contentShown === 'product'" v-on:showContent="onShowContent"/>
     <UrgentProductConfig v-if="canShow('urgentProductConfig')" class="flex-container" :canShowContent="contentShown === 'urgentProduct'" v-on:showContent="onShowContent"/>
     <PickupConfig v-if="canShow('pickupConfig')" class="flex-container" :canShowContent="contentShown === 'pickup'" v-on:showContent="onShowContent"/>
@@ -42,7 +42,7 @@ export default {
       },
       canShow(configId){
         let switchKiller = this.switchKillerConfig.switchKillers.find(sk => sk.id === configId);
-        return switchKiller.active;
+        return switchKiller.active && (!switchKiller.allowedUsers || switchKiller.allowedUsers.length === 0 || switchKiller.allowedUsers.includes(this.getUser().category));
       }
     }
 }

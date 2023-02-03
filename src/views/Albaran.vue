@@ -5,7 +5,7 @@
 			<PickupSelector v-on:pickupSelected="onPickupSelected" :cities="cities"/>
 		</div>
 		<ProductList class="albaran-container" v-if="showProductList" :selectedPickup="selectedPickup" :modalType="modalType" :products="products" v-on:backSelected="hideProductList"/>
-		<Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
+		<Snackbar :canShowSnackbar="canShowSnackbar"/>
 	</div>
 </template>
 
@@ -79,13 +79,6 @@ export default {
 		},
 		goBack(target = ''){
 			this.$emit('navigation', target);
-		},
-		showSnackbar(){
-			var self = this;
-			self.canShowSnackbar = true;
-			setTimeout(function(){
-				self.canShowSnackbar = false;
-			}, 5000);
 		},
 		onProductAdded(){
 			this.showSnackbar();

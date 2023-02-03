@@ -39,7 +39,7 @@ export default {
       showCloseModal: false
     }
   },
-  mounted(){
+  created(){
     this.getProducts();
   },
   methods: {

@@ -26,7 +26,7 @@
     </div>
     <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup || {}" :cities="cities" :defaultCity="defaultCity" v-on:pickupAdded="onPickupAdded"/>
     <CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deletePickup"/>
-    <Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar"/>
+    <Snackbar :canShowSnackbar="canShowSnackbar"/>
   </div>
 </template>
 
@@ -107,12 +107,6 @@ export default {
       this.date = moment(e.date).format('DD/MM/YYYY');
       this.getPickups();
     },
-    showSnackbar(){
-			this.canShowSnackbar = true;
-			setTimeout(() => {
-        this.canShowSnackbar = false;
-      }, 5000);
-		},
     onPickupAdded(){
       this.showSnackbar();
       this.getPickups();

@@ -20,12 +20,13 @@
 		</transition>
     </div>
     <Modal v-if="showModal" :headerMessage="modalHeaderMessage" :submitMessage="'Añadir'" :isSubmitActive="isSubmitActive" v-on:close="closeModal" v-on:submit="onSubmit">
-		<input type="text" name="user" placeholder="Nombre de usuario... " v-on:keyup="isSubmitActive = true" :value="selectedUser.name" autocomplete="off">
-		<input type="password" name="password" placeholder="Contraseña..." v-on:keyup="isSubmitActive = true" autocomplete="new-password">
+		<input type="text" name="user" placeholder="Nombre de usuario... " v-on:keyup="isSubmitActive = true" :value="selectedUser.name" autocomplete="off" required>
+		<input type="password" name="password" placeholder="Contraseña..." v-on:keyup="isSubmitActive = true" autocomplete="new-password" required>
 		<Dropdown v-if="defaultCity === ''" v-on:changeDropdown="onFillCityInput" v-on:dropDownShown="changeDropdownStatus" :values="cities" :textMessage="'Selecciona una ciudad'" :isDropdownContentShown="isDropdownContentShown"></Dropdown>
 		<input type="hidden" name="city" ref="cityInput">
     </Modal>
 	<CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deleteUser"/>
+	<Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar" :isError="isSnackbarError"/>
   </div>
 </template>
 
@@ -33,10 +34,11 @@
 import Modal from '../../components/Modal';
 import CloseModal from '../../components/modals/CloseModal';
 import Dropdown from '../../components/Dropdown';
+import Snackbar from '../../components/Snackbar';
 
 export default {
   name: 'config-response',
-  components: { CloseModal, Modal, Dropdown },
+  components: { CloseModal, Modal, Dropdown, Snackbar },
   props: ['items', 'canShowContent'],
   data(){
     return {
@@ -63,17 +65,18 @@ export default {
   },
   methods: {
     onSubmit(e){
-      var name = e.target.querySelector('input[name="user"]').value;
-      var password = e.target.querySelector('input[name="password"]').value;
-      var cityId = e.target.querySelector('input[name="city"]').value;
-      var params = { name, password, cityId };
+		var name = e.target.querySelector('input[name="user"]').value;
+		var password = e.target.querySelector('input[name="password"]').value;
+		var cityId = e.target.querySelector('input[name="city"]').value;
+		var params = { name, password, cityId };
 
-      this.closeModal();
-      this.doPost('user', () => { 
-        this.getUsers((res) => {
-          this.users = res;
-        });
-      }, params);
+		this.closeModal();
+		this.doPost('user', () => { 
+			this.getUsers((res) => {
+				this.users = res;
+				this.showSnackbar();
+			});
+		}, params, this.showSnackbar(true));
     },
     openModal(){
       this.modalHeaderMessage = 'Añadir Usuario';

@@ -14,7 +14,7 @@
 <script>
 export default {
     name: 'snackbar',
-    props: ['snackbarText','icon', 'canShowSnackbar', 'isError']
+    props: ['snackbarText','icon', 'isError', 'canShowSnackbar']
 }
 </script>
 
@@ -27,6 +27,7 @@ export default {
         justify-content: center;
         bottom: 5%;
         opacity: 0;
+        z-index: 1000;
     }
 
     .snackbar-content {

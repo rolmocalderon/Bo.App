@@ -2,7 +2,7 @@
   <div class="configuration-container">
     <div class="configuration-content">
       <div class="configuration-header" v-on:click="$emit('showContent', 'city', $event)">
-        <span>Ciudades</span>
+        <span>{{title}}</span>
         <font-awesome-icon icon="plus" class="right-icon" v-on:click="openModal" v-if="canShowContent"/>
       </div>
       <transition name="slide">
@@ -37,6 +37,7 @@ export default {
   },
   data(){
     return {
+		title: 'Ciudades',
 		cities: [],
 		showModal: false,
 		showCloseModal: false,
