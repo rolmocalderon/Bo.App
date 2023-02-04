@@ -1,11 +1,11 @@
 <template>
-    <div class="snackbar-container" :class="{ 'fadeinout': canShowSnackbar, 'snackbar-error': isError, 'snackbar-success': !isError }">
+    <div class="snackbar-container" :class="{ 'fadeinout': canShow, 'snackbar-error': isError, 'snackbar-success': !isError }">
         <div class="snackbar-content">
             <span class="snackbar-text">
                 <font-awesome-icon v-if="!isError" icon="check-circle" class="snackbar-icon"/>
                 <font-awesome-icon v-if="isError" icon="check-circle" class="snackbar-icon"/>
-                <span v-if="!isError">Añadido correctamente</span>
-                <span v-if="isError">Error al añadir</span>
+                <span v-if="!isError">{{isDeleting ? removedSuccessMessage : addedSuccessMessage}}</span>
+                <span v-if="isError">Ha ocurrido un error</span>
             </span>
         </div>
     </div>
@@ -14,7 +14,18 @@
 <script>
 export default {
     name: 'snackbar',
-    props: ['snackbarText','icon', 'isError', 'canShowSnackbar']
+    props: ['snackbarText','icon', 'isError', 'canShow', 'isDeleting'],
+    data(){
+        return{
+            addedSuccessMessage: 'Añadido correctamente',
+            removedSuccessMessage: 'Eliminado correctamente',
+        }
+    },
+    watch: {
+        isDeletingSnackbar(value){
+            console.log(value)
+        }
+    }
 }
 </script>
 
@@ -66,6 +77,6 @@ export default {
     @keyframes fadeinout {
         from { opacity: 0; }
         20%, 70% { opacity: 1; }
-        
+        100% { opacity: 0; }
     }
 </style>

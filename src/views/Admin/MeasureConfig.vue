@@ -22,7 +22,7 @@
         <span class="weight-note">*La medida del peso es en Kg</span>
     </Modal>
 	<CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deleteMeasure"/>
-    <Snackbar :canShowSnackbar="canShowSnackbar" :isError="isSnackbarError"/>
+    <Snackbar :canShow="canShowSnackbar" :isError="isSnackbarError" :isDeleting="isDeletingSnackbar"/>
   </div>
 </template>
 
@@ -45,8 +45,7 @@ export default {
 		showModal: false,
 		showCloseModal: false,
 		selectedMeasure: {},
-		modalHeaderMessage: '',
-        canShowSnackbar: false
+		modalHeaderMessage: ''
     }
   },
   methods: {
@@ -91,7 +90,7 @@ export default {
                 this.measures = this.getFromLocalStorage('measures');
                 this.closeModal();
             });
-		});
+		}, undefined, this.showSnackbar);
 	}
   }
 }

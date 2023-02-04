@@ -3,7 +3,9 @@ import Vue from 'vue';
 Vue.mixin({
     data(){
         return {
-            isSnackbarError: false
+            isSnackbarError: false,
+            canShowSnackbar: false,
+            isDeletingSnackbar: false
         }
     },
     methods: {
@@ -12,7 +14,8 @@ Vue.mixin({
             newArray.unshift(value);
             return newArray;
         },
-        showSnackbar(isError){
+        showSnackbar(isError, isDeleting){
+            this.isDeletingSnackbar = isDeleting;
             this.isSnackbarError = isError;
             this.canShowSnackbar = true;
             setTimeout(() => {

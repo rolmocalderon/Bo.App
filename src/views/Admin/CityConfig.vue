@@ -21,29 +21,31 @@
     </Modal>
 
 	<CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deleteCity"/>
+  <Snackbar :canShow="canShowSnackbar" :isError="isSnackbarError" :isDeleting="isDeletingSnackbar"/>
   </div>
 </template>
 
 <script>
 import Modal from '../../components/Modal';
 import CloseModal from '../../components/modals/CloseModal';
+import Snackbar from '../../components/Snackbar';
 
 export default {
   name: 'config-response',
-  components: { CloseModal, Modal },
+  components: { CloseModal, Modal, Snackbar },
   props: ['items', 'canShowContent'],
   created(){
     this.cities = this.getFromLocalStorage('cities');
   },
   data(){
     return {
-		title: 'Ciudades',
-		cities: [],
-		showModal: false,
-		showCloseModal: false,
-		isSubmitActive: false,
-		selectedCity: {},
-		modalHeaderMessage: ''
+      title: 'Ciudades',
+      cities: [],
+      showModal: false,
+      showCloseModal: false,
+      isSubmitActive: false,
+      selectedCity: {},
+      modalHeaderMessage: ''
     }
   },
   methods: {
@@ -57,9 +59,10 @@ export default {
       this.closeModal();
       this.doPost('city', () => { 
         this.getCities(() => {
-          this.cities = this.getFromLocalStorage('cities')
+          this.cities = this.getFromLocalStorage('cities');
+          this.showSnackbar();
         });
-      }, params);
+      }, params, this.showSnackbar);
     },
     itemSelected(city){
 		this.selectedCity = city;
@@ -83,9 +86,10 @@ export default {
 		this.doDelete(`city/${this.selectedCity.id}`, () => {
 			this.getCities(() => {
 				this.cities = this.getFromLocalStorage('cities');
+        this.showSnackbar(false, true);
 			});
 			this.closeModal();
-		});
+		}, undefined, this.showSnackbar);
 	}
   }
 }

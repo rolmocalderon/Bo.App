@@ -5,7 +5,7 @@
 			<PickupSelector v-on:pickupSelected="onPickupSelected" :cities="cities"/>
 		</div>
 		<ProductList class="albaran-container" v-if="showProductList" :selectedPickup="selectedPickup" :modalType="modalType" :products="products" v-on:backSelected="hideProductList"/>
-		<Snackbar :canShowSnackbar="canShowSnackbar"/>
+		<Snackbar :canShow="canShowSnackbar" :isError="isSnackbarError" :isDeleting="isDeletingSnackbar"/>
 	</div>
 </template>
 
@@ -35,7 +35,6 @@ export default {
 			selectedDate: '',
 			cities: [],
 			modalType: 'pickup',
-			canShowSnackbar: false,
 			selectedPickup: {}
 		};
 	},

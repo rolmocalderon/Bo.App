@@ -26,7 +26,7 @@
     </div>
     <AddPickupModal v-if="showModal" :city="selectedCity" v-on:close="onClose" :selectedPickup="selectedPickup || {}" :cities="cities" :defaultCity="defaultCity" v-on:pickupAdded="onPickupAdded"/>
     <CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deletePickup"/>
-    <Snackbar :canShowSnackbar="canShowSnackbar"/>
+    <Snackbar :canShow="canShowSnackbar" :isError="isSnackbarError" :isDeleting="isDeletingSnackbar"/>
   </div>
 </template>
 
@@ -54,7 +54,6 @@ export default {
       date: "",
       city: '',
       defaultCity: '',
-      canShowSnackbar: false,
       showCloseModal: false
     }
   },
@@ -121,7 +120,7 @@ export default {
       this.doDelete(`pickup/${this.selectedPickup.id}`, () => {
         this.getPickups();
         this.closeModal();
-      });
+      }, undefined, this.showSnackbar);
     }
   },
   watch: {

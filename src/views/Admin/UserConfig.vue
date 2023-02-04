@@ -26,7 +26,7 @@
 		<input type="hidden" name="city" ref="cityInput">
     </Modal>
 	<CloseModal v-if="showCloseModal" v-on:close="closeModal" v-on:delete="deleteUser"/>
-	<Snackbar v-if="canShowSnackbar" :canShowSnackbar="canShowSnackbar" :isError="isSnackbarError"/>
+	<Snackbar :canShow="canShowSnackbar" :isError="isSnackbarError" :isDeleting="isDeletingSnackbar"/>
   </div>
 </template>
 
@@ -76,7 +76,7 @@ export default {
 				this.users = res;
 				this.showSnackbar();
 			});
-		}, params, this.showSnackbar(true));
+		}, params, this.showSnackbar);
     },
     openModal(){
       this.modalHeaderMessage = 'Añadir Usuario';
@@ -104,12 +104,13 @@ export default {
       this.getUsers();
     },
     deleteUser(){
-      this.doDelete(`user/${this.selectedUser.id}`, () => {
-        this.getUsers((res) => {
-          this.users = res;
-        });
-        this.closeModal();
-      });
+		this.doDelete(`user/${this.selectedUser.id}`, () => {
+			this.getUsers((res) => {
+				this.users = res;
+				this.showSnackbar(true);
+			});
+			this.closeModal();
+		}, undefined, this.showSnackbar);
     },
 	changeDropdownStatus(value){
       this.isDropdownContentShown = value;
