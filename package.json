@@ -5,7 +5,6 @@
   "scripts": {
     "start": "vue-cli-service serve --openssl-legacy-provider",
     "serve": "vue-cli-service serve --openssl-legacy-provider",
-    "build": "vue-cli-service build --openssl-legacy-provider",
     "lint": "vue-cli-service lint --openssl-legacy-provider",
     "deploy": "env-cmd -f .env.production npm run build && firebase deploy"
   },
